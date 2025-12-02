@@ -1,0 +1,455 @@
+import React from "react";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import ofertaData from "../../public/data/educacion_oferta_municipal.json";
+import educacionData from "../../public/data/educacion.json";   // ★ここを追加
+import educacionNivelData from "../../public/data/educacion_nivel.json";   // ★追加
+
+/* ============================================================
+   3 色テーマ（Educación のオレンジ系 UI に合わせた配色）
+   ------------------------------------------------------------
+   Abandono → オレンジ
+   Promoción → グリーン
+   Reprobación → レッド
+============================================================ */
+const CHART_COLORS = {
+  abandono: "#f59e0b",   // orange
+  promocion: "#22c55e", // green
+  reprobacion: "#ef4444",
+};
+
+/* ============================================================
+   Tooltip コンポーネント
+============================================================ */
+function CycleTooltip({ active, payload, label }) {
+  if (!active || !payload || payload.length === 0) return null;
+  const item = payload[0];
+  return (
+    <div
+      style={{
+        background: "white",
+        padding: "6px 10px",
+        borderRadius: "6px",
+        border: "1px solid #ddd",
+        fontSize: "12px",
+      }}
+    >
+      <div><strong>{label}</strong></div>
+      <div>
+        {item.value}% (RD: {item.payload.rd})
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   単純な Stat カード
+============================================================ */
+function StatCard({ label, v, rd }) {
+  if (v == null || Number.isNaN(v)) {
+    return (
+      <div className="rounded-xl bg-white p-4 shadow-sm border border-slate-200">
+        <div className="text-xs text-slate-500">{label}</div>
+        <div className="text-lg font-semibold text-slate-400">—</div>
+        <div className="text-xs text-slate-400">(RD: {rd})</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl bg-white p-4 shadow-sm border border-slate-200">
+      <div className="text-xs text-slate-500">{label}</div>
+      <div className="text-lg font-semibold">
+        {v} <span className="text-xs text-slate-500">(RD: {rd})</span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   円グラフカード（Inicial / Primario / Secundario）
+============================================================ */
+function CycleChartCard({ title, data }) {
+  const pieData = [
+    { name: "Abandono", key: "abandono", value: data.abandono, rd: data.rd_abandono },
+    { name: "Promoción", key: "promocion", value: data.promocion, rd: data.rd_promocion },
+    { name: "Reprobación", key: "reprobacion", value: data.reprobacion, rd: data.rd_reprobacion },
+  ];
+
+  return (
+    <div className="rounded-xl bg-white p-5 shadow-sm border border-slate-200 flex flex-col items-center">
+      <h3 className="text-lg font-bold text-orange-700 mb-3">{title}</h3>
+
+      <div className="flex items-center gap-5 w-full">
+        <div className="w-40 h-40">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={70}
+                innerRadius={35}
+                paddingAngle={1}
+              >
+                {pieData.map((entry) => (
+                  <Cell
+                    key={entry.key}
+                    fill={CHART_COLORS[entry.key]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CycleTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="flex-1 text-xs space-y-1">
+          {pieData.map((d) => (
+            <div key={d.key} className="flex justify-between items-center">
+              <span className="font-medium" style={{ color: CHART_COLORS[d.key] }}>
+                {d.name}:
+              </span>
+              <span>
+                {d.value}% <span className="text-slate-500 text-xs">(RD: {d.rd})</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ========================================================
+   メインコンポーネント
+============================================================ */
+export default function EducacionDashboard({ records }) {
+  const muni = records?.[0] || null;
+
+  if (!muni) return <div>No hay datos disponibles.</div>;
+
+// ★ ここに Cuadro1 の Nivel de instrucción を追加する
+const educacionNivel = (() => {
+  if (!muni || !muni.adm2_code) return null;
+
+  const key = String(muni.adm2_code).padStart(5, "0");
+
+  const hit = educacionNivelData.find(
+    (r) => String(r.adm2_code).padStart(5, "0") === key
+  );
+
+  return hit || null;
+})();
+
+
+  // Oferta Educativa – se busca por codigo ADM2 または municipio 名
+  const oferta = (() => {
+    if (!muni) return null;
+
+    const candidates = [];
+
+    // ① codigo_adm2 がある場合（数値 → 5 桁ゼロ埋め）
+    if (muni.codigo_adm2 != null) {
+      const codeFromCodigo = String(muni.codigo_adm2).padStart(5, "0");
+      candidates.push((o) => o.adm2_code === codeFromCodigo);
+    }
+
+    // ② adm2_code プロパティがある場合
+    if (muni.adm2_code != null) {
+      const codeFromAdm2 = String(muni.adm2_code).padStart(5, "0");
+      candidates.push((o) => o.adm2_code === codeFromAdm2);
+    }
+
+    // ③ 最後のフォールバックとして municipio 名でマッチ
+    if (muni.municipio) {
+      const name = String(muni.municipio).trim();
+      candidates.push((o) => String(o.municipio).trim() === name);
+    }
+
+    for (const match of candidates) {
+      const hit = ofertaData.find(match);
+      if (hit) return hit;
+    }
+
+    return null;
+  })();
+
+  // ★ ここから infra / efic を distrito 経由でフォールバックさせるロジック
+
+  // ① まず municipio 側にデータがあればそれを使う
+  let infra = muni.anuario?.infraestructura || null;
+  let efic  = muni.anuario?.eficiencia || null;
+
+  // ② anuario から distrito コードを取り出す（「0301 - AZUA」などから 0301 抽出）
+  const distritoCodeFromAnuario = (() => {
+    const raw = muni.anuario?.distrito_educativo;
+    if (!raw) return null;
+    const match = String(raw).match(/\d{4}/);
+    return match ? match[0] : null;
+  })();
+
+  // ③ oferta か anuario から最終的な distrito コードを決定
+  const distritoCode =
+    distritoCodeFromAnuario ||
+    (oferta ? String(oferta.distrito_educativo).padStart(4, "0") : null);
+
+  // ④ educacion.json から distrito レベルのレコードを探す
+  const distritoRecord = distritoCode
+    ? educacionData.find(
+        (d) =>
+          String(d.distrito_educativo || d.distrito_educativo_code)
+            .padStart(4, "0") === distritoCode
+      )
+    : null;
+
+  // ⑤ municipio 側に infra / efic がなければ distrito 側をフォールバックで使う
+  if (!infra && distritoRecord?.anuario?.infraestructura) {
+    infra = distritoRecord.anuario.infraestructura;
+  }
+  if (!efic && distritoRecord?.anuario?.eficiencia) {
+    efic = distritoRecord.anuario.eficiencia;
+  }
+
+  // 最後に必ずオブジェクトにしておく（null で壊れないように）
+  infra = infra || {};
+  efic  = efic || {};
+
+  // RD national averages
+  const RD = {
+    inicial: { abandono: 1.4, promocion: 98.6, reprobacion: 0.0 },
+    primario: { abandono: 2.6, promocion: 92.3, reprobacion: 5.1 },
+    secundario: { abandono: 5.2, promocion: 88.8, reprobacion: 6.6 },
+  };
+
+  return (
+    <div className="my-6 rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm">
+
+      {/* HEADER */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="h-10 w-10 bg-orange-200 rounded-full flex items-center justify-center">
+          <span className="text-2xl">🎓</span>
+        </div>
+        <h2 className="text-xl font-bold text-orange-700">
+          Educación – contexto general
+        </h2>
+      </div>
+
+      <h3 className="text-lg font-semibold">{muni.municipio}</h3>
+      <div className="text-sm text-slate-600 mb-3">
+        Provincia: {muni.provincia}
+      </div>
+
+      {/* Oferta Educativa – Municipio */}
+      <div className="mb-6 rounded-xl bg-white p-4 shadow-sm border border-slate-200">
+        <h3 className="font-semibold text-orange-700 mb-2">
+          Oferta Educativa – Municipio {muni.municipio}
+        </h3>
+
+        {oferta ? (
+          <>
+            <p><strong>Total centros educativos:</strong> {oferta.centros_total}</p>
+
+            <p className="mt-1">
+              <strong>Inicial–Primario:</strong>{" "}
+              {oferta.niveles?.inicial_primario?.centros} centros{" "}
+              ({oferta.niveles?.inicial_primario?.matricula} estudiantes)
+            </p>
+
+            <p className="mt-1">
+              <strong>Secundario:</strong>{" "}
+              {oferta.niveles?.secundario?.centros} centros{" "}
+              ({oferta.niveles?.secundario?.matricula} estudiantes)
+            </p>
+
+            <p className="mt-1">
+              <strong>Adultos:</strong>{" "}
+              {oferta.niveles?.adultos?.centros} centros{" "}
+              ({oferta.niveles?.adultos?.matricula} estudiantes)
+            </p>
+          </>
+        ) : (
+          <p className="text-sm text-slate-500">
+            No hay datos sobre oferta educativa para este municipio.
+          </p>
+        )}
+      </div>
+
+      {/* Distrito Educativo（見出し＋コード 名称、白バックなし） */}
+      {(() => {
+        const labelFromAnuario = muni.anuario?.distrito_educativo;
+        const labelFromOferta = oferta
+          ? `${oferta.distrito_educativo} ${oferta.distrito_nombre}`
+          : null;
+        const label = labelFromAnuario || labelFromOferta;
+
+        return (
+          <div className="mb-4">
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm font-semibold text-slate-700">
+                Distrito educativo
+              </span>
+              <span className="text-base font-semibold text-slate-900">
+                {label || "—"}
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-slate-500">
+              Los indicadores siguientes (infraestructura y eficiencia)
+              corresponden al distrito educativo, no sólo al municipio.
+            </p>
+          </div>
+        );
+      })()}
+
+
+      {/* Infraestructura */}
+      <h3 className="font-semibold text-slate-700 mb-2">Infraestructura educativa</h3>
+      <div className="grid gap-3 md:grid-cols-4">
+        <StatCard label="Aulas por plantel" v={infra.aulas_por_plantel} rd={8.8} />
+        <StatCard label="Secciones por centro" v={infra.secciones_por_centro} rd={9.8} />
+        <StatCard label="Secciones por aula" v={infra.secciones_por_aula} rd={1.3} />
+        <StatCard label="Docentes por centro" v={infra.docentes_por_centro} rd={16.5} />
+        <StatCard label="Alumnos por centro" v={infra.alumnos_por_centro} rd={202.7} />
+        <StatCard label="Alumnos por aula" v={infra.alumnos_por_aula} rd={27.2} />
+        <StatCard label="Alumnos por sección" v={infra.alumnos_por_seccion} rd={20} />
+        <StatCard label="Alumnos por docente" v={infra.alumnos_por_docente} rd={12.9} />
+      </div>
+
+      {/* Eficiencia */}
+      <h3 className="font-semibold text-slate-700 mt-6 mb-3">
+        Eficiencia del sistema educativo
+      </h3>
+      <div className="grid md:grid-cols-3 gap-4">
+        <CycleChartCard
+          title="Inicial"
+          data={{
+            abandono: efic.inicial?.abandono ?? null,
+            promocion: efic.inicial?.promocion ?? null,
+            reprobacion: efic.inicial?.reprobacion ?? null,
+            rd_abandono: RD.inicial.abandono,
+            rd_promocion: RD.inicial.promocion,
+            rd_reprobacion: RD.inicial.reprobacion,
+          }}
+        />
+        <CycleChartCard
+          title="Primario"
+          data={{
+            abandono: efic.primario?.abandono ?? null,
+            promocion: efic.primario?.promocion ?? null,
+            reprobacion: efic.primario?.reprobacion ?? null,
+            rd_abandono: RD.primario.abandono,
+            rd_promocion: RD.primario.promocion,
+            rd_reprobacion: RD.primario.reprobacion,
+          }}
+        />
+        <CycleChartCard
+          title="Secundario"
+          data={{
+            abandono: efic.secundario?.abandono ?? null,
+            promocion: efic.secundario?.promocion ?? null,
+            reprobacion: efic.secundario?.reprobacion ?? null,
+            rd_abandono: RD.secundario.abandono,
+            rd_promocion: RD.secundario.promocion,
+            rd_reprobacion: RD.secundario.reprobacion,
+          }}
+        />
+      </div>
+
+      <p className="mt-4 text-[10px] text-slate-500">
+        Fuente: MINERD, Anuario Estadístico Educativo y Censo 2022.
+      </p>
+
+      {/* Nivel de instrucción – Cuadro1 (Censo 2022) */}
+      {educacionNivel && (
+        <div className="mt-10 rounded-xl bg-white p-4 shadow-sm border border-slate-200">
+          <h3 className="font-semibold text-orange-700 mb-3">
+            Nivel de instrucción – Censo 2022
+          </h3>
+
+          {/* ドーナツチャート */}
+          <div className="grid md:grid-cols-2 gap-4">
+
+            {/* チャート */}
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: "Ninguno", value: educacionNivel.nivel.ni, key: "ni" },
+                      { name: "Preprimaria", value: educacionNivel.nivel.pre, key: "pre" },
+                      { name: "Primaria/Básica", value: educacionNivel.nivel.pb, key: "pb" },
+                      { name: "Secundaria/Media", value: educacionNivel.nivel.sm, key: "sm" },
+                      { name: "Universitaria/Superior", value: educacionNivel.nivel.us, key: "us" },
+                    ]}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    innerRadius={40}
+                  >
+                    <Cell fill="#94a3b8" /> {/* Ninguno */}
+                    <Cell fill="#38bdf8" /> {/* Preprimaria */}
+                    <Cell fill="#34d399" /> {/* Primaria */}
+                    <Cell fill="#fbbf24" /> {/* Secundaria */}
+                    <Cell fill="#f43f5e" /> {/* Universidad */}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* テキスト表示 */}
+            <div className="text-sm space-y-2">
+              <p><strong>Ninguno:</strong> {educacionNivel.pct.ni}%  
+                <span className="text-slate-500">
+                  {" "} (Urbano H:{educacionNivel.urb.h.ni} / M:{educacionNivel.urb.m.ni}, 
+                  Rural H:{educacionNivel.rur.h.ni} / M:{educacionNivel.rur.m.ni})
+                </span>
+              </p>
+
+              <p><strong>Preprimaria:</strong> {educacionNivel.pct.pre}%  
+                <span className="text-slate-500">
+                  {" "} (Urbano H:{educacionNivel.urb.h.pre} / M:{educacionNivel.urb.m.pre}, 
+                  Rural H:{educacionNivel.rur.h.pre} / M:{educacionNivel.rur.m.pre})
+                </span>
+              </p>
+
+              <p><strong>Primaria/Básica:</strong> {educacionNivel.pct.pb}%  
+                <span className="text-slate-500">
+                  {" "} (Urbano H:{educacionNivel.urb.h.pb} / M:{educacionNivel.urb.m.pb}, 
+                  Rural H:{educacionNivel.rur.h.pb} / M:{educacionNivel.rur.m.pb})
+                </span>
+              </p>
+
+              <p><strong>Secundaria/Media:</strong> {educacionNivel.pct.sm}%  
+                <span className="text-slate-500">
+                  {" "} (Urbano H:{educacionNivel.urb.h.sm} / M:{educacionNivel.urb.m.sm}, 
+                  Rural H:{educacionNivel.rur.h.sm} / M:{educacionNivel.rur.m.sm})
+                </span>
+              </p>
+
+              <p><strong>Universitaria/Superior:</strong> {educacionNivel.pct.us}%  
+                <span className="text-slate-500">
+                  {" "} (Urbano H:{educacionNivel.urb.h.us} / M:{educacionNivel.urb.m.us}, 
+                  Rural H:{educacionNivel.rur.h.us} / M:{educacionNivel.rur.m.us})
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+
+
+    </div>
+  );
+}

@@ -1,0 +1,229 @@
+/* ===============================================================
+   PRINT SPECIFIC STYLES
+   =============================================================== */
+@media print {
+
+  @page { 
+    size: 8.5in 11in;   /* Letter */
+    margin: 0.1in;
+  }
+
+  html, body {
+    width: 8.5in;
+    height: 11in;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* 教育セクションの余白ゼロ化 */
+  .educacion-empty-space {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: none !important;
+  }
+
+  .print-root {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-page {
+    page-break-after: always !important;
+  }
+  .print-page:last-child {
+    page-break-after: auto !important;
+  }
+
+  /* ===============================================================
+      カードのページ割れ防止
+     =============================================================== */
+  .no-break,
+  .print-block,
+  .print-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* ===============================================================
+      Infraestructura (8カード)
+     =============================================================== */
+  .educacion-infra-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .educacion-infra-grid > * {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* インフラ → Eficiencia の隙間をゼロに */
+  .educacion-infra-grid + .print-section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  h3 {
+    margin-top: 4px !important;
+  }
+
+  /* ===============================================================
+      Eficiencia（Inicial / Primario / Secundario）
+      ここから強力なサイズ調整
+     =============================================================== */
+  .educacion-eficiencia-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .educacion-eficiencia-grid > * {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* 1. カード自体の余白(padding)を極小に */
+  .educacion-eficiencia-grid .print-card {
+    padding: 4px 8px !important;
+  }
+
+  /* 2. 凡例テキストを極小サイズ(8px)にする */
+  .educacion-eficiencia-grid .print-card .text-xs {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  /* 3. グラフと凡例の間隔(gap)を詰める */
+  .educacion-eficiencia-grid .print-card > div.flex {
+    gap: 4px !important; /* 元のgap-5(20px)から大幅削減 */
+    align-items: center !important;
+  }
+  
+  .educacion-eficiencia-grid .print-flex {
+    justify-content: flex-start !important;
+    gap: 4px !important;
+  }
+
+  /* 4. 円グラフのサイズを100pxまで絞る（3列確保のため必須） */
+  .educacion-eficiencia-grid .chart-container,
+  .educacion-eficiencia-grid .chart-container > div,
+  .educacion-eficiencia-grid .recharts-wrapper,
+  .educacion-eficiencia-grid .recharts-surface,
+  .educacion-eficiencia-grid .recharts-responsive-container {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
+    margin: 0 !important; /* 中央寄せ解除して左詰め気味に */
+  }
+
+  /* ===============================================================
+      その他の汎用クラス
+     =============================================================== */
+
+  .print-allow-break {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Oferta + Nivel（2カラム固定） */
+  .print-grid {
+    display: grid !important;
+  }
+  .print-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Eficiencia（3カラム固定） */
+  .print-grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Flex の崩れ防止 */
+  .print-flex {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+
+  /* カード影削除 */
+  .print-card {
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+
+  /* 背景削除 */
+  .print-no-bg {
+    background: white !important;
+  }
+
+  /* padding 最小 */
+  .print-no-padding {
+    padding: 4px !important;
+  }
+
+  /* margin 最小 */
+  .print-no-margin {
+    margin: 2px !important;
+  }
+
+  /* rounded 弱体化 */
+  .rounded-2xl {
+    border-radius: 4px !important;
+  }
+
+    /* Provincia / Municipio の選択 UI を印刷時に削除 */
+    .hide-on-print {
+    display: none !important;
+    }
+    /* ===============================================================
+   TopSection（Informacion Basica + 地図）印刷時横並び
+   =============================================================== */
+
+.print-top-grid {
+  display: grid !important;
+  grid-template-columns: 1.6fr 1fr !important;
+  gap: 8px !important;
+  align-items: start !important;
+}
+
+/* 地図カードを小さくする */
+.print-map-card {
+  max-width: 220px !important;
+  padding: 4px !important;
+}
+
+.print-map-card .recharts-responsive-container,
+.print-map-card .recharts-wrapper {
+  width: 200px !important;
+  height: 200px !important;
+  max-width: 200px !important;
+  max-height: 200px !important;
+}
+/* Leaflet map print fix */
+.print-map-card .leaflet-container,
+.print-map-card .leaflet-container * {
+  width: 200px !important;
+  height: 200px !important;
+  max-width: 200px !important;
+  max-height: 200px !important;
+}
+
+.print-info-basic {
+  max-width: 320px !important;
+  padding: 6px !important;
+}
+
+}
