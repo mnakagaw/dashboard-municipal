@@ -1,0 +1,56 @@
+import React from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+
+export default function SaludSection({ saludEst, nationalSaludEst }) {
+  if (!saludEst) return null;
+
+  // ラベル（UI の人間可読用）
+  const labels = {
+    centro_diagnostico: "Centro diagnóstico",
+    hospital_infantil: "Hospital infantil",
+    hospital_mediana_complejidad: "Hospital mediana complejidad",
+    hospital_alta_complejidad: "Hospital alta complejidad",
+    consultorio: "Consultorio",
+    centro_primer_nivel: "Centro de primer nivel",
+    centro_zona: "Centro de zona",
+    hospital_materno: "Hospital materno",
+    hospital_materno_infantil: "Hospital materno-infantil",
+    hospital_traumatologico: "Hospital traumatológico",
+    centro_ambulatorio: "Centro ambulatorio",
+    centro_comunitario: "Centro comunitario",
+  };
+
+  const formatLabel = (k) => labels[k] || k.replace(/_/g, " ");
+
+  return (
+    <Card className="border-rose-200 bg-rose-50/60">
+      <CardHeader className="border-b border-rose-200/60">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-100 text-xs text-rose-700">
+            🏥
+          </div>
+          <CardTitle className="text-sm font-semibold text-rose-900">
+            Salud – Establecimientos de Salud (por tipo)
+          </CardTitle>
+        </div>
+      </CardHeader>
+
+      <CardContent className="pt-3 text-xs md:text-sm">
+        <div className="grid grid-cols-2 gap-y-1">
+          {Object.entries(saludEst).map(([key, val]) => (
+            <React.Fragment key={key}>
+              <div className="text-slate-700">{formatLabel(key)}</div>
+              <div className="text-right font-semibold text-slate-900">
+                {val}
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
+
+        <p className="mt-3 text-[10px] text-slate-400">
+          Fuente: Establecimientos de Salud (SNS), 2018–2025.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}

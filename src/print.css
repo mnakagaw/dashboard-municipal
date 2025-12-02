@@ -1,0 +1,472 @@
+/* ===============================================================
+   PRINT SPECIFIC STYLES (NO GAPS / COMPACT HEIGHT)
+   =============================================================== */
+@media print {
+
+  @page {
+    size: 8.5in 11in;
+    margin: 0.2in;
+  }
+
+  html,
+  body {
+    width: 8.5in;
+    height: 11in;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    zoom: 1 !important;
+    /* 全体を90%に縮小 */
+  }
+
+  .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .educacion-empty-space {
+    display: none !important;
+  }
+
+  .print-root {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-page {
+    page-break-after: always !important;
+  }
+
+  .print-page:last-child {
+    page-break-after: auto !important;
+  }
+
+  /* 汎用 */
+  .no-break,
+  .print-block,
+  .print-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+
+  /* セクション間の隙間を極小にする */
+  .print-top-grid,
+  .pyramids-row,
+  .print-hogares-grid {
+    margin-bottom: 2px !important;
+  }
+
+  h3 {
+    margin-top: 1px !important;
+    margin-bottom: 1px !important;
+  }
+
+
+  /* ===============================================================
+      1. TopSection（Informacion Basica + 地図）
+     =============================================================== */
+  .print-top-grid {
+    display: grid !important;
+    grid-template-columns: 0.65fr 1.35fr !important;
+    gap: 8px !important;
+    align-items: start !important;
+  }
+
+  .print-info-basic {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .print-basic-indicators .card-title,
+  .print-basic-indicators div[class*="text-lg"] {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #2563eb !important;
+  }
+
+  .print-basic-indicators .text-sm {
+    font-size: 11px !important;
+  }
+
+  .print-basic-indicators .text-xs {
+    font-size: 10px !important;
+  }
+
+  .print-map-card {
+    width: 100% !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+
+  .print-map-card h3 {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* 地図高さ 180px */
+  .print-map-wrapper,
+  .print-map-card div[class*="h-[360px]"] {
+    height: 180px !important;
+    min-height: 180px !important;
+    max-height: 180px !important;
+    overflow: hidden !important;
+    margin-bottom: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .print-map-card .leaflet-container {
+    width: 100% !important;
+    height: 180px !important;
+    z-index: 0 !important;
+  }
+
+  .print-map-card .leaflet-container img {
+    max-width: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .hide-on-print {
+    display: none !important;
+  }
+
+
+  /* ===============================================================
+      2. ピラミッドセクション (3列) - 高さ圧縮＆隙間削除
+     =============================================================== */
+  .print-pyramid-small {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .print-3-cols {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+
+  .print-3-cols .print-card {
+    padding: 2px 4px !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    /* カード自体の高さを自動にして、中身で制御 */
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .print-3-cols .card-title,
+  .print-3-cols div[class*="text-lg"],
+  .print-3-cols div[class*="text-sm"] {
+    font-size: 11px !important;
+    line-height: 1.1 !important;
+    margin-bottom: 2px !important;
+    font-weight: 600 !important;
+  }
+
+  /* ★修正: グラフの高さを 110px に強制固定 */
+  .print-3-cols .recharts-responsive-container,
+  .print-3-cols .recharts-wrapper,
+  .print-3-cols .recharts-surface,
+  .print-chart-container {
+    height: 110px !important;
+    min-height: 110px !important;
+    max-height: 110px !important;
+  }
+
+  /* カードコンテンツ（グラフを囲む親）の余白削除 */
+  .print-3-cols .print-card>div:last-child,
+  /* CardContent */
+  .print-3-cols .print-card .h-64,
+  .print-3-cols .print-card .md\:h-72 {
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 出典テキスト */
+  .print-3-cols p {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    font-size: 7px !important;
+    line-height: 1 !important;
+    margin-bottom: 2px !important;
+    /* 少しだけ下に余裕を持たせる */
+  }
+
+  /* GenderRatio レイアウト */
+  .print-gender-ratio .print-gender-content {
+    justify-content: flex-start !important;
+    gap: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .print-gender-ratio .gender-inner-content {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    height: 110px !important;
+    /* ピラミッドと高さを合わせる */
+    margin-bottom: 0 !important;
+  }
+
+  .print-gender-ratio .gender-inner-content>div:first-child {
+    width: 50% !important;
+    height: 100% !important;
+  }
+
+  .print-gender-ratio .gender-inner-content>div:last-child {
+    width: 50% !important;
+  }
+
+  .print-gender-ratio .text-slate-600,
+  .print-gender-ratio .font-semibold {
+    font-size: 8px !important;
+    white-space: nowrap !important;
+  }
+
+  .print-gender-ratio .border-t {
+    margin-top: 2px !important;
+    padding-top: 2px !important;
+    font-size: 7px !important;
+  }
+
+
+  /* ===============================================================
+   3. Hogares（世帯）セクション - 高さ圧縮＆隙間削除（完全版）
+   =============================================================== */
+
+  /* --- 全体グリッド --- */
+  .print-hogares-grid {
+    display: grid !important;
+    grid-template-columns: 180px 1fr !important;
+    gap: 6px !important;
+    align-items: start !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* ============================
+   左カラム（基本カード2つ）
+   ============================ */
+  .print-hogares-left {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    min-width: 0 !important;
+  }
+
+  /* 左側カード共通 */
+  .print-hogares-left .print-card {
+    padding: 2px 6px !important;
+    min-height: 0 !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
+  .print-hogares-left .print-card>div {
+    padding: 0 !important;
+  }
+
+  /* 左カラムのテキスト圧縮 */
+  .print-hogares-left .card-title {
+    font-size: 9px !important;
+    margin-bottom: 1px !important;
+  }
+
+  .print-hogares-left .text-xs {
+    font-size: 8px !important;
+  }
+
+  .print-hogares-left .text-2xl,
+  .print-hogares-left .text-3xl {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+  }
+
+  /* ============================
+   右カラム（Tamaño de los hogares）
+   ============================ */
+  .print-hogares-right {
+    width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+  }
+
+  /* カード外側 */
+  .print-hogares-right .print-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    background: white !important;
+    padding: 2px 4px 0 4px !important;
+    /* ★下だけ0に固定 */
+  }
+
+  /* タイトル圧縮 */
+  .print-hogares-right .card-title {
+    font-size: 9px !important;
+    line-height: 1 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* ============================
+   グラフエリアの余白を完全にゼロにする
+   ============================ */
+  .print-hogares-right .chart-container,
+  .print-hogares-right .recharts-responsive-container,
+  .print-hogares-right .recharts-wrapper {
+    height: 120px !important;
+    /* 高さ圧縮 */
+    width: 100% !important;
+    min-height: 120px !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* SVG の余白を強制ゼロ */
+  .print-hogares-right svg.recharts-surface {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* 軸・グリッド・レイヤー余白削除 */
+  .print-hogares-right .recharts-cartesian-grid,
+  .print-hogares-right .recharts-cartesian-axis-ticks,
+  .print-hogares-right .recharts-layer,
+  .print-hogares-right .recharts-cartesian-axis {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* CardContent の下の空白削除 */
+  .print-hogares-right .print-card>div:last-child {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* （任意）X軸の数字が下に余白を作る場合は OFF にできる */
+  .print-hogares-right .recharts-cartesian-axis-tick {
+    /* display: none !important; */
+  }
+
+
+
+  /* ===============================================================
+      4. Other Sections
+     =============================================================== */
+  .educacion-infra-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .educacion-infra-grid>* {
+    break-inside: avoid !important;
+  }
+
+  .educacion-infra-grid+.print-section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .educacion-eficiencia-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .educacion-eficiencia-grid>* {
+    break-inside: avoid !important;
+  }
+
+  .educacion-eficiencia-grid .print-card {
+    padding: 4px 8px !important;
+  }
+
+  .educacion-eficiencia-grid .print-card .text-xs {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+  }
+
+  .educacion-eficiencia-grid .print-card>div.flex {
+    gap: 4px !important;
+    align-items: center !important;
+  }
+
+  .educacion-eficiencia-grid .print-flex {
+    justify-content: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .educacion-eficiencia-grid .chart-container,
+  .educacion-eficiencia-grid .chart-container>div,
+  .educacion-eficiencia-grid .recharts-wrapper,
+  .educacion-eficiencia-grid .recharts-surface,
+  .educacion-eficiencia-grid .recharts-responsive-container {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
+    margin: 0 !important;
+  }
+
+  .print-allow-break {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  .print-grid {
+    display: grid !important;
+  }
+
+  .print-grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .print-grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .print-flex {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .print-card {
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+
+  .print-no-bg {
+    background: white !important;
+  }
+
+  .print-no-padding {
+    padding: 4px !important;
+  }
+
+  .print-no-margin {
+    margin: 2px !important;
+  }
+
+  .rounded-2xl {
+    border-radius: 4px !important;
+  }
+}

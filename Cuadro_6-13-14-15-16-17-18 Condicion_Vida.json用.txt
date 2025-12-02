@@ -1,0 +1,1158 @@
+Cuadro 15
+
+"Región, provincia, municipio, distrito 
+municipal y zona "	Total 	"Del acueducto
+ dentro de 
+la vivienda "	"Del acueducto 
+en el patio 
+de la vivienda "	"De una 
+llave pública "	"De una
+ llave de otra
+ vivienda"	"Manantial,
+ río, arroyo "	Pozo tubular	Pozo cavado	Lluvia 	"Camión 
+tanque "	Botellones 	"Camioncito 
+procesada "	Otro
+Municipio Santo Domingo de Guzmán	365,548	26,005	1,034	2,317	380	26	587	216	110	1,791	326,883	6,186	13
+Municipio Santo Domingo Este	351,360	18,504	1,236	3,147	239	24	569	828	222	2,606	318,955	5,009	21
+Municipio Santo Domingo Oeste	143,144	13,762	400	734	127	7	115	93	94	758	124,859	2,187	8
+Municipio Santo Domingo Norte	224,697	8,116	539	1,570	171	14	845	737	840	8,768	161,922	41,165	10
+Municipio Boca Chica	56,593	2,160	351	271	71	0	68	232	152	679	50,870	1,739	0
+Municipio San Antonio de Guerra	20,885	426	197	133	30	1	57	64	140	145	19,415	277	0
+Municipio Los alcarrizos	111,928	5,056	406	503	96	26	59	121	71	1,076	102,290	2,212	12
+Municipio Pedro Brand	31,206	905	107	325	52	158	59	149	137	214	28,409	691	0
+Municipio Moca	54,913	4,750	213	909	91	52	77	30	1,684	129	46,936	33	9
+Municipio Cayetano Germosén	2,996	14	3	9	0	0	5	0	269	5	2,690	0	1
+Municipio Gaspar Hernández 	15,090	635	48	207	18	275	150	55	1,009	48	12,634	11	0
+Municipio Jamao al Norte	2,883	139	8	75	2	104	14	16	129	2	2,391	3	0
+Municipio San Víctor	6,588	302	38	132	8	129	57	6	145	3	5,768	0	0
+Municipio Puerto Plata	59,241	4,098	247	1,147	36	680	63	88	232	403	51,634	613	0
+Municipio Altamira	7,149	167	178	352	8	463	101	105	413	14	5,347	1	0
+Municipio Guananico	2,447	56	21	69	16	55	7	5	34	3	2,181	0	0
+Municipio Imbert	8,905	150	14	170	13	44	25	23	110	48	8,302	5	1
+Municipio Los Hidalgos	4,814	23	28	166	2	132	9	37	189	8	4,217	3	0
+Municipio Luperón	6,575	224	41	74	10	0	10	8	101	21	6,078	6	2
+Municipio Sosúa	21,065	531	40	393	21	134	31	29	56	78	19,723	29	0
+Municipio Villa Isabela 	7,153	97	81	159	6	28	24	12	102	32	6,612	0	0
+Municipio Villa Montellano 	7,698	156	23	50	27	36	3	3	38	26	7,324	12	0
+Municipio de Santiago	272,180	31,942	608	2,918	165	456	92	25	636	551	234,582	199	6
+Municipio Bisonó	17,181	1,053	168	173	42	7	6	4	36	147	15,532	13	0
+Municipio Jánico	5,252	972	110	729	21	800	9	11	436	10	2,144	7	3
+Municipio Licey al Medio	9,956	856	60	231	13	1	0	2	18	23	8,747	3	2
+Municipio San José de las Matas	13,028	4,381	212	1,319	82	1,028	58	10	45	34	5,855	3	1
+Municipio Tamboril	19,888	901	61	199	10	112	26	17	101	53	18,396	12	0
+Municipio Villa González	14,456	643	91	291	16	102	25	14	155	133	12,981	3	2
+Municipio Puñal	15,621	1,484	36	137	17	0	0	4	39	36	13,864	4	0
+Municipio Sabana Iglesia	5,222	142	22	191	7	2	0	2	104	4	4,748	0	0
+Municipio Baitoa	3,919	64	42	53	5	1	2	5	430	18	3,292	7	0
+Municipio La Vega	96,210	4,755	202	818	168	220	796	80	5,350	225	83,521	74	1
+Municipio Constanza	23,946	2,620	491	1,255	177	1,251	407	17	14	64	17,636	11	3
+Municipio Jarabacoa	23,382	2,949	152	1,181	120	1,770	389	30	99	217	16,251	222	2
+Municipio Jima Abajo	10,043	138	66	194	26	74	44	2	147	32	9,319	1	0
+Municipio Cotuí	29,915	653	281	751	42	459	607	208	264	92	26,519	38	1
+Municipio Cevicos	5,837	34	23	244	10	161	76	95	178	15	5,000	1	0
+Municipio Fantino	8,349	103	20	222	6	3	103	4	139	37	7,705	7	0
+Municipio Villa La Mata	13,398	185	52	145	43	8	70	34	252	167	11,960	480	2
+Municipio Bonao	50,536	4,799	434	2,143	151	1,047	211	191	25	71	41,389	69	6
+Municipio Maimón	8,274	53	13	66	20	32	89	11	15	15	7,960	0	0
+Municipio Piedra Blanca	9,340	797	81	286	11	544	104	26	6	21	7,454	9	1
+Municipio San Francisco de Macorís	73,225	3,513	320	731	65	126	53	35	2,039	150	66,103	84	6
+Municipio Arenoso 	5,225	14	1	6	0	5	7	0	342	288	4,159	396	7
+Municipio Castillo	5,995	103	9	96	15	7	24	12	1,085	127	4,140	377	0
+Municipio Pimentel 	6,303	209	27	10	1	0	12	2	452	53	5,247	290	0
+Municipio Villa riva	12,685	12	16	302	19	26	107	3	971	288	10,759	174	8
+Municipio Las Guáranas	5,101	8	2	0	3	0	22	2	186	26	4,758	94	0
+Municipio Eugenio María de Hostos	2,139	16	5	4	4	1	1	0	321	60	1,541	186	0
+Municipio Nagua 	29,198	2,926	476	1,110	77	45	26	28	822	177	23,213	296	2
+Municipio Cabrera	10,890	350	34	116	21	74	30	13	237	63	9,909	43	0
+Municipio El Factor 	10,928	182	85	44	6	59	22	14	780	340	8,543	853	0
+Municipio Río San Juan	6,405	57	63	294	3	89	13	4	106	26	5,736	12	2
+Municipio Salcedo	14,698	336	22	79	9	26	29	28	1,763	76	12,325	5	0
+Municipio Tenares	10,449	335	40	219	12	162	28	3	1,320	40	8,284	6	0
+Municipio Villa Tapia	8,983	221	30	121	12	2	20	5	874	19	7,674	5	0
+Municipio Samaná	22,840	836	182	307	34	614	13	40	1,007	265	18,991	550	1
+Municipio Sánchez	9,374	282	18	46	9	16	11	2	230	121	7,990	649	0
+Municipio Las Terrenas	9,722	551	48	149	7	19	6	22	59	51	8,727	83	0
+Municipio Dajabón	12,092	753	166	57	14	3	39	10	20	21	10,984	25	0
+Municipio Loma de Cabrera	5,658	1,099	332	337	72	71	13	2	4	10	3,718	0	0
+Municipio Partido 	2,859	40	10	111	4	12	44	2	10	19	2,598	8	1
+Municipio Restauración 	2,646	279	357	260	70	358	6	25	5	4	1,278	4	0
+Municipio El Pino	2,247	449	104	8	13	27	8	1	5	0	1,626	6	0
+Municipio Monte Cristi	10,115	432	287	143	14	6	1	1	11	35	9,178	7	0
+Municipio Castañuelas	7,234	558	698	93	40	0	1	0	9	18	5,814	3	0
+Municipio Guayubín	14,598	1,510	673	89	26	13	2	2	166	38	12,070	9	0
+Municipio Las Matas de Santa Cruz	4,123	295	197	190	20	0	9	1	13	52	3,342	3	1
+Municipio Pepillo Salcedo 	3,944	246	246	231	13	0	13	8	8	12	3,164	1	2
+Municipio Villa Vásquez	6,142	391	223	12	12	1	0	0	18	57	5,427	1	0
+Municipio San Ignacio de Sabaneta	13,948	1,122	111	274	43	325	96	14	27	53	11,857	26	0
+Municipio Villa Los Almácigos 	4,062	1,235	421	496	28	46	0	1	0	13	1,813	9	0
+Municipio Monción	4,884	30	8	91	13	32	2	0	18	20	4,667	2	1
+Municipio Mao	31,178	4,171	1,099	687	149	61	7	4	48	102	24,844	2	4
+Municipio Esperanza	24,105	2,071	1,274	600	50	165	14	13	48	53	19,795	21	1
+Municipio Laguna Salada 	10,318	1,201	763	176	10	14	19	3	69	21	8,035	7	0
+Municipio Baní	53,021	1,803	410	871	101	359	50	98	129	460	48,019	717	4
+Municipio Nizao	10,335	384	82	157	12	3	5	1	3	60	9,600	28	0
+Municipio Matanzas	6,741	167	138	48	2	2	53	16	3	63	6,110	139	0
+Municipio San Cristóbal 	88,583	3,399	645	832	68	173	93	159	689	1,574	71,590	9,359	2
+Municipio Sabana Grande de Palenque 	5,680	154	130	21	5	0	3	0	1	128	4,527	711	0
+Municipio Bajos de Haina	53,277	2,446	313	294	30	5	82	44	43	1,896	36,335	11,783	6
+Municipio Cambita Garavitos	10,423	125	91	143	50	831	218	251	401	136	7,569	608	0
+Municipio Villa Altagracia	32,108	1,023	605	389	124	191	401	168	95	253	28,767	84	8
+Municipio Yaguate	16,375	234	74	140	18	63	30	23	338	695	10,941	3,818	1
+Municipio San Gregorio de Nigua	12,565	355	180	121	19	0	10	16	101	722	6,939	4,102	0
+Municipio Los Cacaos	3,992	1,168	179	357	11	1,327	217	24	9	0	700	0	0
+Municipio San José de Ocoa	16,200	830	695	577	44	588	12	9	5	84	13,036	318	2
+Municipio Sabana Larga	4,379	231	280	237	43	342	11	2	5	19	3,192	17	0
+Municipio Rancho Arriba	5,451	516	411	973	21	311	8	33	6	9	3,162	1	0
+Municipio de Neiba	12,152	589	326	446	180	388	29	34	61	151	9,624	316	8
+Municipio Galván	5,359	450	271	238	183	230	34	63	4	75	3,768	42	1
+Municipio Tamayo	9,962	284	670	155	85	12	1	2	2	245	7,787	718	1
+Municipio Villa Jaragua	3,693	55	156	37	30	292	64	26	43	42	2,934	11	3
+Municipio Los Ríos	2,709	240	231	22	35	303	5	7	13	12	1,839	2	0
+Municipio Barahona	27,560	1,892	1,114	572	88	121	67	113	92	490	22,759	250	2
+Municipio Cabral	4,871	719	306	26	7	35	0	10	19	96	3,557	96	0
+Municipio Enriquillo	4,468	180	406	509	85	154	16	75	295	31	2,702	14	1
+Municipio Paraíso 	5,114	415	254	723	54	431	6	8	565	27	2,629	2	0
+Municipio Vicente Noble 	8,230	311	169	29	11	3	0	0	7	100	7,266	334	0
+Municipio El Peñón	1,370	4	7	26	0	0	0	0	0	18	1,300	15	0
+Municipio La Ciénaga	2,741	1,205	842	365	13	80	0	10	106	5	115	0	0
+Municipio Fundación	2,924	60	71	4	17	0	2	0	0	20	2,750	0	0
+Municipio Las Salinas	1,552	20	102	8	21	1	0	0	0	17	1,382	1	0
+Municipio Polo	2,468	431	184	272	138	31	12	5	246	5	1,138	0	6
+Municipio Jaquimeyes	1,313	27	11	3	1	0	0	0	0	11	1,259	1	0
+Municipio Jimaní	5,852	303	142	225	79	41	66	52	8	63	4,097	776	0
+Municipio Duvergé	4,445	116	86	625	34	89	4	7	6	11	3,466	1	0
+Municipio La Descubierta 	2,376	99	41	119	23	55	2	0	0	25	1,732	280	0
+Municipio Postrer Río	2,173	305	176	84	28	350	11	0	3	14	1,197	5	0
+Municipio Cristóbal	2,412	244	251	154	173	0	0	1	1	6	1,575	6	1
+Municipio Mella	1,485	9	129	4	10	1	0	0	2	7	1,230	93	0
+Municipio Pedernales	7,342	439	494	368	102	250	22	58	423	44	5,129	11	2
+Municipio Oviedo	3,148	83	53	16	5	3	16	50	110	98	2,708	6	0
+Municipio Azua	32,360	1,204	1,087	886	187	24	110	97	2	356	28,327	72	8
+Municipio Las Charcas	4,913	156	145	77	8	26	1	1	9	18	4,465	1	6
+Municipio Las Yayas de Viajama	6,705	186	501	66	45	28	1	1	7	27	5,839	4	0
+Municipio Padre Las Casas	7,022	789	714	465	105	650	1	15	0	8	4,273	2	0
+Municipio Peralta	4,386	516	632	58	139	146	0	2	5	5	2,877	4	2
+Municipio Sabana Yegua	6,616	145	242	27	20	52	5	0	1	40	6,054	29	1
+Municipio Pueblo Viejo 	3,844	43	45	29	2	0	20	3	7	11	3,684	0	0
+Municipio Tábara Arriba	6,710	459	582	55	6	33	0	0	12	16	5,546	1	0
+Municipio Guayabal	1,949	254	160	31	10	127	9	46	0	3	1,308	1	0
+Municipio Estebanía	2,790	191	108	125	5	99	7	78	0	28	2,147	2	0
+Municipio Comendador	8,275	197	400	278	195	882	46	54	15	35	6,166	3	4
+Municipio Bánica	2,316	53	74	46	18	293	4	7	14	13	1,794	0	0
+Municipio El Llano	2,629	32	405	311	199	77	22	14	0	23	1,541	3	2
+Municipio Hondo Valle	2,926	194	350	386	73	212	19	2	2	7	1,679	2	0
+Municipio Pedro Santana	1,960	448	430	286	30	261	1	1	8	2	493	0	0
+Municipio Juan Santiago	1,102	89	377	161	36	76	0	0	1	1	361	0	0
+Municipio San Juan	48,501	4,386	3,982	1,196	372	651	266	180	11	109	37,312	32	4
+Municipio Bohechío	3,476	349	869	93	59	94	0	3	0	2	2,007	0	0
+Municipio El Cercado	5,783	668	1,697	917	247	40	1	4	0	12	2,193	3	1
+Municipio Juan de Herrera	4,381	307	553	83	42	27	4	9	1	12	3,343	0	0
+Municipio Las Matas de Farfán	16,421	1,408	1,149	569	90	289	99	77	28	121	12,558	26	7
+Municipio Vallejuelo	4,254	219	362	237	106	50	8	14	7	16	3,205	30	0
+Municipio El Seibo	25,696	804	747	2,138	145	590	389	261	1,618	552	17,132	1,319	1
+Municipio Miches	9,572	260	42	56	7	99	105	65	69	71	8,684	113	1
+Municipio Higüey	160,056	6,338	390	1,455	224	235	1,817	909	2,382	3,163	130,564	12,567	12
+Municipio San Rafael del Yuma	12,363	431	172	1,055	45	8	289	61	264	453	8,551	1,034	0
+Municipio La Romana	53,573	2,386	337	261	29	4	24	11	26	307	49,952	234	2
+Municipio Guaymate	5,432	129	292	704	31	90	14	8	23	18	4,123	0	0
+Municipio Villa Hermosa	37,378	1,069	178	57	17	2	51	55	87	200	35,578	82	2
+Municipio San Pedro de Macorís	75,448	1,789	298	159	50	3	272	160	53	697	70,859	1,094	14
+Municipio Los Llanos 	9,124	116	226	283	26	8	39	28	139	12	8,213	34	0
+Municipio Ramón Santana	3,997	94	46	68	12	8	36	316	33	16	3,325	43	0
+Municipio Consuelo	13,797	481	207	456	75	3	72	114	29	230	12,113	17	0
+Municipio Quisqueya	7,640	116	41	39	9	0	15	39	37	20	7,318	3	3
+Municipio Guayacanes	6,893	81	25	20	9	0	1	19	13	47	6,625	53	0
+Municipio Monte Plata	19,349	268	171	613	128	89	1,171	915	416	78	15,398	101	1
+Municipio Bayaguana	13,005	158	50	212	31	261	87	130	308	152	10,886	730	0
+Municipio Sabana Grande de Boyá	12,146	238	173	196	67	160	18	70	1,168	64	9,817	175	0
+Municipio Yamasá	21,557	438	199	1,239	132	636	1,013	727	1,222	138	15,765	48	0
+Municipio Peralvillo	6,402	16	18	234	14	164	310	91	507	16	5,030	2	0
+Municipio Hato Mayor 	25,241	270	181	236	12	131	126	53	1,104	312	22,796	19	1
+Municipio Sabana de la mar	7,119	94	24	38	2	12	55	12	144	494	5,012	1,232	0
+Municipio El valle	3,856	50	8	31	3	47	17	9	86	104	3,224	275	2
+
+
+Cuadro 13
+
+"Región, provincia, municipio, distrito 
+municipal y zona "	Total 	Total 	Total 	No tiene 	Sin información						
+Municipio Santo Domingo de Guzmán	365,548	360,360	3,343	1,845	0						
+Municipio Santo Domingo Este	351,360	345,492	3,683	2,185	0						
+Municipio Santo Domingo Oeste	143,144	140,737	1,285	1,122	0						
+Municipio Santo Domingo Norte	224,697	212,377	8,174	4,146	0						
+Municipio Boca Chica	56,593	53,659	1,440	1,494	0						
+Municipio San Antonio de Guerra	20,885	16,394	2,798	1,693	0						
+Municipio Los alcarrizos	111,928	108,969	1,734	1,225	0						
+Municipio Pedro Brand	31,206	28,684	1,516	1,006	0						
+Municipio Moca	54,913	47,595	6,381	937	0						
+Municipio Cayetano Germosén	2,996	2,214	664	118	0						
+Municipio Gaspar Hernández 	15,090	12,458	2,361	271	0						
+Municipio Jamao al Norte	2,883	2,044	770	69	0						
+Municipio San Víctor	6,588	5,249	1,230	109	0						
+Municipio Puerto Plata	59,241	55,983	2,599	657	2						
+Municipio Altamira	7,149	5,029	2,029	91	0						
+Municipio Guananico	2,447	1,850	533	64	0						
+Municipio Imbert	8,905	6,893	1,755	257	0						
+Municipio Los Hidalgos	4,814	3,447	1,293	74	0						
+Municipio Luperón	6,575	4,157	2,261	157	0						
+Municipio Sosúa	21,065	20,104	630	331	0						
+Municipio Villa Isabela 	7,153	4,942	2,028	183	0						
+Municipio Villa Montellano 	7,698	7,079	345	274	0						
+Municipio de Santiago	272,180	263,843	6,267	2,070	0						
+Municipio Bisonó	17,181	15,007	1,876	298	0						
+Municipio Jánico	5,252	3,584	1,578	90	0						
+Municipio Licey al Medio	9,956	9,238	525	193	0						
+Municipio San José de las Matas	13,028	10,722	2,102	204	0						
+Municipio Tamboril	19,888	18,499	1,202	187	0						
+Municipio Villa González	14,456	12,247	1,830	379	0						
+Municipio Puñal	15,621	14,971	539	111	0						
+Municipio Sabana Iglesia	5,222	4,391	665	166	0						
+Municipio Baitoa	3,919	2,803	1,057	59	0						
+Municipio La Vega	96,210	83,342	11,438	1,430	0						
+Municipio Constanza	23,946	20,583	2,750	613	0						
+Municipio Jarabacoa	23,382	20,898	2,065	419	0						
+Municipio Jima Abajo	10,043	8,448	1,210	385	0						
+Municipio Cotuí	29,915	24,426	4,610	879	0						
+Municipio Cevicos	5,837	3,760	1,855	222	0						
+Municipio Fantino	8,349	6,737	1,446	166	0						
+Municipio Villa La Mata	13,398	10,167	2,553	678	0						
+Municipio Bonao	50,536	47,293	2,431	812	0						
+Municipio Maimón	8,274	7,529	659	86	0						
+Municipio Piedra Blanca	9,340	8,347	753	240	0						
+Municipio San Francisco de Macorís	73,225	63,289	9,006	930	0						
+Municipio Arenoso 	5,225	3,604	1,330	291	0						
+Municipio Castillo	5,995	4,505	1,386	104	0						
+Municipio Pimentel 	6,303	4,923	1,191	189	0						
+Municipio Villa Riva	12,685	8,698	3,397	589	1						
+Municipio Las Guáranas	5,101	4,267	590	244	0						
+Municipio Eugenio María de Hostos	2,139	1,360	653	126	0						
+Municipio Nagua 	29,198	23,078	5,069	1,051	0						
+Municipio Cabrera	10,890	9,254	1,296	340	0						
+Municipio El Factor 	10,928	7,639	2,735	554	0						
+Municipio Río San Juan	6,405	5,208	904	293	0						
+Municipio Salcedo	14,698	11,535	2,977	186	0						
+Municipio Tenares	10,449	8,756	1,584	109	0						
+Municipio Villa Tapia	8,983	6,247	2,571	165	0						
+Municipio Samaná	22,840	17,487	3,990	1,363	0						
+Municipio Sánchez	9,374	8,062	900	412	0						
+Municipio Las Terrenas	9,722	9,147	329	246	0						
+Municipio Dajabón	12,092	8,637	3,217	238	0						
+Municipio Loma de Cabrera	5,658	3,576	1,912	170	0						
+Municipio Partido 	2,859	1,628	1,149	82	0						
+Municipio Restauración 	2,646	902	1,539	205	0						
+Municipio El Pino	2,247	1,233	958	56	0						
+Municipio Monte Cristi	10,115	6,492	3,216	407	0						
+Municipio Castañuelas	7,234	3,019	3,784	431	0						
+Municipio Guayubín	14,598	7,041	7,155	402	0						
+Municipio Las Matas de Santa Cruz	4,123	1,907	2,112	104	0						
+Municipio Pepillo Salcedo 	3,944	2,089	1,688	167	0						
+Municipio Villa Vásquez	6,142	3,799	2,164	179	0						
+Municipio San Ignacio de Sabaneta	13,948	10,253	3,484	211	0						
+Municipio Villa Los Almácigos 	4,062	2,359	1,542	161	0						
+Municipio Monción	4,884	3,632	1,193	59	0						
+Municipio Mao	31,178	22,265	7,979	934	0						
+Municipio Esperanza	24,105	16,482	7,105	518	0						
+Municipio Laguna Salada 	10,318	6,341	3,716	261	0						
+Municipio Baní	53,021	46,741	4,989	1,291	0						
+Municipio Nizao	10,335	8,777	1,062	496	0						
+Municipio Matanzas	6,741	5,854	727	160	0						
+Municipio San Cristóbal 	88,583	78,174	8,803	1,606	0						
+Municipio Sabana Grande de Palenque 	5,680	5,069	359	252	0						
+Municipio Bajos de Haina	53,277	50,373	1,964	940	0						
+Municipio Cambita Garavitos	10,423	8,242	1,942	239	0						
+Municipio Villa Altagracia	32,108	26,233	4,340	1,535	0						
+Municipio Yaguate	16,375	11,847	3,679	849	0						
+Municipio San Gregorio de Nigua	12,565	9,287	2,710	568	0						
+Municipio Los Cacaos	3,992	2,721	1,202	69	0						
+Municipio San José de Ocoa	16,200	12,597	2,911	692	0						
+Municipio Sabana Larga	4,379	3,183	976	220	0						
+Municipio Rancho Arriba	5,451	3,729	1,507	215	0						
+Municipio de Neiba	12,152	6,769	2,943	2,440	0						
+Municipio Galván	5,359	2,933	1,338	1,088	0						
+Municipio Tamayo	9,962	5,592	2,046	2,324	0						
+Municipio Villa Jaragua	3,693	2,011	1,245	437	0						
+Municipio Los Ríos	2,709	1,525	785	399	0						
+Municipio Barahona	27,560	22,529	4,115	916	0						
+Municipio Cabral	4,871	3,433	1,078	360	0						
+Municipio Enriquillo	4,468	2,640	1,444	384	0						
+Municipio Paraíso 	5,114	3,273	1,256	585	0						
+Municipio Vicente Noble 	8,230	6,009	1,366	855	0						
+Municipio El Peñón	1,370	969	239	162	0						
+Municipio La Ciénaga	2,741	1,970	520	251	0						
+Municipio Fundación	2,924	1,714	644	566	0						
+Municipio Las Salinas	1,552	1,081	384	87	0						
+Municipio Polo	2,468	1,314	940	214	0						
+Municipio Jaquimeyes	1,313	1,020	230	63	0						
+Municipio Jimaní	5,852	3,501	1,675	676	0						
+Municipio Duvergé	4,445	3,377	853	215	0						
+Municipio La Descubierta 	2,376	1,452	785	139	0						
+Municipio Postrer Río	2,173	1,055	785	333	0						
+Municipio Cristóbal	2,412	792	312	1,308	0						
+Municipio Mella	1,485	1,010	311	164	0						
+Municipio Pedernales	7,342	5,082	1,462	798	0						
+Municipio Oviedo	3,148	1,820	903	425	0						
+Municipio Azua	32,360	23,420	7,006	1,934	0						
+Municipio Las Charcas	4,913	3,436	1,067	410	0						
+Municipio Las Yayas de Viajama	6,705	3,299	2,628	778	0						
+Municipio Padre Las Casas	7,022	4,274	2,155	593	0						
+Municipio Peralta	4,386	2,371	1,484	531	0						
+Municipio Sabana Yegua	6,616	4,102	2,108	405	1						
+Municipio Pueblo Viejo 	3,844	2,214	1,046	584	0						
+Municipio Tábara Arriba	6,710	3,679	2,431	600	0						
+Municipio Guayabal	1,949	1,133	612	204	0						
+Municipio Estebanía	2,790	1,439	1,181	170	0						
+Municipio Comendador	8,275	4,279	3,126	870	0						
+Municipio Bánica	2,316	788	1,273	255	0						
+Municipio El Llano	2,629	723	1,469	437	0						
+Municipio Hondo Valle	2,926	1,320	1,097	509	0						
+Municipio Pedro Santana	1,960	527	1,100	333	0						
+Municipio Juan Santiago	1,102	454	441	207	0						
+Municipio San Juan	48,501	33,186	12,703	2,612	0						
+Municipio Bohechío	3,476	1,910	1,191	375	0						
+Municipio El Cercado	5,783	2,766	2,302	715	0						
+Municipio Juan de Herrera	4,381	2,262	1,754	365	0						
+Municipio Las Matas de Farfán	16,421	10,055	5,544	822	0						
+Municipio Vallejuelo	4,254	2,054	1,559	641	0						
+Municipio El Seibo	25,696	14,047	7,813	3,834	2						
+Municipio Miches	9,572	7,231	1,643	698	0						
+Municipio Higüey	160,056	148,052	9,859	2,145	0						
+Municipio San Rafael del Yuma	12,363	8,446	3,340	577	0						
+Municipio La Romana	53,573	50,829	2,199	545	0						
+Municipio Guaymate	5,432	2,573	2,543	316	0						
+Municipio Villa Hermosa	37,378	32,723	3,628	1,027	0						
+Municipio San Pedro de Macorís	75,448	69,708	3,790	1,950	0						
+Municipio Los Llanos 	9,124	4,750	2,677	1,697	0						
+Municipio Ramón Santana	3,997	2,229	1,159	609	0						
+Municipio Consuelo	13,797	10,649	1,677	1,471	0						
+Municipio Quisqueya	7,640	5,741	1,398	501	0						
+Municipio Guayacanes	6,893	5,845	343	705	0						
+Municipio Monte Plata	19,349	12,959	4,972	1,418	0						
+Municipio Bayaguana	13,005	8,909	3,344	752	0						
+Municipio Sabana Grande de Boyá	12,146	7,233	3,726	1,187	0						
+Municipio Yamasá	21,557	14,095	5,390	2,072	0						
+Municipio Peralvillo	6,402	4,034	1,939	429	0						
+Municipio Hato Mayor 	25,241	18,919	4,482	1,840	0						
+Municipio Sabana de la mar	7,119	5,510	1,230	379	0						
+Municipio El valle	3,856	2,596	896	364	0						
+
+
+
+Cuadro 14
+
+"Región, provincia, municipio, distrito 
+municipal y zona "	Total 	Del acueducto dentro de la vivienda 	Del acueducto en el patio de la vivienda	De una llave pública 	De una llave de otra vivienda	De un tubo de la calle 	Manantial, río, arroyo 	Pozo tubular	Pozo cavado	Lluvia 	Camión tanque 	Otro
+Municipio Santo Domingo de Guzmán	365,548	294,146	27,632	10,891	5,848	20,940	75	1,722	1,740	184	1,748	622
+Municipio Santo Domingo Este	351,360	250,752	23,143	13,745	4,405	18,897	21	10,667	13,890	322	14,543	975
+Municipio Santo Domingo Oeste	143,144	112,503	6,239	3,980	1,513	9,094	33	1,797	2,096	224	5,444	221
+Municipio Santo Domingo Norte	224,697	133,926	14,076	10,450	4,268	17,875	157	14,711	15,427	779	12,201	827
+Municipio Boca Chica	56,593	29,103	10,514	2,436	1,386	3,895	6	1,602	5,945	186	1,292	228
+Municipio San Antonio de Guerra	20,885	10,111	4,460	1,887	356	1,001	1	958	1,058	63	926	64
+Municipio Los alcarrizos	111,928	80,312	6,882	3,020	1,259	6,837	25	2,698	1,886	485	8,281	243
+Municipio Pedro Brand	31,206	20,087	3,281	1,208	573	1,881	376	1,155	988	295	1,291	71
+Municipio Moca	54,913	40,206	1,946	2,582	399	2,396	509	2,205	2,388	512	1,673	97
+Municipio Cayetano Germosén	2,996	1,444	94	173	175	148	8	552	196	52	140	14
+Municipio Gaspar Hernández 	15,090	6,760	412	835	203	1,169	642	2,084	2,496	164	297	28
+Municipio Jamao al Norte	2,883	1,949	269	262	24	63	165	95	21	16	11	8
+Municipio San Víctor	6,588	3,802	515	656	22	82	175	658	141	95	396	46
+Municipio Puerto Plata	59,241	43,691	3,197	2,546	302	1,268	1,076	1,172	1,072	144	4,666	107
+Municipio Altamira	7,149	2,805	889	523	27	140	738	737	678	233	362	17
+Municipio Guananico	2,447	1,778	63	224	65	134	72	21	28	4	24	34
+Municipio Imbert	8,905	4,761	877	983	90	859	225	494	193	12	392	19
+Municipio Los Hidalgos	4,814	1,791	472	439	46	255	478	355	580	29	361	8
+Municipio Luperón	6,575	3,401	992	683	44	326	26	366	419	27	276	15
+Municipio Sosúa	21,065	13,753	905	885	326	2,493	200	414	927	60	1,032	70
+Municipio Villa Isabela 	7,153	2,960	601	838	52	88	52	713	570	43	1,206	30
+Municipio Villa Montellano 	7,698	5,124	619	180	243	538	57	30	36	27	835	9
+Municipio de Santiago	272,180	233,238	9,196	5,479	1,425	10,010	1,163	1,871	353	175	8,950	320
+Municipio Bisonó	17,181	11,083	2,010	514	103	1,293	82	23	31	17	1,982	43
+Municipio Jánico	5,252	3,111	223	633	33	133	722	37	70	110	173	7
+Municipio Licey al Medio	9,956	8,704	333	278	24	564	0	13	7	3	21	9
+Municipio San José de las Matas	13,028	10,376	587	450	90	264	908	72	29	70	161	21
+Municipio Tamboril	19,888	14,910	461	812	84	689	441	1,089	728	73	557	44
+Municipio Villa González	14,456	8,969	2,014	526	111	563	372	191	66	76	1,516	52
+Municipio Puñal	15,621	13,402	549	402	45	891	0	30	10	21	266	5
+Municipio Sabana Iglesia	5,222	4,064	318	348	54	280	7	5	1	58	75	12
+Municipio Baitoa	3,919	2,317	532	450	7	100	59	2	39	137	263	13
+Municipio La Vega	96,210	47,883	3,304	4,434	2,146	4,537	1,403	20,921	6,438	2,662	2,157	325
+Municipio Constanza	23,946	15,223	1,945	1,080	570	832	1,314	2,348	27	15	521	71
+Municipio Jarabacoa	23,382	13,617	551	1,835	335	1,210	1,501	3,597	180	185	219	152
+Municipio Jima Abajo	10,043	5,781	499	1,051	98	1,233	209	1,007	47	32	67	19
+Municipio Cotuí	29,915	15,224	2,156	2,124	440	1,642	759	5,953	758	146	675	38
+Municipio Cevicos	5,837	2,325	261	647	99	89	384	1,151	523	280	59	19
+Municipio Fantino	8,349	3,082	305	676	129	745	196	2,720	188	60	234	14
+Municipio Villa La Mata	13,398	5,873	1,108	1,135	591	883	67	2,953	449	25	282	32
+Municipio Bonao	50,536	39,960	1,877	1,441	303	3,566	1,052	1,104	1,101	14	31	87
+Municipio Maimón	8,274	2,176	526	704	743	380	203	3,293	165	20	46	18
+Municipio Piedra Blanca	9,340	6,258	308	499	39	628	840	484	223	49	3	9
+Municipio San Francisco de Macorís	73,225	51,173	4,581	3,706	1,032	4,499	665	3,757	1,272	903	1,458	179
+Municipio Arenoso 	5,225	1,053	249	90	46	34	561	1,969	815	296	84	28
+Municipio Castillo	5,995	2,962	360	379	146	461	227	969	99	313	66	13
+Municipio Pimentel 	6,303	2,818	517	239	140	279	76	1,745	282	180	6	21
+Municipio Villa riva	12,685	2,218	579	1,255	1,020	190	491	5,879	632	324	12	85
+Municipio Las Guáranas	5,101	722	56	37	192	308	22	3,530	24	60	132	18
+Municipio Eugenio María de Hostos	2,139	910	362	165	53	15	14	549	35	19	15	2
+Municipio Nagua 	29,198	20,565	2,252	1,708	215	723	129	575	2,300	240	464	27
+Municipio Cabrera	10,890	6,667	466	876	89	1,175	463	756	63	202	109	24
+Municipio El Factor 	10,928	4,109	1,456	802	303	442	250	1,949	888	314	347	68
+Municipio Río San Juan	6,405	3,686	1,066	566	147	187	231	377	12	54	65	14
+Municipio Salcedo	14,698	9,662	951	659	53	633	401	510	308	931	558	32
+Municipio Tenares	10,449	5,985	287	1,150	54	692	298	1,338	283	236	103	23
+Municipio Villa Tapia	8,983	5,428	324	1,149	61	1,064	11	508	352	60	12	14
+Municipio Samaná	22,840	14,545	3,049	1,795	283	1,194	552	323	229	691	157	22
+Municipio Sánchez	9,374	5,680	759	346	173	577	370	664	107	145	514	39
+Municipio Las Terrenas	9,722	6,493	548	413	79	632	147	286	128	94	891	11
+Municipio Dajabón	12,092	8,520	2,087	617	46	48	15	479	99	4	159	18
+Municipio Loma de Cabrera	5,658	4,169	847	328	94	80	101	17	2	1	14	5
+Municipio Partido 	2,859	1,768	182	507	31	8	109	203	7	1	28	15
+Municipio Restauración 	2,646	1,163	526	287	59	53	503	8	21	12	5	9
+Municipio El Pino	2,247	1,347	620	80	20	5	147	24	0	2	1	1
+Municipio Monte Cristi	10,115	6,606	2,007	627	54	416	148	1	4	2	244	6
+Municipio Castañuelas	7,234	3,784	3,169	139	57	76	1	3	1	0	2	2
+Municipio Guayubín	14,598	10,100	3,642	529	127	77	35	47	4	8	15	14
+Municipio Las Matas de Santa Cruz	4,123	2,049	1,349	494	24	13	10	11	19	3	149	2
+Municipio Pepillo Salcedo 	3,944	2,068	1,137	467	39	81	0	54	72	0	14	12
+Municipio Villa Vásquez	6,142	4,186	1,393	112	26	5	8	4	0	22	381	5
+Municipio San Ignacio de Sabaneta	13,948	9,397	509	1,072	103	446	603	1,397	109	7	284	21
+Municipio Villa Los Almácigos 	4,062	2,791	607	438	40	87	54	0	0	0	43	2
+Municipio Monción	4,884	2,800	455	618	49	403	42	28	4	11	458	16
+Municipio Mao	31,178	23,134	5,448	1,258	261	428	203	4	12	54	316	60
+Municipio Esperanza	24,105	16,958	4,452	1,476	80	290	462	196	89	5	65	32
+Municipio Laguna Salada 	10,318	6,077	3,517	307	33	96	83	136	27	5	33	4
+Municipio Baní	53,021	31,840	7,399	3,993	526	3,165	625	928	737	84	3,616	108
+Municipio Nizao	10,335	6,119	2,647	845	141	372	13	149	12	1	30	6
+Municipio Matanzas	6,741	2,999	2,327	557	77	49	4	74	154	0	489	11
+Municipio San Cristóbal 	88,583	56,448	12,201	5,256	1,167	6,508	615	444	594	608	4,656	86
+Municipio Sabana Grande de Palenque 	5,680	3,232	1,559	193	104	80	20	212	190	1	85	4
+Municipio Bajos de Haina	53,277	26,378	5,889	1,984	761	5,522	1	2,185	2,607	55	7,805	90
+Municipio Cambita Garavitos	10,423	5,231	956	373	223	765	1,198	773	468	295	134	7
+Municipio Villa Altagracia	32,108	14,980	5,237	1,482	694	1,216	600	1,549	1,059	307	4,874	110
+Municipio Yaguate	16,375	7,180	3,002	1,521	300	1,714	295	381	225	83	1,591	83
+Municipio San Gregorio de Nigua	12,565	5,116	3,223	952	275	979	8	294	203	44	1,453	18
+Municipio Los Cacaos	3,992	1,822	422	146	20	15	1,315	215	30	7	0	0
+Municipio San José de Ocoa	16,200	9,154	3,667	1,865	248	270	658	70	38	5	203	22
+Municipio Sabana Larga	4,379	2,446	712	378	130	156	414	65	29	5	30	14
+Municipio Rancho Arriba	5,451	2,620	1,203	1,176	52	27	271	17	40	15	22	8
+Municipio de Neiba	12,152	4,392	3,656	1,422	641	732	565	88	28	65	542	21
+Municipio Galván	5,359	1,964	1,785	369	311	84	411	100	216	1	103	15
+Municipio Tamayo	9,962	3,649	4,014	825	606	532	209	81	21	0	5	20
+Municipio Villa Jaragua	3,693	1,013	1,596	137	109	12	286	150	33	50	295	12
+Municipio Los ríos	2,709	856	1,320	35	61	11	370	1	16	32	3	4
+Municipio Barahona	27,560	12,667	7,257	799	321	500	151	341	269	84	5,058	113
+Municipio Cabral	4,871	2,388	2,223	65	59	8	55	2	25	4	14	28
+Municipio Enriquillo	4,468	1,749	1,060	495	103	129	273	13	55	298	177	116
+Municipio Paraíso 	5,114	2,734	754	561	64	4	351	4	4	632	0	6
+Municipio Vicente Noble 	8,230	4,192	3,066	381	165	371	7	3	8	1	6	30
+Municipio El Peñón	1,370	800	39	398	5	127	0	0	0	0	1	0
+Municipio La Ciénaga	2,741	1,232	1,115	173	18	1	77	4	10	98	4	9
+Municipio Fundación	2,924	698	2,035	7	123	0	0	2	0	0	57	2
+Municipio Las Salinas	1,552	742	472	69	105	159	1	0	0	0	1	3
+Municipio Polo	2,468	1,336	389	239	137	53	21	12	7	257	4	13
+Municipio Jaquimeyes	1,313	784	513	13	1	0	1	0	0	0	0	1
+Municipio Jimaní	5,852	2,346	1,735	829	305	221	52	100	75	6	128	55
+Municipio Duvergé	4,445	2,656	582	868	90	132	93	4	4	2	0	14
+Municipio La Descubierta 	2,376	1,034	662	227	67	4	156	0	5	3	207	11
+Municipio Postrer Río	2,173	1,093	480	67	25	15	454	30	2	1	0	6
+Municipio Cristóbal	2,412	829	1,180	114	276	9	0	0	1	0	0	3
+Municipio Mella	1,485	254	1,069	33	59	60	7	0	0	0	1	2
+Municipio Pedernales	7,342	3,163	2,042	741	117	408	254	68	89	415	32	13
+Municipio Oviedo	3,148	745	402	109	17	22	7	58	565	67	1,142	14
+Municipio Azua	32,360	12,171	10,196	2,022	545	1,164	63	510	341	8	5,261	79
+Municipio Las Charcas	4,913	2,417	1,889	302	41	85	37	12	36	0	71	23
+Municipio Las Yayas de Viajama	6,705	2,428	3,086	384	169	272	262	11	11	6	52	24
+Municipio Padre Las Casas	7,022	3,761	1,502	469	186	44	955	37	15	0	50	3
+Municipio Peralta	4,386	2,244	1,409	321	227	31	142	0	2	6	0	4
+Municipio Sabana Yegua	6,616	2,119	3,582	241	134	15	134	5	5	0	351	30
+Municipio Pueblo Viejo 	3,844	1,560	1,188	663	66	156	2	126	75	0	6	2
+Municipio Tábara Arriba	6,710	2,732	3,308	297	95	115	155	0	4	0	2	2
+Municipio Guayabal	1,949	1,092	551	15	22	92	120	11	45	0	0	1
+Municipio Estebanía	2,790	1,303	952	211	21	91	100	10	79	0	16	7
+Municipio Comendador	8,275	2,991	2,076	655	497	403	1,129	43	34	10	419	18
+Municipio Bánica	2,316	563	743	231	58	2	607	3	14	10	63	22
+Municipio El Llano	2,629	446	1,133	464	285	190	42	3	8	0	54	4
+Municipio Hondo Valle	2,926	1,300	727	564	85	5	227	2	1	0	0	15
+Municipio Pedro Santana	1,960	797	519	310	29	1	262	2	5	3	0	32
+Municipio Juan Santiago	1,102	313	494	151	35	3	105	0	0	1	0	0
+Municipio San Juan	48,501	27,553	15,064	1,940	705	664	999	568	685	21	119	183
+Municipio Bohechío	3,476	1,257	1,897	133	83	3	95	0	4	0	0	4
+Municipio El Cercado	5,783	1,804	2,811	826	255	14	65	2	3	0	0	3
+Municipio Juan de Herrera	4,381	1,230	2,655	121	96	19	161	46	22	1	16	14
+Municipio Las Matas de Farfán	16,421	7,171	4,866	933	261	106	594	357	143	18	1,943	29
+Municipio Vallejuelo	4,254	1,099	1,521	676	311	266	150	96	25	4	93	13
+Municipio El Seibo	25,696	10,214	3,214	3,993	582	985	2,627	1,698	919	638	750	76
+Municipio Miches	9,572	4,558	1,843	445	160	657	557	654	127	125	220	226
+Municipio Higüey	160,056	83,378	7,248	6,556	2,743	6,582	1,150	20,157	6,414	1,384	23,305	1,139
+Municipio San Rafael del Yuma	12,363	5,518	1,684	2,215	115	602	95	1,189	679	94	159	13
+Municipio La Romana	53,573	40,544	7,332	1,444	282	1,778	80	110	140	183	1,632	48
+Municipio Guaymate	5,432	1,667	1,543	1,153	296	441	163	53	63	3	41	9
+Municipio Villa Hermosa	37,378	14,358	5,551	1,005	343	1,334	0	1,641	1,523	59	11,473	91
+Municipio San Pedro de Macorís	75,448	33,554	12,231	3,516	2,175	1,707	5	8,124	7,142	64	6,516	414
+Municipio Los Llanos 	9,124	3,191	2,381	1,691	207	982	63	343	131	80	38	17
+Municipio Ramón Santana	3,997	959	1,032	535	222	159	6	238	661	19	154	12
+Municipio Consuelo	13,797	7,167	3,777	1,055	385	357	5	248	340	8	425	30
+Municipio Quisqueya	7,640	2,201	1,386	547	466	308	2	814	1,836	4	40	36
+Municipio Guayacanes	6,893	2,364	1,376	181	195	514	0	87	2,125	2	22	27
+Municipio Monte Plata	19,349	6,030	2,274	2,526	483	1,501	435	2,895	1,697	549	836	123
+Municipio Bayaguana	13,005	5,701	1,514	1,763	337	1,549	703	616	478	191	69	84
+Municipio Sabana Grande de Boyá	12,146	3,546	2,211	1,198	263	493	477	202	329	1,093	2,291	43
+Municipio Yamasá	21,557	4,446	1,287	1,712	570	584	1,159	6,322	2,334	771	2,298	74
+Municipio Peralvillo	6,402	1,401	174	700	124	195	825	1,689	351	454	473	16
+Municipio Hato Mayor 	25,241	9,758	2,053	2,706	368	1,196	1,025	2,546	2,154	460	2,907	68
+Municipio Sabana de la mar	7,119	1,679	406	950	230	158	167	3,079	209	203	21	17
+Municipio El valle	3,856	1,746	513	503	124	105	108	460	60	117	8	112
+
+
+Cuadro 6
+
+Región, provincia, municipio y distrito municipal 	Total 	Total 	Urbana 	Rural 
+Región, provincia, municipio y distrito municipal 	Total 	"Sí dentro de
+ la vivienda"	Total 	Total 
+Municipio Santo Domingo de Guzmán	363,153	345,834	363,153	0
+Municipio Santo Domingo Este	349,199	336,115	297,400	51,799
+Municipio Santo Domingo Oeste	142,564	135,997	114,324	28,240
+Municipio Santo Domingo Norte	223,492	211,443	192,964	30,528
+Municipio Boca Chica	56,168	52,722	35,211	20,957
+Municipio San Antonio de Guerra	20,659	17,845	6,206	14,453
+Municipio Los Alcarrizos	111,414	105,314	94,313	17,101
+Municipio Pedro Brand	30,982	28,588	25,626	5,356
+Municipio Moca	54,364	49,546	25,748	28,616
+Municipio Cayetano Germosén	2,840	2,300	1,039	1,801
+Municipio Gaspar Hernández 	14,973	12,866	7,382	7,591
+Municipio Jamao al Norte	2,877	2,331	1,112	1,765
+Municipio San Víctor	6,548	5,805	2,109	4,439
+Municipio Puerto Plata	58,937	55,087	49,263	9,674
+Municipio Altamira	7,127	4,888	1,785	5,342
+Municipio Guananico	2,434	1,852	969	1,465
+Municipio Imbert	8,773	7,026	2,746	6,027
+Municipio Los Hidalgos	4,796	3,775	1,135	3,661
+Municipio Luperón	6,467	4,478	2,228	4,239
+Municipio Sosúa	20,874	19,435	6,553	14,321
+Municipio Villa Isabela 	6,970	5,630	2,927	4,043
+Municipio Villa Montellano 	7,675	6,908	4,360	3,315
+Municipio de Santiago	270,496	258,101	227,864	42,632
+Municipio Bisonó	17,111	15,498	13,110	4,001
+Municipio Jánico	5,172	3,828	1,285	3,887
+Municipio Licey al Medio	9,724	8,822	6,609	3,115
+Municipio San José de las Matas	12,893	10,425	3,656	9,237
+Municipio Tamboril	19,754	18,401	10,977	8,777
+Municipio Villa González	14,354	12,397	6,061	8,293
+Municipio Puñal	15,524	14,812	3,631	11,893
+Municipio Sabana Iglesia	5,165	4,507	1,931	3,234
+Municipio Baitoa	3,905	3,253	680	3,225
+Municipio La Vega	95,448	86,173	44,970	50,478
+Municipio Constanza	23,773	21,084	12,617	11,156
+Municipio Jarabacoa	23,262	21,007	11,774	11,488
+Municipio Jima Abajo	9,953	8,958	4,547	5,406
+Municipio Cotuí	29,652	25,928	18,680	10,972
+Municipio Cevicos	5,817	4,587	3,061	2,756
+Municipio Fantino	8,297	7,558	3,555	4,742
+Municipio Villa La Mata	13,301	11,576	6,017	7,284
+Municipio Bonao	50,233	46,789	28,933	21,300
+Municipio Maimón	8,090	7,438	6,340	1,750
+Municipio Piedra Blanca	9,274	8,373	5,734	3,540
+Municipio San Francisco de Macorís	72,800	63,942	54,421	18,379
+Municipio Arenoso 	5,110	4,213	1,875	3,235
+Municipio Castillo	5,921	4,547	2,351	3,570
+Municipio Pimentel 	6,265	5,364	3,427	2,838
+Municipio Villa Riva	12,538	10,351	5,977	6,561
+Municipio Las Guáranas	5,040	4,236	3,764	1,276
+Municipio Eugenio María de Hostos	2,100	1,492	1,015	1,085
+Municipio Nagua 	28,958	25,109	17,762	11,196
+Municipio Cabrera	10,755	9,098	3,443	7,312
+Municipio El Factor 	10,873	9,127	5,437	5,436
+Municipio Río San Juan	6,334	5,216	4,229	2,105
+Municipio Salcedo	14,630	11,891	5,119	9,511
+Municipio Tenares	10,353	8,074	3,278	7,075
+Municipio Villa Tapia	8,904	6,746	2,130	6,774
+Municipio Samaná	22,566	18,780	9,235	13,331
+Municipio Sánchez	9,309	8,162	4,120	5,189
+Municipio Las Terrenas	9,675	8,750	5,113	4,562
+Municipio Dajabón	11,947	10,265	8,505	3,442
+Municipio Loma de Cabrera	5,603	4,327	2,968	2,635
+Municipio Partido 	2,793	1,876	939	1,854
+Municipio Restauración 	2,609	1,491	870	1,739
+Municipio El Pino	2,213	1,757	768	1,445
+Municipio Monte Cristi	10,024	8,171	6,641	3,383
+Municipio Castañuelas	6,804	4,715	2,736	4,068
+Municipio Guayubín	14,272	10,928	4,165	10,107
+Municipio Las Matas de Santa Cruz	4,012	3,115	3,571	441
+Municipio Pepillo Salcedo 	3,868	2,786	2,043	1,825
+Municipio Villa Vásquez	5,999	4,721	4,562	1,437
+Municipio San Ignacio de Sabaneta	13,903	10,895	6,724	7,179
+Municipio Villa Los Almácigos 	4,032	2,889	1,553	2,479
+Municipio Monción	4,819	4,169	3,164	1,655
+Municipio Mao	30,778	26,100	24,108	6,670
+Municipio Esperanza	23,842	20,312	17,622	6,220
+Municipio Laguna Salada 	10,276	8,097	7,789	2,487
+Municipio Baní	52,453	45,232	37,024	15,429
+Municipio Nizao	10,213	8,925	5,936	4,277
+Municipio Matanzas	6,567	5,806	2,446	4,121
+Municipio San Cristóbal 	88,000	80,647	56,921	31,079
+Municipio Sabana Grande de Palenque 	5,646	5,282	1,912	3,734
+Municipio Bajos de Haina	52,938	49,768	27,859	25,079
+Municipio Cambita Garavitos	10,361	8,110	5,440	4,921
+Municipio Villa Altagracia	31,900	28,213	17,044	14,856
+Municipio Yaguate	16,179	13,398	3,354	12,825
+Municipio San Gregorio de Nigua	12,410	10,832	5,786	6,624
+Municipio Los Cacaos	3,963	1,985	781	3,182
+Municipio San José de Ocoa	16,002	12,102	11,392	4,610
+Municipio Sabana Larga	4,359	3,335	2,768	1,591
+Municipio Rancho Arriba	5,416	3,455	1,422	3,994
+Municipio de Neiba	11,933	8,438	7,703	4,230
+Municipio Galván	5,080	3,363	2,337	2,743
+Municipio Tamayo	9,689	6,977	6,874	2,815
+Municipio Villa Jaragua	3,640	2,556	3,219	421
+Municipio Los Ríos	2,645	1,786	2,156	489
+Municipio Barahona	27,223	24,329	26,978	245
+Municipio Cabral	4,666	3,883	3,908	758
+Municipio Enriquillo	4,433	3,207	2,546	1,887
+Municipio Paraíso 	5,010	3,367	3,089	1,921
+Municipio Vicente Noble 	8,108	6,290	6,897	1,211
+Municipio El Peñón	1,340	946	1,262	78
+Municipio La Ciénaga	2,694	1,998	1,858	836
+Municipio Fundación	2,826	2,129	1,554	1,272
+Municipio Las Salinas	1,503	1,064	1,192	311
+Municipio Polo	2,369	1,402	847	1,522
+Municipio Jaquimeyes	1,309	1,176	1,183	126
+Municipio Jimaní	5,733	4,010	4,971	762
+Municipio Duvergé	4,367	3,038	3,488	879
+Municipio La Descubierta 	2,345	1,735	1,794	551
+Municipio Postrer Río	2,122	1,308	1,512	610
+Municipio Cristóbal	2,327	1,492	1,378	949
+Municipio Mella	1,466	1,045	1,125	341
+Municipio Pedernales	7,175	5,093	6,113	1,062
+Municipio Oviedo	3,123	2,335	1,734	1,389
+Municipio Azua	31,918	25,675	27,180	4,738
+Municipio Las Charcas	4,757	3,310	3,039	1,718
+Municipio Las Yayas de Viajama	6,472	4,472	3,580	2,892
+Municipio Padre Las Casas	6,958	4,584	4,099	2,859
+Municipio Peralta	4,026	2,431	2,453	1,573
+Municipio Sabana Yegua	6,435	4,764	6,104	331
+Municipio Pueblo Viejo 	3,681	2,749	2,052	1,629
+Municipio Tábara Arriba	6,336	4,489	4,448	1,888
+Municipio Guayabal	1,879	1,307	1,265	614
+Municipio Estebanía	2,647	1,597	2,110	537
+Municipio Comendador	8,108	4,631	4,889	3,219
+Municipio Bánica	2,301	974	903	1,398
+Municipio El Llano	2,553	1,029	1,192	1,361
+Municipio Hondo Valle	2,881	1,584	1,553	1,328
+Municipio Pedro Santana	1,952	611	842	1,110
+Municipio Juan Santiago	1,097	530	478	619
+Municipio San Juan	47,821	35,430	31,054	16,767
+Municipio Bohechío	3,388	2,007	2,007	1,381
+Municipio El Cercado	5,719	3,134	1,665	4,054
+Municipio Juan de Herrera	4,274	3,140	1,843	2,431
+Municipio Las Matas de Farfán	16,187	10,691	9,536	6,651
+Municipio Vallejuelo	4,185	2,511	2,506	1,679
+Municipio El Seibo	25,387	17,076	11,257	14,130
+Municipio Miches	9,397	7,624	5,815	3,582
+Municipio Higüey	158,512	134,660	122,432	36,080
+Municipio San Rafael del Yuma	12,220	9,525	5,729	6,491
+Municipio La Romana	53,263	48,933	52,021	1,242
+Municipio Guaymate	5,215	4,238	2,369	2,846
+Municipio Villa Hermosa	37,018	32,297	36,592	426
+Municipio San Pedro de Macorís	74,854	68,946	71,653	3,201
+Municipio Los Llanos 	9,023	7,420	4,039	4,984
+Municipio Ramón Santana	3,900	2,891	830	3,070
+Municipio Consuelo	13,731	11,973	10,403	3,328
+Municipio Quisqueya	7,563	6,895	6,669	894
+Municipio Guayacanes	6,836	6,062	2,369	4,467
+Municipio Monte Plata	19,174	15,555	7,510	11,664
+Municipio Bayaguana	12,864	10,344	8,701	4,163
+Municipio Sabana Grande de Boyá	12,041	9,594	8,485	3,556
+Municipio Yamasá	21,483	17,484	8,696	12,787
+Municipio Peralvillo	6,367	4,919	2,485	3,882
+Municipio Hato Mayor 	24,907	20,619	17,650	7,257
+Municipio Sabana de la mar	6,997	6,130	5,969	1,028
+Municipio El valle	3,791	2,959	3,034	757
+
+
+Cuadro 16
+
+Región, provincia, municipio, distrito municipal y zona 	Total 	Gas propano	Carbón	Leña	Electricidad	Otro 	No cocina 	Sin información 
+Municipio Santo Domingo de Guzmán	365,548	347,293	4,641	29	1,003	313	12,269	0
+Municipio Santo Domingo Este	351,360	337,501	3,642	1,130	661	301	8,116	9
+Municipio Santo Domingo Oeste	143,144	137,277	1,099	788	171	120	3,689	0
+Municipio Santo Domingo Norte	224,697	211,949	2,877	1,991	375	186	7,319	0
+Municipio Boca Chica	56,593	52,160	1,079	731	82	107	2,434	0
+Municipio San Antonio de Guerra	20,885	18,171	149	1,304	38	71	1,152	0
+Municipio Los alcarrizos	111,928	105,133	1,483	551	135	148	4,478	0
+Municipio Pedro Brand	31,206	28,427	608	469	15	32	1,655	0
+Municipio Moca	54,913	51,405	358	1,010	32	24	2,083	1
+Municipio Cayetano Germosén	2,996	2,644	18	86	7	1	240	0
+Municipio Gaspar Hernández 	15,090	13,660	169	631	24	22	584	0
+Municipio Jamao al Norte	2,883	2,561	26	122	0	3	171	0
+Municipio San Víctor	6,588	6,172	41	175	0	15	185	0
+Municipio Puerto Plata	59,241	55,370	810	1,005	44	51	1,961	0
+Municipio Altamira	7,149	5,910	54	650	2	13	520	0
+Municipio Guananico	2,447	2,147	22	133	0	1	144	0
+Municipio Imbert	8,905	7,552	64	500	13	28	747	1
+Municipio Los Hidalgos	4,814	4,180	22	269	0	5	338	0
+Municipio Luperón	6,575	5,508	115	486	6	3	457	0
+Municipio Sosúa	21,065	19,728	135	449	34	26	693	0
+Municipio Villa Isabela 	7,153	6,037	133	408	12	12	551	0
+Municipio Villa Montellano 	7,698	6,775	147	261	7	6	502	0
+Municipio de Santiago	272,180	258,995	2,664	1,596	318	170	8,435	2
+Municipio Bisonó	17,181	15,664	440	258	24	25	770	0
+Municipio Jánico	5,252	4,455	42	391	74	9	281	0
+Municipio Licey al Medio	9,956	9,366	132	95	6	34	323	0
+Municipio San José de las Matas	13,028	11,636	47	743	40	22	540	0
+Municipio Tamboril	19,888	18,690	162	279	18	18	721	0
+Municipio Villa González	14,456	12,963	152	453	9	37	842	0
+Municipio Puñal	15,621	15,083	35	172	17	10	304	0
+Municipio Sabana Iglesia	5,222	4,779	49	127	5	3	259	0
+Municipio Baitoa	3,919	3,504	5	127	8	1	274	0
+Municipio La Vega	96,210	90,039	601	1,768	97	108	3,597	0
+Municipio Constanza	23,946	21,414	235	672	37	23	1,565	0
+Municipio Jarabacoa	23,382	21,760	128	626	42	21	805	0
+Municipio Jima Abajo	10,043	9,174	84	182	2	8	593	0
+Municipio Cotuí	29,915	27,104	283	1,119	46	29	1,334	0
+Municipio Cevicos	5,837	4,950	138	306	5	9	429	0
+Municipio Fantino	8,349	7,757	24	228	4	18	318	0
+Municipio Villa La Mata	13,398	12,032	149	445	8	19	745	0
+Municipio Bonao	50,536	47,063	353	902	55	51	2,111	1
+Municipio Maimón	8,274	7,623	128	84	82	7	350	0
+Municipio Piedra Blanca	9,340	8,465	96	294	9	13	463	0
+Municipio San Francisco de Macorís	73,225	68,147	688	1,281	54	86	2,969	0
+Municipio Arenoso 	5,225	4,477	80	121	0	3	544	0
+Municipio Castillo	5,995	5,391	56	289	7	8	244	0
+Municipio Pimentel 	6,303	5,760	52	183	0	2	306	0
+Municipio Villa riva	12,685	11,312	161	433	16	30	733	0
+Municipio Las Guáranas	5,101	4,609	68	72	4	7	341	0
+Municipio Eugenio María de Hostos	2,139	1,808	47	128	0	0	156	0
+Municipio Nagua 	29,198	26,119	265	890	18	60	1,846	0
+Municipio Cabrera	10,890	9,886	55	412	9	11	517	0
+Municipio El Factor 	10,928	9,712	167	228	4	13	804	0
+Municipio Río San Juan	6,405	5,625	62	214	3	6	495	0
+Municipio Salcedo	14,698	13,468	70	467	19	11	663	0
+Municipio Tenares	10,449	9,655	34	369	13	12	366	0
+Municipio Villa Tapia	8,983	8,263	47	303	9	13	348	0
+Municipio Samaná	22,840	19,906	217	929	27	29	1,732	0
+Municipio Sánchez	9,374	8,428	78	159	10	16	683	0
+Municipio Las Terrenas	9,722	8,876	106	138	14	4	584	0
+Municipio Dajabón	12,092	10,799	273	384	11	18	607	0
+Municipio Loma de Cabrera	5,658	4,837	124	429	3	1	264	0
+Municipio Partido 	2,859	2,386	32	302	3	1	135	0
+Municipio Restauración 	2,646	1,788	57	609	0	46	146	0
+Municipio El Pino	2,247	1,961	23	157	0	3	103	0
+Municipio Monte Cristi	10,115	8,243	470	505	9	16	872	0
+Municipio Castañuelas	7,234	5,034	836	535	4	16	809	0
+Municipio Guayubín	14,598	11,577	631	1,178	11	18	1,183	0
+Municipio Las Matas de Santa Cruz	4,123	3,359	409	122	1	12	220	0
+Municipio Pepillo Salcedo 	3,944	3,032	265	284	2	5	356	0
+Municipio Villa Vásquez	6,142	5,012	447	212	7	11	453	0
+Municipio San Ignacio de Sabaneta	13,948	12,598	99	720	5	11	515	0
+Municipio Villa Los Almácigos 	4,062	3,314	63	367	1	10	307	0
+Municipio Monción	4,884	4,487	92	140	16	5	144	0
+Municipio Mao	31,178	26,671	1,586	781	17	73	2,050	0
+Municipio Esperanza	24,105	20,794	1,066	826	23	47	1,349	0
+Municipio Laguna Salada 	10,318	8,277	676	332	3	1	1,029	0
+Municipio Baní	53,021	47,435	1,204	1,532	100	64	2,686	0
+Municipio Nizao	10,335	9,178	224	263	6	10	654	0
+Municipio Matanzas	6,741	6,137	91	179	3	0	331	0
+Municipio San Cristóbal 	88,583	82,422	801	1,760	93	84	3,423	0
+Municipio Sabana Grande de Palenque 	5,680	5,202	80	136	5	4	253	0
+Municipio Bajos de Haina	53,277	49,304	543	710	44	51	2,625	0
+Municipio Cambita Garavitos	10,423	8,734	127	811	16	23	712	0
+Municipio Villa Altagracia	32,108	28,958	407	1,052	26	31	1,634	0
+Municipio Yaguate	16,375	14,072	97	1,108	16	30	1,052	0
+Municipio San Gregorio de Nigua	12,565	11,079	207	450	13	23	793	0
+Municipio Los Cacaos	3,992	2,578	29	1,176	7	4	198	0
+Municipio San José de Ocoa	16,200	13,351	456	1,080	38	33	1,242	0
+Municipio Sabana Larga	4,379	3,489	115	409	6	15	345	0
+Municipio Rancho Arriba	5,451	4,013	100	821	6	16	495	0
+Municipio de Neiba	12,152	9,168	722	1,533	4	28	696	1
+Municipio Galván	5,359	3,852	281	691	10	15	510	0
+Municipio Tamayo	9,962	7,366	1,015	754	18	12	797	0
+Municipio Villa Jaragua	3,693	2,884	275	408	2	5	119	0
+Municipio Los Ríos	2,709	1,931	243	379	7	3	146	0
+Municipio Barahona	27,560	24,148	1,670	229	74	51	1,388	0
+Municipio Cabral	4,871	4,025	421	148	7	13	257	0
+Municipio Enriquillo	4,468	3,208	266	753	4	12	225	0
+Municipio Paraíso 	5,114	3,562	173	1,118	3	4	254	0
+Municipio Vicente Noble 	8,230	6,346	988	277	61	22	536	0
+Municipio El Peñón	1,370	1,108	106	8	0	4	144	0
+Municipio La Ciénaga	2,741	2,143	147	214	9	3	225	0
+Municipio Fundación	2,924	2,159	226	322	6	2	209	0
+Municipio Las Salinas	1,552	1,248	113	60	9	0	122	0
+Municipio Polo	2,468	1,423	153	630	17	0	245	0
+Municipio Jaquimeyes	1,313	1,177	52	12	3	9	60	0
+Municipio Jimaní	5,852	4,117	947	352	14	5	417	0
+Municipio Duvergé	4,445	3,624	257	334	0	1	229	0
+Municipio La Descubierta 	2,376	1,861	165	255	0	0	95	0
+Municipio Postrer Río	2,173	1,392	154	494	6	6	121	0
+Municipio Cristóbal	2,412	1,275	435	510	0	5	187	0
+Municipio Mella	1,485	1,121	119	111	6	0	128	0
+Municipio Pedernales	7,342	5,222	558	1,006	17	5	534	0
+Municipio Oviedo	3,148	2,231	244	461	11	8	193	0
+Municipio Azua	32,360	27,735	1,707	932	35	54	1,897	0
+Municipio Las Charcas	4,913	3,993	266	258	2	5	389	0
+Municipio Las Yayas de Viajama	6,705	5,203	366	429	10	57	640	0
+Municipio Padre Las Casas	7,022	5,516	280	681	3	10	532	0
+Municipio Peralta	4,386	3,113	240	508	8	9	508	0
+Municipio Sabana Yegua	6,616	5,451	545	242	16	4	358	0
+Municipio Pueblo Viejo 	3,844	3,162	120	220	6	7	329	0
+Municipio Tábara Arriba	6,710	5,265	428	368	6	17	626	0
+Municipio Guayabal	1,949	1,504	60	216	4	5	160	0
+Municipio Estebanía	2,790	2,166	178	285	0	11	150	0
+Municipio Comendador	8,275	5,624	619	1,586	9	23	412	2
+Municipio Bánica	2,316	1,535	112	539	0	1	129	0
+Municipio El Llano	2,629	1,475	242	610	0	57	245	0
+Municipio Hondo Valle	2,926	1,922	211	533	1	3	256	0
+Municipio Pedro Santana	1,960	1,004	103	750	2	0	101	0
+Municipio Juan Santiago	1,102	731	68	227	0	2	74	0
+Municipio San Juan	48,501	39,684	1,601	3,840	54	145	3,177	0
+Municipio Bohechío	3,476	2,627	153	294	2	5	395	0
+Municipio El Cercado	5,783	4,063	131	1,040	0	5	544	0
+Municipio Juan de Herrera	4,381	3,629	116	346	0	7	283	0
+Municipio Las Matas de Farfán	16,421	13,088	563	1,747	15	96	912	0
+Municipio Vallejuelo	4,254	2,919	386	554	9	1	385	0
+Municipio El Seibo	25,696	19,894	1,200	2,985	29	57	1,531	0
+Municipio Miches	9,572	8,198	199	339	20	4	812	0
+Municipio Higüey	160,056	143,817	3,282	2,577	472	249	9,659	0
+Municipio San Rafael del Yuma	12,363	9,349	1,323	943	14	14	720	0
+Municipio La Romana	53,573	49,933	758	162	96	47	2,577	0
+Municipio Guaymate	5,432	4,137	739	301	7	12	236	0
+Municipio Villa Hermosa	37,378	34,496	1,062	148	68	38	1,566	0
+Municipio San Pedro de Macorís	75,448	70,012	1,394	327	119	98	3,498	0
+Municipio Los Llanos 	9,124	7,197	312	813	21	5	776	0
+Municipio Ramón Santana	3,997	3,005	83	506	12	3	388	0
+Municipio Consuelo	13,797	11,753	326	799	33	38	848	0
+Municipio Quisqueya	7,640	6,677	242	135	33	13	540	0
+Municipio Guayacanes	6,893	5,961	73	292	38	7	522	0
+Municipio Monte Plata	19,349	16,512	273	1,432	18	6	1,108	0
+Municipio Bayaguana	13,005	10,980	382	939	11	16	677	0
+Municipio Sabana Grande de Boyá	12,146	9,718	629	905	7	18	869	0
+Municipio Yamasá	21,557	18,673	273	1,364	20	15	1,212	0
+Municipio Peralvillo	6,402	5,551	46	273	4	12	516	0
+Municipio Hato Mayor 	25,241	21,664	504	1,456	27	28	1,562	0
+Municipio Sabana de la mar	7,119	6,253	262	163	5	6	430	0
+Municipio El valle	3,856	3,138	173	174	0	14	357	0
+
+
+Cuadro 17
+
+"Región, provincia, municipio, distrito 
+municipal y zona "	Total 	Energia elétrica del tendido público 	Lámpara de gas propano	Lámpara de gas kerosene	Energía eléctrica de planta propia 	Paneles solares 	Otros 	Sin información
+Municipio Santo Domingo de Guzmán	365,548	363,351	70	12	116	388	1,551	60
+Municipio Santo Domingo Este	351,360	349,901	87	57	60	88	993	174
+Municipio Santo Domingo Oeste	143,144	142,528	26	12	116	70	369	23
+Municipio Santo Domingo Norte	224,697	224,004	56	36	42	44	506	9
+Municipio Boca Chica	56,593	56,156	49	34	29	7	315	3
+Municipio San Antonio de Guerra	20,885	20,570	19	40	8	8	239	1
+Municipio Los alcarrizos	111,928	111,209	30	25	18	18	608	20
+Municipio Pedro Brand	31,206	30,998	14	13	15	15	151	0
+Municipio Moca	54,913	54,516	52	26	8	51	258	2
+Municipio Cayetano Germosén	2,996	2,954	2	0	0	14	26	0
+Municipio Gaspar Hernández 	15,090	14,922	35	19	0	19	92	3
+Municipio Jamao al Norte	2,883	2,822	7	4	0	28	22	0
+Municipio San Víctor	6,588	6,505	10	4	0	38	31	0
+Municipio Puerto Plata	59,241	58,621	84	43	11	96	344	42
+Municipio Altamira	7,149	6,943	66	45	2	17	76	0
+Municipio Guananico	2,447	2,413	2	4	0	2	26	0
+Municipio Imbert	8,905	8,778	29	17	0	16	63	2
+Municipio Los Hidalgos	4,814	4,695	27	15	0	11	66	0
+Municipio Luperón	6,575	6,348	36	10	2	43	134	2
+Municipio Sosúa	21,065	20,833	18	40	6	80	86	2
+Municipio Villa Isabela 	7,153	6,973	46	27	4	7	96	0
+Municipio Villa Montellano 	7,698	7,632	14	1	0	12	39	0
+Municipio de Santiago	272,180	270,727	155	127	23	249	853	46
+Municipio Bisonó	17,181	17,030	43	14	2	9	83	0
+Municipio Jánico	5,252	5,174	4	1	2	25	46	0
+Municipio Licey al Medio	9,956	9,906	3	3	3	13	28	0
+Municipio San José de las Matas	13,028	12,710	52	22	2	96	146	0
+Municipio Tamboril	19,888	19,759	19	12	4	21	72	1
+Municipio Villa González	14,456	14,275	32	25	0	22	102	0
+Municipio Puñal	15,621	15,548	8	6	0	21	36	2
+Municipio Sabana Iglesia	5,222	5,173	16	11	0	1	21	0
+Municipio Baitoa	3,919	3,886	6	1	0	0	26	0
+Municipio La Vega	96,210	95,465	89	38	26	77	502	13
+Municipio Constanza	23,946	23,474	36	17	6	118	295	0
+Municipio Jarabacoa	23,382	22,620	40	26	31	62	602	1
+Municipio Jima Abajo	10,043	9,915	22	9	1	8	88	0
+Municipio Cotuí	29,915	29,620	62	46	8	58	121	0
+Municipio Cevicos	5,837	5,755	31	14	1	8	28	0
+Municipio Fantino	8,349	8,293	16	6	0	1	33	0
+Municipio Villa La Mata	13,398	13,207	29	16	2	5	139	0
+Municipio Bonao	50,536	50,042	72	30	12	60	315	5
+Municipio Maimón	8,274	8,236	1	0	2	0	35	0
+Municipio Piedra Blanca	9,340	9,234	22	8	1	29	46	0
+Municipio San Francisco de Macorís	73,225	72,312	102	55	64	154	509	29
+Municipio Arenoso 	5,225	5,159	20	6	0	2	38	0
+Municipio Castillo	5,995	5,922	26	15	0	5	27	0
+Municipio Pimentel 	6,303	6,225	6	5	3	9	55	0
+Municipio Villa Riva	12,685	12,476	31	9	9	19	141	0
+Municipio Las Guáranas	5,101	5,027	15	1	0	15	43	0
+Municipio Eugenio María de Hostos	2,139	2,085	13	7	0	7	27	0
+Municipio Nagua 	29,198	28,888	70	41	2	26	169	2
+Municipio Cabrera	10,890	10,767	20	10	6	26	51	10
+Municipio El Factor 	10,928	10,697	38	10	0	6	177	0
+Municipio Río San Juan	6,405	6,231	20	24	1	40	89	0
+Municipio Salcedo	14,698	14,471	22	26	7	80	87	5
+Municipio Tenares	10,449	10,356	22	15	0	10	46	0
+Municipio Villa Tapia	8,983	8,933	12	1	0	3	34	0
+Municipio Samaná	22,840	22,274	156	34	9	96	271	0
+Municipio Sánchez	9,374	9,258	15	17	3	30	51	0
+Municipio Las Terrenas	9,722	9,494	34	10	1	14	169	0
+Municipio Dajabón	12,092	11,847	52	11	3	36	143	0
+Municipio Loma de Cabrera	5,658	5,295	43	49	2	40	229	0
+Municipio Partido 	2,859	2,708	19	18	2	34	78	0
+Municipio Restauración 	2,646	1,935	64	34	2	186	425	0
+Municipio El Pino	2,247	2,171	17	6	0	2	51	0
+Municipio Monte Cristi	10,115	9,328	53	73	2	73	586	0
+Municipio Castañuelas	7,234	6,677	76	32	0	22	427	0
+Municipio Guayubín	14,598	14,035	143	67	2	30	321	0
+Municipio Las Matas de Santa Cruz	4,123	3,965	29	18	0	7	102	2
+Municipio Pepillo Salcedo 	3,944	3,704	41	14	2	11	172	0
+Municipio Villa Vásquez	6,142	5,930	28	35	2	11	136	0
+Municipio San Ignacio de Sabaneta	13,948	13,421	40	29	17	232	208	1
+Municipio Villa Los Almácigos 	4,062	3,867	15	8	3	23	146	0
+Municipio Monción	4,884	4,797	29	1	0	16	41	0
+Municipio Mao	31,178	30,224	174	58	2	67	653	0
+Municipio Esperanza	24,105	23,536	47	42	8	125	347	0
+Municipio Laguna Salada 	10,318	10,039	87	12	1	41	138	0
+Municipio Baní	53,021	52,496	121	68	18	77	235	6
+Municipio Nizao	10,335	10,261	25	3	2	1	43	0
+Municipio Matanzas	6,741	6,674	11	5	3	17	29	2
+Municipio San Cristóbal 	88,583	88,073	48	26	7	24	401	4
+Municipio Sabana Grande de Palenque 	5,680	5,624	17	3	3	1	32	0
+Municipio Bajos de Haina	53,277	52,912	38	26	7	13	281	0
+Municipio Cambita Garavitos	10,423	10,322	30	23	1	6	41	0
+Municipio Villa Altagracia	32,108	31,854	49	18	4	16	167	0
+Municipio Yaguate	16,375	16,229	36	17	3	0	90	0
+Municipio San Gregorio de Nigua	12,565	12,473	18	10	3	2	59	0
+Municipio Los Cacaos	3,992	3,806	104	61	2	4	15	0
+Municipio San José de Ocoa	16,200	15,432	137	238	9	154	230	0
+Municipio Sabana Larga	4,379	3,901	28	130	9	88	223	0
+Municipio Rancho Arriba	5,451	4,553	142	151	75	345	185	0
+Municipio de Neiba	12,152	11,735	186	47	3	24	157	0
+Municipio Galván	5,359	5,220	39	10	4	0	85	1
+Municipio Tamayo	9,962	9,783	11	18	13	52	85	0
+Municipio Villa Jaragua	3,693	3,265	45	31	2	79	271	0
+Municipio Los Ríos	2,709	2,336	7	2	1	38	324	1
+Municipio Barahona	27,560	27,289	43	42	5	40	139	2
+Municipio Cabral	4,871	4,798	33	9	0	0	31	0
+Municipio Enriquillo	4,468	3,980	136	101	13	52	186	0
+Municipio Paraíso 	5,114	4,245	97	389	6	78	299	0
+Municipio Vicente Noble 	8,230	8,155	6	3	0	0	66	0
+Municipio El Peñón	1,370	1,360	4	1	0	0	5	0
+Municipio La Ciénaga	2,741	2,629	28	27	3	23	30	1
+Municipio Fundación	2,924	2,902	4	1	0	4	13	0
+Municipio Las Salinas	1,552	1,548	0	0	0	0	4	0
+Municipio Polo	2,468	2,173	52	172	1	17	53	0
+Municipio Jaquimeyes	1,313	1,302	3	4	0	2	2	0
+Municipio Jimaní	5,852	5,419	70	92	18	25	227	1
+Municipio Duvergé	4,445	4,278	24	4	0	3	135	1
+Municipio La Descubierta 	2,376	2,170	5	9	2	53	137	0
+Municipio Postrer Río	2,173	1,704	9	70	0	44	345	1
+Municipio Cristóbal	2,412	2,397	3	5	1	0	6	0
+Municipio Mella	1,485	1,450	6	6	0	0	23	0
+Municipio Pedernales	7,342	6,253	138	95	8	153	694	1
+Municipio Oviedo	3,148	2,900	40	15	3	29	161	0
+Municipio Azua	32,360	32,096	78	42	19	15	109	1
+Municipio Las Charcas	4,913	4,810	36	8	0	14	45	0
+Municipio Las Yayas de Viajama	6,705	6,499	22	20	9	77	78	0
+Municipio Padre Las Casas	7,022	6,371	69	88	1	222	270	1
+Municipio Peralta	4,386	4,205	107	39	0	15	20	0
+Municipio Sabana Yegua	6,616	6,341	33	23	2	54	154	9
+Municipio Pueblo Viejo 	3,844	3,807	15	5	0	1	16	0
+Municipio Tábara Arriba	6,710	6,614	35	20	0	4	37	0
+Municipio Guayabal	1,949	1,763	6	11	0	55	114	0
+Municipio Estebanía	2,790	2,593	41	17	4	61	74	0
+Municipio Comendador	8,275	7,509	196	94	0	42	434	0
+Municipio Bánica	2,316	1,990	51	101	0	53	121	0
+Municipio El Llano	2,629	2,246	50	114	1	3	213	2
+Municipio Hondo Valle	2,926	2,621	16	9	0	6	274	0
+Municipio Pedro Santana	1,960	1,326	19	70	2	58	485	0
+Municipio Juan Santiago	1,102	1,001	34	24	1	1	41	0
+Municipio San Juan	48,501	46,748	487	243	173	99	751	0
+Municipio Bohechío	3,476	3,361	19	21	1	5	69	0
+Municipio El Cercado	5,783	5,575	54	23	1	0	130	0
+Municipio Juan de Herrera	4,381	4,224	43	28	0	2	84	0
+Municipio Las Matas de Farfán	16,421	15,734	179	94	4	132	273	5
+Municipio Vallejuelo	4,254	4,065	79	11	0	2	96	1
+Municipio El Seibo	25,696	22,606	990	814	83	414	768	21
+Municipio Miches	9,572	9,323	51	16	12	27	143	0
+Municipio Higüey	160,056	152,152	919	795	382	637	5,166	5
+Municipio San Rafael del Yuma	12,363	10,028	767	828	150	174	416	0
+Municipio La Romana	53,573	52,898	113	24	66	162	307	3
+Municipio Guaymate	5,432	3,785	211	783	264	162	227	0
+Municipio Villa Hermosa	37,378	36,989	78	58	13	19	221	0
+Municipio San Pedro de Macorís	75,448	75,050	36	22	11	12	315	2
+Municipio Los Llanos 	9,124	8,943	38	35	7	4	95	2
+Municipio Ramón Santana	3,997	3,793	33	16	11	66	78	0
+Municipio Consuelo	13,797	13,722	13	12	1	2	47	0
+Municipio Quisqueya	7,640	7,561	5	10	1	1	62	0
+Municipio Guayacanes	6,893	6,810	2	1	35	5	40	0
+Municipio Monte Plata	19,349	19,083	36	30	15	27	158	0
+Municipio Bayaguana	13,005	12,377	148	193	10	141	136	0
+Municipio Sabana Grande de Boyá	12,146	11,647	77	60	19	81	262	0
+Municipio Yamasá	21,557	21,309	61	70	13	18	86	0
+Municipio Peralvillo	6,402	6,307	23	15	2	4	51	0
+Municipio Hato Mayor 	25,241	24,701	153	97	18	61	210	1
+Municipio Sabana de la mar	7,119	6,943	18	21	1	11	125	0
+Municipio El valle	3,856	3,590	20	22	9	17	198	0
+
+
+Cuadro 18
+
+"Región, provincia, municipio, distrito 
+municipal y zona "	Total 	La recoge el ayuntamiento 	La recoge una empresa privada 	La queman 	"La tiran en el 
+patio o sola"	La tiran en un vertedero 	La tiran en un río o cañada	Otros 
+Municipio Santo Domingo de Guzmán	365,548	343,735	6,855	410	851	8,858	3,284	1,555
+Municipio Santo Domingo Este	351,360	314,654	5,831	3,433	2,776	17,045	2,916	4,705
+Municipio Santo Domingo Oeste	143,144	128,543	681	2,002	1,135	6,282	3,171	1,330
+Municipio Santo Domingo Norte	224,697	200,807	2,160	11,279	2,676	4,168	2,302	1,305
+Municipio Boca Chica	56,593	22,781	4,656	11,331	3,437	11,276	22	3,090
+Municipio San Antonio de Guerra	20,885	14,836	28	5,285	304	303	29	100
+Municipio Los alcarrizos	111,928	79,086	1,332	1,892	2,290	12,479	10,967	3,882
+Municipio Pedro Brand	31,206	25,353	1,187	2,758	566	573	576	193
+Municipio Moca	54,913	47,952	101	2,898	1,463	924	1,212	363
+Municipio Cayetano Germosén	2,996	2,438	3	292	92	20	138	13
+Municipio Gaspar Hernández 	15,090	13,052	9	1,732	210	61	17	9
+Municipio Jamao al Norte	2,883	2,101	1	725	37	8	1	10
+Municipio San Víctor	6,588	5,355	12	799	169	51	167	35
+Municipio Puerto Plata	59,241	55,486	96	3,251	170	110	61	67
+Municipio Altamira	7,149	5,127	3	1,446	383	124	40	26
+Municipio Guananico	2,447	2,241	1	143	49	4	9	0
+Municipio Imbert	8,905	7,701	3	1,077	49	37	19	19
+Municipio Los Hidalgos	4,814	4,119	5	559	63	42	9	17
+Municipio Luperón	6,575	4,737	9	1,678	42	92	4	13
+Municipio Sosúa	21,065	19,191	837	869	47	39	13	69
+Municipio Villa Isabela 	7,153	6,221	10	830	26	27	21	18
+Municipio Villa Montellano 	7,698	6,715	63	717	76	109	12	6
+Municipio de Santiago	272,180	261,534	667	3,711	866	1,374	3,410	618
+Municipio Bisonó	17,181	14,843	155	1,339	216	314	225	89
+Municipio Jánico	5,252	3,491	6	1,537	68	101	21	28
+Municipio Licey al Medio	9,956	9,520	4	193	57	34	43	105
+Municipio San José de las Matas	13,028	10,772	66	1,843	82	194	13	58
+Municipio Tamboril	19,888	18,618	45	757	236	90	104	38
+Municipio Villa González	14,456	13,078	42	912	110	118	170	26
+Municipio Puñal	15,621	15,182	83	198	65	19	58	16
+Municipio Sabana Iglesia	5,222	4,343	3	571	39	135	109	22
+Municipio Baitoa	3,919	2,781	10	828	124	81	82	13
+Municipio La Vega	96,210	87,536	127	5,588	1,432	595	672	260
+Municipio Constanza	23,946	22,838	29	591	127	259	56	46
+Municipio Jarabacoa	23,382	21,570	71	1,273	212	136	39	81
+Municipio Jima Abajo	10,043	8,633	4	1,078	131	41	120	36
+Municipio Cotuí	29,915	22,549	248	4,728	960	505	578	347
+Municipio Cevicos	5,837	4,616	16	918	244	28	3	12
+Municipio Fantino	8,349	7,057	16	1,165	82	12	8	9
+Municipio Villa La Mata	13,398	10,879	12	2,035	161	27	257	27
+Municipio Bonao	50,536	43,921	3,238	1,849	412	506	142	468
+Municipio Maimón	8,274	7,599	36	420	95	69	33	22
+Municipio Piedra Blanca	9,340	8,581	16	518	110	66	25	24
+Municipio San Francisco de Macorís	73,225	63,213	543	6,819	643	757	648	602
+Municipio Arenoso 	5,225	3,596	2	1,319	109	40	141	18
+Municipio Castillo	5,995	4,418	15	1,379	128	40	12	3
+Municipio Pimentel 	6,303	4,791	21	1,315	71	22	65	18
+Municipio Villa riva	12,685	9,957	7	2,090	320	61	214	36
+Municipio Las Guáranas	5,101	4,063	8	724	27	45	203	31
+Municipio Eugenio María de Hostos	2,139	1,351	3	658	120	1	3	3
+Municipio Nagua 	29,198	22,856	84	4,998	607	355	166	132
+Municipio Cabrera	10,890	8,042	44	2,612	73	75	4	40
+Municipio El Factor 	10,928	9,407	12	1,177	182	90	42	18
+Municipio Río San Juan	6,405	5,331	7	891	83	59	12	22
+Municipio Salcedo	14,698	11,091	18	2,672	428	250	118	121
+Municipio Tenares	10,449	6,648	368	2,249	528	288	250	118
+Municipio Villa Tapia	8,983	5,715	7	2,790	268	101	84	18
+Municipio Samaná	22,840	16,158	40	5,866	253	426	60	37
+Municipio Sánchez	9,374	7,430	13	1,695	83	34	37	82
+Municipio Las Terrenas	9,722	9,198	205	229	15	46	2	27
+Municipio Dajabón	12,092	11,063	26	867	57	42	16	21
+Municipio Loma de Cabrera	5,658	4,743	21	653	179	30	19	13
+Municipio Partido 	2,859	2,534	4	270	21	18	3	9
+Municipio Restauración 	2,646	1,260	4	1,202	97	46	17	20
+Municipio El Pino	2,247	2,087	3	133	10	4	8	2
+Municipio Monte Cristi	10,115	6,534	258	2,034	297	925	8	59
+Municipio Castañuelas	7,234	6,598	8	394	21	59	138	16
+Municipio Guayubín	14,598	11,957	18	2,333	128	108	19	35
+Municipio Las Matas de Santa Cruz	4,123	3,901	8	180	19	5	3	7
+Municipio Pepillo Salcedo 	3,944	3,444	2	432	19	34	4	9
+Municipio Villa Vásquez	6,142	4,496	300	1,077	36	180	18	35
+Municipio San Ignacio de Sabaneta	13,948	11,125	16	2,528	84	100	60	35
+Municipio Villa Los Almácigos 	4,062	2,912	6	995	119	11	12	7
+Municipio Monción	4,884	4,443	24	378	10	14	1	14
+Municipio Mao	31,178	29,008	105	1,568	65	217	107	108
+Municipio Esperanza	24,105	21,986	58	1,324	139	330	195	73
+Municipio Laguna Salada 	10,318	9,762	8	305	52	65	109	17
+Municipio Baní	53,021	47,242	372	3,444	528	615	564	256
+Municipio Nizao	10,335	9,721	14	470	48	47	23	12
+Municipio Matanzas	6,741	6,178	2	461	33	42	18	7
+Municipio San Cristóbal 	88,583	75,051	668	8,404	994	1,257	1,718	491
+Municipio Sabana Grande de Palenque 	5,680	5,432	19	175	23	16	5	10
+Municipio Bajos de Haina	53,277	50,527	87	1,091	436	502	397	237
+Municipio Cambita Garavitos	10,423	7,805	4	1,607	502	166	284	55
+Municipio Villa Altagracia	32,108	27,469	60	2,264	900	463	678	274
+Municipio Yaguate	16,375	12,897	47	2,777	301	238	91	24
+Municipio San Gregorio de Nigua	12,565	9,871	9	2,247	278	58	68	34
+Municipio Los Cacaos	3,992	2,332	5	1,112	382	156	2	3
+Municipio San José de Ocoa	16,200	14,430	12	1,132	267	79	257	23
+Municipio Sabana Larga	4,379	3,903	8	340	28	49	34	17
+Municipio Rancho Arriba	5,451	4,665	62	451	129	104	22	18
+Municipio de Neiba	12,152	9,841	4	872	343	514	479	99
+Municipio Galván	5,359	3,064	11	1,612	303	64	283	22
+Municipio Tamayo	9,962	8,632	23	663	406	81	145	12
+Municipio Villa Jaragua	3,693	2,836	1	299	210	14	203	130
+Municipio Los Ríos	2,709	1,951	0	344	355	9	44	6
+Municipio Barahona	27,560	24,192	52	2,344	242	374	186	170
+Municipio Cabral	4,871	4,427	3	308	71	31	25	6
+Municipio Enriquillo	4,468	3,305	35	732	272	45	74	5
+Municipio Paraíso 	5,114	3,664	3	608	675	78	50	36
+Municipio Vicente Noble 	8,230	7,173	20	547	295	110	65	20
+Municipio El Peñón	1,370	1,325	0	15	2	27	0	1
+Municipio La Ciénaga	2,741	2,351	4	251	62	19	47	7
+Municipio Fundación	2,924	2,614	0	209	23	55	21	2
+Municipio Las Salinas	1,552	1,423	0	87	7	29	6	0
+Municipio Polo	2,468	1,574	3	132	384	29	329	17
+Municipio Jaquimeyes	1,313	1,279	2	29	0	0	3	0
+Municipio Jimaní	5,852	4,127	9	1,228	206	149	42	91
+Municipio Duvergé	4,445	4,055	5	294	50	17	14	10
+Municipio La Descubierta 	2,376	1,895	0	316	43	22	82	18
+Municipio Postrer Río	2,173	1,533	2	167	329	23	78	41
+Municipio Cristóbal	2,412	2,201	1	78	47	62	16	7
+Municipio Mella	1,485	1,352	1	91	19	8	7	7
+Municipio Pedernales	7,342	5,434	16	953	479	118	257	85
+Municipio Oviedo	3,148	2,354	1	641	60	73	5	14
+Municipio Azua	32,360	30,263	150	1,042	283	136	404	82
+Municipio Las Charcas	4,913	4,210	19	303	49	117	191	24
+Municipio Las Yayas de Viajama	6,705	5,662	8	798	49	95	63	30
+Municipio Padre Las Casas	7,022	5,058	6	1,705	94	100	47	12
+Municipio Peralta	4,386	4,076	9	155	26	2	94	24
+Municipio Sabana Yegua	6,616	6,103	14	418	42	7	11	21
+Municipio Pueblo Viejo 	3,844	3,566	7	203	26	6	29	7
+Municipio Tábara Arriba	6,710	6,263	3	375	28	4	30	7
+Municipio Guayabal	1,949	1,740	0	155	47	3	2	2
+Municipio Estebanía	2,790	2,212	13	389	43	9	113	11
+Municipio Comendador	8,275	5,685	24	1,930	421	65	138	12
+Municipio Bánica	2,316	1,493	23	651	75	18	25	31
+Municipio El Llano	2,629	1,433	7	914	244	9	18	4
+Municipio Hondo Valle	2,926	2,170	2	464	257	8	20	5
+Municipio Pedro Santana	1,960	770	0	873	237	56	1	23
+Municipio Juan Santiago	1,102	867	18	169	29	12	6	1
+Municipio San Juan	48,501	40,890	57	6,313	439	207	427	168
+Municipio Bohechío	3,476	3,133	2	247	47	19	24	4
+Municipio El Cercado	5,783	4,653	13	841	193	16	20	47
+Municipio Juan de Herrera	4,381	3,921	6	390	17	6	36	5
+Municipio Las Matas de Farfán	16,421	12,216	9	3,892	90	41	134	39
+Municipio Vallejuelo	4,254	3,773	17	290	53	20	89	12
+Municipio El Seibo	25,696	14,487	1,701	8,270	644	258	266	70
+Municipio Miches	9,572	8,681	11	547	255	40	11	27
+Municipio Higüey	160,056	136,367	9,401	9,530	1,178	2,163	663	754
+Municipio San Rafael del Yuma	12,363	9,007	1,938	1,291	39	51	9	28
+Municipio La Romana	53,573	48,817	2,524	463	144	1,225	65	335
+Municipio Guaymate	5,432	2,567	2,449	274	16	99	21	6
+Municipio Villa Hermosa	37,378	30,107	321	1,883	1,035	3,650	21	361
+Municipio San Pedro de Macorís	75,448	69,895	645	1,447	468	2,387	25	581
+Municipio Los Llanos 	9,124	4,705	155	3,751	306	187	11	9
+Municipio Ramón Santana	3,997	1,688	402	1,674	47	151	10	25
+Municipio Consuelo	13,797	12,067	143	1,102	156	239	63	27
+Municipio Quisqueya	7,640	6,238	48	807	155	303	57	32
+Municipio Guayacanes	6,893	5,137	264	1,168	201	112	0	11
+Municipio Monte Plata	19,349	13,220	43	5,110	554	265	82	75
+Municipio Bayaguana	13,005	9,956	36	2,603	203	136	19	52
+Municipio Sabana Grande de Boyá	12,146	8,178	25	2,780	358	430	254	121
+Municipio Yamasá	21,557	14,675	103	5,188	1,152	186	192	61
+Municipio Peralvillo	6,402	4,885	5	1,166	264	63	7	12
+Municipio Hato Mayor 	25,241	19,398	68	5,008	261	383	59	64
+Municipio Sabana de la mar	7,119	6,220	9	771	61	41	4	13
+Municipio El valle	3,856	3,429	7	189	71	7	12	141
