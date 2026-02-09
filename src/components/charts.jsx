@@ -524,30 +524,32 @@ export function EconomyEmployment({
 
         {/* 円グラフ & 棒グラフ */}
         <div className="grid gap-4 md:grid-cols-2 print-grid print-grid-2">
-          <div className="h-auto md:h-64 no-break">
+          <div className="no-break md:h-64">
             <div className="mb-1 text-[11px] font-semibold text-rose-900 md:text-xs">
               Distribución del empleo por tamaño de empresa
             </div>
             {sizeBands.length ? (
-              <div className="flex flex-col md:flex-row gap-4 print-flex h-64 md:h-full">
-                <div className="h-[250px] md:h-full w-full flex-1">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={sizeBands}
-                        dataKey="employees_share"
-                        nameKey="label"
-                        outerRadius={80}
-                        innerRadius={40}
-                        paddingAngle={2}
-                        startAngle={90}
-                        endAngle={-270}
-                      >
-                        {sizeBands.map((b, idx) => <Cell key={idx} fill={COLORS[idx % COLORS.length]} />)}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+              <div className="flex flex-col md:flex-row gap-4 print-flex">
+                <div className="w-full md:flex-1">
+                  <div className="h-72 md:h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={sizeBands}
+                          dataKey="employees_share"
+                          nameKey="label"
+                          outerRadius={80}
+                          innerRadius={40}
+                          paddingAngle={2}
+                          startAngle={90}
+                          endAngle={-270}
+                        >
+                          {sizeBands.map((b, idx) => <Cell key={idx} fill={COLORS[idx % COLORS.length]} />)}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
                 <div className="w-full md:w-44 space-y-1 text-[10px] md:text-xs overflow-y-auto max-h-full">
                   {sizeBands.map((b, idx) => (

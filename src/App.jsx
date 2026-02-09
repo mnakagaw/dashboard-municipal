@@ -1,19 +1,9 @@
 // ===============================
-// App.jsx — Versión Final Corregida
+// App.jsx — Versión Limpia
 // ===============================
 
 import React, { useEffect, useState } from "react";
 import useMunicipioData from "./hooks/useMunicipioData";
-
-import { Card, CardHeader, CardTitle, CardContent } from "./components/ui/card";
-import { RDMap } from "./components/RDMap";
-
-import {
-  BasicIndicators,
-  PopulationPyramid,
-  PopulationPyramid2010,
-  EconomyEmployment,
-} from "./components/charts";
 
 import TopSelectionAndMap from "./components/TopSelectionAndMap";
 import PyramidsRow from "./components/PyramidsRow";
@@ -21,14 +11,14 @@ import DemografiaHogaresSection from "./components/DemografiaHogaresSection";
 import CondicionVidaSection from "./components/CondicionVidaSection";
 import EducacionDashboard from "./components/EducacionDashboard";
 import SaludSection from "./components/SaludSection";
+import ResumenComparacionSection from "./components/ResumenComparacionSection";
+import ResumenNarrativoSection from "./components/ResumenNarrativoSection";
+import { EconomyEmployment } from "./components/charts";
+import { buildResumenComparacion } from "./utils/resumenComparacionHelpers";
 
 export default function App() {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectionKey, setSelectionKey] = useState(null);
-
-  // ★ Narrativa
-  const [narrativa, setNarrativa] = useState("");
-  const [loadingNarrativa, setLoadingNarrativa] = useState(false);
 
   const data = useMunicipioData(selectedProvince, selectionKey);
 
@@ -53,7 +43,6 @@ export default function App() {
 
     nationalBasic,
     nationalEcon,
-
     tic,
     condicionVida,
     condicionVidaRaw,
@@ -61,11 +50,34 @@ export default function App() {
 
     saludEstablecimientos,
     educacionRecords,
+    educacionNivel,
+
+    // ★ここを追加
+    nationalTic,
+    nationalEducNivel,
+    nationalEducOferta,
+    nationalHogares,
+    nationalSalud,
+
+    // Comparison datasets
+    hogaresResumenData,
+    hogaresResumenProvinciaData,
+    poblacionUrbanaRuralData,
+    poblacionUrbanaRuralProvinciaData,
+    educacionData,
+    educacionProvinciaData,
+    saludEstablecimientosData,
+    saludEstablecimientosProvinciaData,
+
+    // Add exposed province data for simple retrieval
+    condicionVidaProvinciaData,
+    ticProvinciaData,
+    educacionNivelProvinciaData,
+    economiaEmpleoProvinciaData,
+    indicadoresBasicosData,
+    educacionOfertaMunicipalData,
   } = data;
 
-  // ============================
-  //  初回の自治体選択
-  // ============================
   useEffect(() => {
     if (!selectedProvince && provincias.length) {
       const prov = provincias[0];
@@ -80,84 +92,6 @@ export default function App() {
     if (provFromMap) setSelectedProvince(provFromMap);
   };
 
-  // ============================
-  //  GPT 用プロンプト生成
-  // ============================
-  function buildPrompt() {
-    return `
-Eres un analista experto en planificación territorial.
-Genera un “Resumen Narrativo del Municipio” con estilo técnico-narrativo,
-claro, profesional y parecido al ejemplo de Azua.
-
-Municipio: ${selectedMunicipio?.municipio}
-
-Incorpora estos datos cuando sea útil, sin inventar valores:
-
-Demografía:
-- Población total: ${indicadores?.poblacion_total}
-- Variación vs 2010 (si aplica): ${indicadores?.variacion_2010 ?? ""}%
-- Personas por hogar: ${hogaresResumen?.personas_por_hogar ?? ""}
-
-Condición de vida:
-${JSON.stringify(condicionVida, null, 2)}
-
-Economía:
-${JSON.stringify(econ, null, 2)}
-
-Salud:
-Centros de salud registrados: ${saludEstablecimientos ? Object.keys(saludEstablecimientos).length : 0
-      }
-
-Estructura esperada:
-1. Panorama general del municipio
-2. Tendencias demográficas y urbanas
-3. Hogares y patrones territoriales
-4. Servicios básicos — agua, saneamiento, residuos, electricidad, TIC
-5. Economía y empleo
-6. Oferta educativa
-7. Salud
-8. Implicaciones estratégicas para el Plan Municipal
-
-Usa un tono profesional, claro y narrativo.
-NO devuelvas encabezados con números, sino un texto fluido.
-    `;
-  }
-
-  // ============================
-  //  GPT 呼び出し
-  // ============================
-  async function generateNarrative() {
-    if (!selectedMunicipio) return;
-
-    setLoadingNarrativa(true);
-
-    try {
-      const res = await fetch("/api/generateNarrative", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-5.1",
-          messages: [{ role: "user", content: buildPrompt() }],
-          temperature: 0.4,
-        }),
-      });
-
-      const json = await res.json();
-      const text = json.choices?.[0]?.message?.content || "";
-      setNarrativa(text);
-    } catch (e) {
-      console.error("GPT narrativa error:", e);
-    }
-
-    setLoadingNarrativa(false);
-  }
-
-  // ============================
-  //  RENDER
-  // ============================
   return (
     <div className="min-h-screen bg-slate-50">
       {/* HEADER */}
@@ -176,21 +110,11 @@ NO devuelvas encabezados con números, sino un texto fluido.
             </p>
           </div>
 
-          {/* Buttons */}
+          {/* Imprimir */}
           <div className="flex flex-col items-end gap-2">
             <div className="text-[10px] text-slate-400 md:text-xs text-right">
               Fuente: ONE, Censo 2022, DEE 2024, Anuario Estadístico 2024.
             </div>
-
-            {/* Narrativa */}
-            <button
-              onClick={generateNarrative}
-              className="hide-on-print text-xs md:text-sm px-3 py-1 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 transition"
-            >
-              {loadingNarrativa ? "Generando…" : "📝 Resumen Narrativo"}
-            </button>
-
-            {/* Imprimir */}
             <button
               onClick={() => window.print()}
               className="hide-on-print text-xs md:text-sm px-3 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
@@ -206,7 +130,6 @@ NO devuelvas encabezados con números, sino un texto fluido.
         id="dashboard-pdf"
         className="w-full mx-auto flex flex-col gap-4 md:gap-5 px-2 sm:px-4 py-4 md:py-6 md:max-w-6xl"
       >
-        {/* 1: Información Básica + Mapa */}
         <TopSelectionAndMap
           selectedProvince={selectedProvince}
           setSelectedProvince={setSelectedProvince}
@@ -224,7 +147,6 @@ NO devuelvas encabezados con números, sino un texto fluido.
           handleMapSelect={handleMapSelect}
         />
 
-        {/* 2: Demografía */}
         <PyramidsRow
           indicadores={indicadores}
           nationalBasic={nationalBasic}
@@ -232,14 +154,13 @@ NO devuelvas encabezados con números, sino un texto fluido.
           pyramid2010={pyramid2010}
         />
 
-        {/* 3: Hogares */}
         <DemografiaHogaresSection
           hogaresResumen={hogaresResumen}
           poblacionUrbanaRural={poblacionUrbanaRural}
           hogaresTamanoRecords={hogaresTamanoRecords}
+          isProvinceSelection={isProvinceSelection}
         />
 
-        {/* 4: Condición de Vida */}
         <CondicionVidaSection
           condicionVida={condicionVida}
           condicionVidaRaw={condicionVidaRaw}
@@ -249,15 +170,15 @@ NO devuelvas encabezados con números, sino un texto fluido.
 
         <div className="page-break"></div>
 
-        {/* 5: Educación */}
         <EducacionDashboard
           records={educacionRecords}
           selectedMunicipio={selectedMunicipio}
+          isProvinceSelection={isProvinceSelection}
+          educacionNivel={educacionNivel}
         />
 
         <div className="page-break"></div>
 
-        {/* 6: Economía */}
         <EconomyEmployment
           econ={econ}
           nationalEcon={nationalEcon}
@@ -267,26 +188,87 @@ NO devuelvas encabezados con números, sino un texto fluido.
 
         <div className="page-break"></div>
 
-        {/* 7: Salud */}
-        <SaludSection
-          selectedAdm2={selectedAdm2}
-          selectedMunicipio={selectedMunicipio}
-          saludEstablecimientos={saludEstablecimientos}
-        />
+        {/* <div className="page-break"></div> */}
 
-        {/* 8: Resumen Narrativo (GPT) */}
-        {narrativa && (
-          <Card className="mt-4 break-after-page">
-            <CardHeader>
-              <CardTitle>Resumen Narrativo del Municipio</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="whitespace-pre-line leading-relaxed text-slate-800">
-                {narrativa}
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        {/* <div className="page-break"></div> */}
+
+        {/* Generate Comparison Rows */}
+        {(() => {
+          const resumenComparacionRows = buildResumenComparacion({
+            selectedMunicipio,
+            indicadores,
+            condVida: condicionVida,
+            econ,
+            educ: educacionRecords,
+            educNivel: educacionNivel,
+            tic,
+
+            hogaresResumenData,
+            poblacionUrbanaRuralData,
+            educacionData,
+            saludEstablecimientosData,
+
+            condicionVidaProvinciaData,
+            ticProvinciaData,
+            educacionNivelProvinciaData,
+            economiaEmpleoProvinciaData,
+            indicadoresBasicosData,
+            hogaresResumenProvinciaData,
+            poblacionUrbanaRuralProvinciaData,
+            educacionProvinciaData,
+            saludEstablecimientosProvinciaData,
+
+            nationalBasic,
+            nationalCondVida: nationalCondicionVida,
+            nationalEcon,
+            nationalTic,
+            nationalEducNivel,
+            nationalHogares,
+            nationalSalud,
+            nationalEducOferta,
+            educacionOfertaMunicipalData,
+          });
+
+          return (
+            <>
+              <SaludSection
+                selectedAdm2={selectedAdm2}
+                selectedMunicipio={selectedMunicipio}
+                saludEstablecimientos={saludEstablecimientos}
+                isProvinceSelection={isProvinceSelection}
+              />
+
+              {/*<div className="page-break"></div>*/}
+
+              <ResumenComparacionSection
+                selectedMunicipio={selectedMunicipio}
+                rows={resumenComparacionRows}
+              />
+
+              <div className="page-break"></div>
+
+              <ResumenNarrativoSection
+                municipio={selectedMunicipio?.municipio}
+                indicators={indicadores}
+                condVida={condicionVida}
+                econ={econ}
+                educ={educacionRecords}
+                tic={tic}
+                salud={saludEstablecimientos}
+                nationalBasic={nationalBasic}
+                nationalCondVida={nationalCondicionVida}
+                nationalEcon={nationalEcon}
+                nationalTic={nationalTic}
+                nationalEducNivel={nationalEducNivel}
+                nationalEducOferta={nationalEducOferta}
+                nationalHogares={nationalHogares}
+                nationalSalud={nationalSalud}
+                educNivel={educacionNivel}
+                resumenComparacion={resumenComparacionRows}
+              />
+            </>
+          );
+        })()}
       </main>
     </div>
   );

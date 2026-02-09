@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {
+    "basic-ftp": "^5.1.0",
+    "dotenv": "^16.4.5",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "leaflet": "^1.9.4",
@@ -16,10 +19,13 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^4.2.1",
+    "react-markdown": "^10.1.0",
     "react-to-print": "^2.14.13",
-    "recharts": "^2.6.2"
+    "recharts": "^2.6.2",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@jridgewell/sourcemap-codec": "^1.5.5",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",

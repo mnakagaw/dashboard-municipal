@@ -13,14 +13,18 @@ export default function SaludSection({
   selectedAdm2,
   selectedMunicipio,
   saludEstablecimientos,
+  isProvinceSelection,
 }) {
   const adm2 = selectedAdm2 || null;
 
   const centros = useMemo(() => {
+    if (isProvinceSelection) {
+      return saludEstablecimientos?.centros || [];
+    }
     if (!adm2 || !saludEstablecimientos) return [];
     const entry = saludEstablecimientos[adm2];
     return entry?.centros || [];
-  }, [adm2, saludEstablecimientos]);
+  }, [adm2, saludEstablecimientos, isProvinceSelection]);
 
   const resumenPorTipo = useMemo(() => {
     const acc = {};
