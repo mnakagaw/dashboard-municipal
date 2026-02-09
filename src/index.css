@@ -19,27 +19,57 @@ body {
   page-break-after: auto !important;
   break-after: auto !important;
 }
+
 /* Recharts用のコンテナサイズ（画面表示用） */
 .chart-container {
   width: 180px;
   height: 180px;
   /* Flex環境で潰れないように最小サイズも指定 */
   min-width: 180px;
-  min-height: 180px; 
+  min-height: 180px;
 }
 
 @media print {
+
   /* Prevent Leaflet from resizing or zooming weirdly during print layout */
   .print-map-wrapper {
-    width: 600px !important;
-    height: 300px !important;
-    /* Determine if we need to force a break or not */
+    width: 100% !important;
+    height: 380px !important;
     page-break-inside: avoid;
     break-inside: avoid;
+    /* Force rendering of borders and backgrounds */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-  
+
+  /* Ensure the grid/flex layout doesn't overlap */
+  .print-top-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .print-info-basic {
+    flex: 0 0 35% !important;
+    /* Give fixed width to info side */
+    min-width: 0;
+  }
+
+  .print-map-card {
+    flex: 1 !important;
+    min-width: 0;
+  }
+
   /* Hide zoom controls on print */
   .leaflet-control-zoom {
     display: none !important;
+  }
+
+  /* Stabilize cards in print */
+  .card,
+  .Card {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }
