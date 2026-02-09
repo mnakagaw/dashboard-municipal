@@ -27,3 +27,19 @@ body {
   min-width: 180px;
   min-height: 180px; 
 }
+
+@media print {
+  /* Prevent Leaflet from resizing or zooming weirdly during print layout */
+  .print-map-wrapper {
+    width: 600px !important;
+    height: 300px !important;
+    /* Determine if we need to force a break or not */
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Hide zoom controls on print */
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+}
