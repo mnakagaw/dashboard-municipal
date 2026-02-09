@@ -9,10 +9,10 @@ import {
 } from "recharts";
 import { GraduationCap } from "lucide-react";
 
-import ofertaData from "../../public/data/educacion_oferta_municipal.json";
-import ofertaProvinciaData from "../../public/data/educacion_oferta_municipal_provincia.json";
-import educacionData from "../../public/data/educacion.json";
-import nivelData from "../../public/data/educacion_nivel.json";
+import ofertaData from "../data/educacion_oferta_municipal.json";
+import ofertaProvinciaData from "../data/educacion_oferta_municipal_provincia.json";
+import educacionData from "../data/educacion.json";
+import nivelData from "../data/educacion_nivel.json";
 
 /* ============================================================
    3 色テーマ（Educación のオレンジ系 UI に合わせた配色）
