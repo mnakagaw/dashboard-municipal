@@ -95,8 +95,8 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
     <div className="h-[360px] w-full overflow-hidden rounded-2xl border border-slate-200 print-map-wrapper">
       <MapContainer
         /* ★修正: 高さを180pxまで縮めるため、ズームを 6.5 に下げる */
-        center={[19.0, -70.16]}
-        zoom={7.0}
+        center={[18.8, -70.5]}
+        zoom={6.5}
         zoomSnap={0.5}
         zoomDelta={0.5}
         wheelPxPerZoomLevel={60}

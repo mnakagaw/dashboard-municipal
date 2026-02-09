@@ -58,7 +58,7 @@
   .print-top-grid,
   .pyramids-row,
   .print-hogares-grid {
-    margin-bottom: 2px !important;
+    margin-bottom: 0px !important;
   }
 
   h3 {
@@ -116,12 +116,12 @@
     margin-bottom: 2px !important;
   }
 
-  /* 地図高さ 200px (さらに縮小して下に余裕を作る) */
+  /* 地図高さ 170px (高さをさらに抑えて下に余裕を作る) */
   .print-map-wrapper,
   .print-map-card div[class*="h-[360px]"] {
-    height: 200px !important;
-    min-height: 200px !important;
-    max-height: 200px !important;
+    height: 170px !important;
+    min-height: 170px !important;
+    max-height: 170px !important;
     overflow: hidden !important;
     margin-bottom: 0 !important;
     border-radius: 4px !important;
@@ -129,7 +129,7 @@
 
   .print-map-card .leaflet-container {
     width: 100% !important;
-    height: 200px !important;
+    height: 170px !important;
     z-index: 0 !important;
   }
 
@@ -258,7 +258,8 @@
   .print-hogares-grid {
     display: grid !important;
     grid-template-columns: 180px 1fr !important;
-    gap: 6px !important;
+    gap: 4px !important;
+    /* Smaller */
     align-items: start !important;
     page-break-inside: avoid !important;
   }
