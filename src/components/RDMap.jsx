@@ -1,3 +1,25 @@
+/**
+ * RDMap.jsx - Mapa Interactivo de República Dominicana
+ * 
+ * Este componente renderiza un mapa interactivo usando Leaflet que muestra:
+ * - Todos los municipios de República Dominicana (158)
+ * - El municipio seleccionado resaltado en rojo
+ * - Tooltips con el nombre del municipio al pasar el cursor
+ * 
+ * Tecnologías utilizadas:
+ * - Leaflet: Biblioteca de mapas interactivos
+ * - react-leaflet: Wrapper de React para Leaflet
+ * - OpenStreetMap: Proveedor de tiles del mapa base
+ * 
+ * Datos:
+ * - GeoJSON de municipios (src/data/adm2.json)
+ * 
+ * Props:
+ * - selectedAdm2: Código del municipio seleccionado (ej: "02001")
+ * - selectedProvince: Nombre de la provincia (para selección provincial)
+ * - onSelectMunicipio: Callback cuando el usuario hace clic en un municipio
+ */
+
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";

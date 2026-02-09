@@ -1,3 +1,22 @@
+/**
+ * TopSelectionAndMap.jsx - Panel Superior con Selector y Mapa
+ * 
+ * Este componente muestra la sección superior del dashboard con:
+ * - Selectores de provincia y municipio (columna izquierda)
+ * - Indicadores básicos de población (columna izquierda)
+ * - Mapa interactivo de República Dominicana (columna derecha)
+ * 
+ * Diseño responsivo:
+ * - Móvil: Las columnas se apilan verticalmente
+ * - Desktop (lg+): Las columnas se muestran lado a lado
+ * - Impresión: Layout especial de 2 columnas (ver print.css)
+ * 
+ * Props principales:
+ * - selectedProvince: Nombre de la provincia seleccionada
+ * - selectionKey: Código ADM2 del municipio seleccionado
+ * - handleMapSelect: Función que se ejecuta al hacer clic en el mapa
+ */
+
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Select } from "./ui/select";

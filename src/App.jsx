@@ -1,10 +1,44 @@
-// ===============================
-// App.jsx — Versión Limpia
-// ===============================
+/**
+ * App.jsx - Componente Principal de la Aplicación
+ * 
+ * Este es el componente raíz del dashboard municipal.
+ * Coordina todos los demás componentes y maneja el estado global.
+ * 
+ * Estructura del Dashboard:
+ * ┌─────────────────────────────────────────────┐
+ * │  Header (título, botón imprimir)            │
+ * ├─────────────────────────────────────────────┤
+ * │  TopSelectionAndMap (selector + mapa)       │
+ * ├─────────────────────────────────────────────┤
+ * │  PyramidsRow (pirámides 2022 vs 2010)       │
+ * ├─────────────────────────────────────────────┤
+ * │  DemografiaHogaresSection                   │
+ * ├─────────────────────────────────────────────┤
+ * │  CondicionVidaSection (agua, luz, TIC)      │
+ * ├─────────────────────────────────────────────┤
+ * │  EducacionDashboard                         │
+ * ├─────────────────────────────────────────────┤
+ * │  EconomyEmployment (DEE 2024)               │
+ * ├─────────────────────────────────────────────┤
+ * │  SaludSection                               │
+ * ├─────────────────────────────────────────────┤
+ * │  ResumenComparacionSection                  │
+ * ├─────────────────────────────────────────────┤
+ * │  ResumenNarrativoSection (IA opcional)      │
+ * └─────────────────────────────────────────────┘
+ * 
+ * Estados principales:
+ * - selectedProvince: Provincia seleccionada actualmente
+ * - selectionKey: Código ADM2 del municipio/provincia seleccionado
+ * 
+ * Hook personalizado:
+ * - useMunicipioData: Carga todos los datos del municipio seleccionado
+ */
 
 import React, { useEffect, useState } from "react";
 import useMunicipioData from "./hooks/useMunicipioData";
 
+// Componentes de sección del dashboard
 import TopSelectionAndMap from "./components/TopSelectionAndMap";
 import PyramidsRow from "./components/PyramidsRow";
 import DemografiaHogaresSection from "./components/DemografiaHogaresSection";

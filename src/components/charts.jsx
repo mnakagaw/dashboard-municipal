@@ -1,3 +1,40 @@
+/**
+ * charts.jsx - Biblioteca de Gráficos y Visualizaciones
+ * 
+ * Este archivo contiene todos los componentes de gráficos utilizados en el dashboard.
+ * Utiliza la biblioteca Recharts para crear visualizaciones interactivas.
+ * 
+ * Componentes incluidos:
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │ BasicIndicators      - Tarjeta con información básica del       │
+ * │                        municipio (población, variación)         │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ PopulationPyramid    - Pirámide de población 2022               │
+ * │ PopulationPyramid2010- Pirámide de población 2010               │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ GenderRatio          - Distribución por sexo (pie chart)        │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ HouseholdsTotalCard  - Total de hogares                         │
+ * │ PersonsPerHouseholdCard - Personas por hogar                    │
+ * │ UrbanRuralCard       - Población urbana vs rural                │
+ * │ HouseholdSizeChart   - Tamaño de hogares (1-10+)                │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ EconomyEmployment    - Economía y empleo (DEE 2024)             │
+ * │                        Incluye sectores CIIU, tamaño empresas   │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ ThematicListCard     - Tarjeta genérica para listas temáticas   │
+ * └──────────────────────────────────────────────────────────────────┘
+ * 
+ * Bibliotecas utilizadas:
+ * - Recharts: Gráficos (BarChart, PieChart, etc.)
+ * - Lucide-react: Íconos (Users, Briefcase, Home, etc.)
+ * 
+ * Colores principales:
+ * - BLUE (#1d4ed8): Hombres, indicadores primarios
+ * - RED (#dc2626): Mujeres, alertas
+ * - ECON_BAR (#fb7185): Gráficos de economía
+ */
+
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import {

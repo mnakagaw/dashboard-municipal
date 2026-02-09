@@ -1,3 +1,35 @@
+/**
+ * useMunicipioData.js - Hook Principal de Datos
+ * 
+ * Este es el hook más importante de la aplicación. Se encarga de:
+ * 1. Cargar todos los archivos JSON de datos al iniciar
+ * 2. Filtrar los datos según el municipio/provincia seleccionado
+ * 3. Proporcionar los datos procesados a todos los componentes
+ * 
+ * Flujo de datos:
+ * ┌─────────────────┐     ┌──────────────────┐     ┌───────────────────┐
+ * │  JSON Files     │ ──► │ useMunicipioData │ ──► │  React Components │
+ * │  (public/data/) │     │  (este hook)     │     │  (charts, maps)   │
+ * └─────────────────┘     └──────────────────┘     └───────────────────┘
+ * 
+ * Archivos cargados:
+ * - municipios_index.json: Lista de municipios con códigos
+ * - indicadores_basicos.json: Población por municipio
+ * - pyramids.json: Pirámides de población 2022
+ * - economia_empleo.json: Datos DEE 2024
+ * - educacion.json: Indicadores educativos
+ * - salud_establecimientos.json: Centros de salud
+ * - condicion_vida.json: Servicios básicos
+ * - national_*.json: Promedios nacionales para comparación
+ * 
+ * Parámetros:
+ * @param {string} selectedProvince - Nombre de la provincia seleccionada
+ * @param {string} selectionKey - Código ADM2 o "prov:NombreProvincia"
+ * 
+ * Retorna un objeto con todos los datos filtrados para el municipio/provincia
+ * seleccionado, listos para usar en los componentes.
+ */
+
 // src/hooks/useMunicipioData.js
 import { useEffect, useState, useMemo } from "react";
 
