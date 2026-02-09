@@ -16141,9 +16141,8 @@ function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   reactExports.useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${"/dashboard-municipal/"}data/adm2.geojson`);
-        if (!res.ok) return;
-        const gj = await res.json();
+        const mod = await __vitePreload(() => import('./adm2-DSs9itkX.js'),true?[]:void 0);
+        const gj = mod.default;
         setGeojson(gj);
       } catch (e) {
         console.error("Error cargando GeoJSON", e);
