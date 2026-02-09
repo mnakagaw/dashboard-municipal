@@ -53,3 +53,4 @@ Uso:
 pip install reportlab
 python scripts/generate_municipio_pdf.py public/data/indicadores_basicos.json public/data/economia_empleo.json 02001 salida.pdf
 ```
+Trigger deploy
