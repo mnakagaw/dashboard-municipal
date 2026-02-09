@@ -45,9 +45,9 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}data/adm2.geojson`);
-        if (!res.ok) return;
-        const gj = await res.json();
+        // Use dynamic import instead of fetch to ensure proper bundling and path resolution
+        const mod = await import("../../public/data/adm2.geojson");
+        const gj = mod.default;
         setGeojson(gj);
       } catch (e) {
         console.error("Error cargando GeoJSON", e);
