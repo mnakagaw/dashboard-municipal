@@ -10,6 +10,7 @@ import {
 import { GraduationCap } from "lucide-react";
 
 import ofertaData from "../../public/data/educacion_oferta_municipal.json";
+import ofertaProvinciaData from "../../public/data/educacion_oferta_municipal_provincia.json";
 import educacionData from "../../public/data/educacion.json";
 import nivelData from "../../public/data/educacion_nivel.json";
 
@@ -172,7 +173,7 @@ function toPct(value, base) {
 /* ============================================================
    Main Component
 ============================================================ */
-export default function EducacionDashboard({ records, selectedMunicipio }) {
+export default function EducacionDashboard({ records, selectedMunicipio, isProvinceSelection, educacionNivel }) {
   const muni = records?.[0] || null;
 
   if (!muni) return <div>No hay datos disponibles.</div>;
@@ -181,6 +182,14 @@ export default function EducacionDashboard({ records, selectedMunicipio }) {
      Oferta Educativa
   --------------------------- */
   const oferta = (() => {
+    // Provincia selection
+    if (isProvinceSelection && selectedMunicipio?.provincia) {
+      const provinciaName = String(selectedMunicipio.provincia).trim();
+      return ofertaProvinciaData.find(
+        (o) => String(o.provincia).trim() === provinciaName
+      ) || null;
+    }
+
     const candidates = [];
     if (muni.codigo_adm2 != null) {
       const code = String(muni.codigo_adm2).padStart(5, "0");
@@ -248,6 +257,9 @@ export default function EducacionDashboard({ records, selectedMunicipio }) {
      Nivel de instrucción
   --------------------------- */
   const nivelRow = (() => {
+    if (educacionNivel && educacionNivel.length > 0) {
+      return educacionNivel[0];
+    }
     if (!muni.adm2_code) return null;
     const code = String(muni.adm2_code).padStart(5, "0");
     return (
@@ -340,7 +352,9 @@ export default function EducacionDashboard({ records, selectedMunicipio }) {
         {/* Oferta Educativa */}
         <div className="rounded-xl bg-white p-4 shadow-sm border border-slate-200 print-card">
           <h3 className="font-semibold text-orange-700 mb-2">
-            Oferta Educativa – Municipio {muni.municipio}
+            {isProvinceSelection
+              ? `Oferta Educativa – Provincia ${selectedMunicipio?.provincia || muni.provincia}`
+              : `Oferta Educativa – Municipio ${muni.municipio}`}
           </h3>
 
           {oferta ? (
@@ -369,7 +383,9 @@ export default function EducacionDashboard({ records, selectedMunicipio }) {
             </>
           ) : (
             <p className="text-sm text-slate-500">
-              No hay datos sobre oferta educativa para este municipio.
+              {isProvinceSelection
+                ? "No hay datos sobre oferta educativa para esta provincia."
+                : "No hay datos sobre oferta educativa para este municipio."}
             </p>
           )}
         </div>

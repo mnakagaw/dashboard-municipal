@@ -6,7 +6,9 @@ export default function DemografiaHogaresSection({
   hogaresResumen,
   poblacionUrbanaRural,
   hogaresTamanoRecords,
+  isProvinceSelection,
 }) {
+  const territoryLabel = isProvinceSelection ? "esta provincia" : "este municipio";
   return (
     <div className="mt-4 w-full">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr),minmax(0,2fr)] print-hogares-grid">
@@ -34,7 +36,7 @@ export default function DemografiaHogaresSection({
                 </div>
               ) : (
                 <p className="text-[11px] text-slate-500">
-                  Aún no hay datos para este municipio.
+                  Aún no hay datos para {territoryLabel}.
                 </p>
               )}
             </CardContent>
@@ -54,7 +56,7 @@ export default function DemografiaHogaresSection({
                 </div>
               ) : (
                 <p className="text-[11px] text-slate-500">
-                  Aún no hay datos para este municipio.
+                  Aún no hay datos para {territoryLabel}.
                 </p>
               )}
             </CardContent>
@@ -79,7 +81,7 @@ export default function DemografiaHogaresSection({
                 </div>
               ) : (
                 <p className="text-[11px] text-slate-500">
-                  Aún no hay datos para este municipio.
+                  Aún no hay datos para {territoryLabel}.
                 </p>
               )}
             </CardContent>
@@ -99,7 +101,7 @@ export default function DemografiaHogaresSection({
               </CardHeader>
               <CardContent className="pt-0 text-xs md:text-sm">
                 <p className="text-[11px] text-slate-500">
-                  Aún no hay datos para este municipio.
+                  Aún no hay datos para {territoryLabel}.
                 </p>
               </CardContent>
             </Card>

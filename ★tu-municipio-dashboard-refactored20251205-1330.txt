@@ -1,0 +1,169 @@
+★tu-municipio-dashboard-refactored20251205-1330
+ ├ api
+ ｜  ├ api_chat.php
+ ｜  └ generateNarrative.php
+ ├ dist
+ ｜  ├ assets
+ ｜  ｜  ├ index-B5bcN6J3.css
+ ｜  ｜  └ index-MZfr8Q7l.js
+ ｜  ├ data
+ ｜  ｜  ├ adm2.geojson
+ ｜  ｜  ├ adm2_map_2010.json
+ ｜  ｜  ├ condicion_vida.json
+ ｜  ｜  ├ condicion_vida_provincia.json
+ ｜  ｜  ├ distrito_educativo.json
+ ｜  ｜  ├ economia_empleo.json
+ ｜  ｜  ├ economia_empleo_provincia.json
+ ｜  ｜  ├ edad_sexo_2010.json
+ ｜  ｜  ├ edad_sexo_2010_provincia.json
+ ｜  ｜  ├ educacion.json
+ ｜  ｜  ├ educacion_nivel.json
+ ｜  ｜  ├ educacion_nivel_provincia.json
+ ｜  ｜  ├ educacion_oferta_municipal.json
+ ｜  ｜  ├ educacion_oferta_municipal_provincia.json
+ ｜  ｜  ├ educacion_provincia.json
+ ｜  ｜  ├ elecciones.json
+ ｜  ｜  ├ elecciones_provincia.json
+ ｜  ｜  ├ hogares_resumen.json
+ ｜  ｜  ├ hogares_resumen_provincia.json
+ ｜  ｜  ├ household_size_distribution.json
+ ｜  ｜  ├ indicadores_basicos.json
+ ｜  ｜  ├ municipios_index.json
+ ｜  ｜  ├ national_basic.json
+ ｜  ｜  ├ national_condicion_vida.json
+ ｜  ｜  ├ national_economia_empleo.json
+ ｜  ｜  ├ national_educacion_nivel.json
+ ｜  ｜  ├ national_educacion_oferta.json
+ ｜  ｜  ├ national_hogares.json
+ ｜  ｜  ├ national_salud_establecimientos.json
+ ｜  ｜  ├ national_summary.json
+ ｜  ｜  ├ national_thematic.json
+ ｜  ｜  ├ national_tic.json
+ ｜  ｜  ├ poblacion_urbana_rural.json
+ ｜  ｜  ├ poblacion_urbana_rural_provincia.json
+ ｜  ｜  ├ pobreza.json
+ ｜  ｜  ├ pobreza_provincia.json
+ ｜  ｜  ├ pyramids.json
+ ｜  ｜  ├ pyramids_provincia.json
+ ｜  ｜  ├ registro_civil.json
+ ｜  ｜  ├ registro_civil_provincia.json
+ ｜  ｜  ├ salud.json
+ ｜  ｜  ├ salud_establecimientos.json
+ ｜  ｜  ├ salud_establecimientos_provincia.json
+ ｜  ｜  ├ salud_provincia.json
+ ｜  ｜  ├ seguridad.json
+ ｜  ｜  ├ seguridad_provincia.json
+ ｜  ｜  ├ tamano_hogar.json
+ ｜  ｜  ├ tamano_hogar_provincia.json
+ ｜  ｜  ├ telecom.json
+ ｜  ｜  ├ telecom_provincia.json
+ ｜  ｜  ├ tic.json
+ ｜  ｜  ├ tic_provincia.json
+ ｜  ｜  ├ trabajo.json
+ ｜  ｜  ├ trabajo_provincia.json
+ ｜  ｜  ├ vivienda.json
+ ｜  ｜  └ vivienda_provincia.json
+ ｜  ├ icons
+ ｜  ｜  └ report.svg
+ ｜  └ index.html
+ ├ manuales
+ ｜  ├ Manual de Dashboard Municipal-ESP.docx
+ ｜  ├ Manual de Dashboard Municipal.docx
+ ｜  ├ Manual de Dashboard Municipal.pdf
+ ｜  └ Tu Municipio en Cifras - RD018 Dajabon.pdf
+ ├ public
+ ｜  ├ data
+ ｜  ｜  ├ adm2.geojson
+ ｜  ｜  ├ adm2_map_2010.json
+ ｜  ｜  ├ condicion_vida.json
+ ｜  ｜  ├ condicion_vida_provincia.json
+ ｜  ｜  ├ economia_empleo.json
+ ｜  ｜  ├ economia_empleo_provincia.json
+ ｜  ｜  ├ edad_sexo_2010.json
+ ｜  ｜  ├ edad_sexo_2010_provincia.json
+ ｜  ｜  ├ educacion.json
+ ｜  ｜  ├ educacion_nivel.json
+ ｜  ｜  ├ educacion_nivel_provincia.json
+ ｜  ｜  ├ educacion_oferta_municipal.json
+ ｜  ｜  ├ educacion_oferta_municipal_provincia.json
+ ｜  ｜  ├ educacion_provincia.json
+ ｜  ｜  ├ hogares_resumen.json
+ ｜  ｜  ├ hogares_resumen_provincia.json
+ ｜  ｜  ├ indicadores_basicos.json
+ ｜  ｜  ├ municipios_index.json
+ ｜  ｜  ├ national_basic.json
+ ｜  ｜  ├ national_condicion_vida.json
+ ｜  ｜  ├ national_economia_empleo.json
+ ｜  ｜  ├ national_educacion_nivel.json
+ ｜  ｜  ├ national_educacion_oferta.json
+ ｜  ｜  ├ national_hogares.json
+ ｜  ｜  ├ national_salud_establecimientos.json
+ ｜  ｜  ├ national_tic.json
+ ｜  ｜  ├ poblacion_urbana_rural.json
+ ｜  ｜  ├ poblacion_urbana_rural_provincia.json
+ ｜  ｜  ├ pyramids.json
+ ｜  ｜  ├ pyramids_provincia.json
+ ｜  ｜  ├ salud_establecimientos.json
+ ｜  ｜  ├ salud_establecimientos_provincia.json
+ ｜  ｜  ├ tamano_hogar.json
+ ｜  ｜  ├ tamano_hogar_provincia.json
+ ｜  ｜  ├ tic.json
+ ｜  ｜  └ tic_provincia.json
+ ｜  ├ icons
+ ｜  ｜  └ report.svg
+ ｜  └ old
+ ｜      └ data
+ ｜          ├ distrito_educativo.json
+ ｜          ├ elecciones.json
+ ｜          ├ elecciones_provincia.json
+ ｜          ├ household_size_distribution.json
+ ｜          ├ national_summary.json
+ ｜          ├ national_thematic.json
+ ｜          ├ pobreza.json
+ ｜          ├ pobreza_provincia.json
+ ｜          ├ registro_civil.json
+ ｜          ├ registro_civil_provincia.json
+ ｜          ├ salud.json
+ ｜          ├ salud_provincia.json
+ ｜          ├ seguridad.json
+ ｜          ├ seguridad_provincia.json
+ ｜          ├ telecom.json
+ ｜          ├ telecom_provincia.json
+ ｜          ├ trabajo.json
+ ｜          ├ trabajo_provincia.json
+ ｜          ├ vivienda.json
+ ｜          └ vivienda_provincia.json
+ ├ scripts
+ ├ src
+ ｜  ├ components
+ ｜  ｜  ├ ui
+ ｜  ｜  ｜  ├ card.jsx
+ ｜  ｜  ｜  └ select.jsx
+ ｜  ｜  ├ charts.jsx
+ ｜  ｜  ├ CondicionVidaSection.jsx
+ ｜  ｜  ├ DemografiaHogaresSection.jsx
+ ｜  ｜  ├ EducacionDashboard.jsx
+ ｜  ｜  ├ PyramidsRow.jsx
+ ｜  ｜  ├ RDMap.jsx
+ ｜  ｜  ├ ResumenComparacionSection.jsx
+ ｜  ｜  ├ ResumenNarrativoSection.jsx
+ ｜  ｜  ├ SaludSection.jsx
+ ｜  ｜  └ TopSelectionAndMap.jsx
+ ｜  ├ hooks
+ ｜  ｜  └ useMunicipioData.js
+ ｜  ├ utils
+ ｜  ｜  └ educationHelpers.js
+ ｜  ├ App.jsx
+ ｜  ├ index.css
+ ｜  ├ main.jsx
+ ｜  └ print.css
+ ├ .env
+ ├ build_output.log
+ ├ index.html
+ ├ package.json
+ ├ postcss.config.cjs
+ ├ README.md
+ ├ tailwind.config.js
+ ├ vite.config.js
+ ├ vite.config.js.dashboard
+ └ ★tu-municipio-dashboard-refactored20251205-1330.txt

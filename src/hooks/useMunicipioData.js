@@ -21,6 +21,18 @@ function buildLongMap(longData) {
   return map;
 }
 
+function buildProvinceMap(data) {
+  const map = new Map();
+  for (const row of data || []) {
+    if (!row.provincia) continue;
+    // Normalize key? Maybe just use the string as is.
+    const key = row.provincia;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(row);
+  }
+  return map;
+}
+
 // ---------------------------------------------------------------------------
 // Condición de Vida → Percent Builder
 // ---------------------------------------------------------------------------
@@ -110,16 +122,8 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
   const [indicadoresBasicosData, setIndicadoresBasicosData] = useState([]);
   const [pyramidsData, setPyramidsData] = useState([]);
   const [economiaEmpleoData, setEconomiaEmpleoData] = useState([]);
-  const [viviendaData, setViviendaData] = useState([]);
   const [educacionData, setEducacionData] = useState([]);
-  const [educacionNivel, setEducacionNivel] = useState([]);
-  const [seguridadData, setSeguridadData] = useState([]);
-  const [registroCivilData, setRegistroCivilData] = useState([]);
-  const [saludData, setSaludData] = useState([]);
-  const [telecomData, setTelecomData] = useState([]);
-  const [pobrezaData, setPobrezaData] = useState([]);
-  const [trabajoData, setTrabajoData] = useState([]);
-  const [eleccionesData, setEleccionesData] = useState([]);
+  const [educacionNivelData, setEducacionNivelData] = useState([]);
 
   const [pyramid2010Data, setPyramid2010Data] = useState([]);
   const [adm2Map2010, setAdm2Map2010] = useState({});
@@ -127,6 +131,22 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
   const [hogaresResumenData, setHogaresResumenData] = useState([]);
   const [hogaresTamanoData, setHogaresTamanoData] = useState([]);
   const [poblacionUrbanaRuralData, setPoblacionUrbanaRuralData] = useState([]);
+
+  // Province datasets
+  const [educacionProvinciaData, setEducacionProvinciaData] = useState([]);
+  const [hogaresResumenProvinciaData, setHogaresResumenProvinciaData] = useState([]);
+  const [hogaresTamanoProvinciaData, setHogaresTamanoProvinciaData] = useState([]);
+  const [poblacionUrbanaRuralProvinciaData, setPoblacionUrbanaRuralProvinciaData] = useState([]);
+  const [ticProvinciaData, setTicProvinciaData] = useState([]);
+  const [condicionVidaProvinciaData, setCondicionVidaProvinciaData] = useState([]);
+  const [saludEstablecimientosProvinciaData, setSaludEstablecimientosProvinciaData] = useState([]);
+  const [economiaEmpleoProvinciaData, setEconomiaEmpleoProvinciaData] = useState([]);
+  const [educacionNivelProvinciaData, setEducacionNivelProvinciaData] = useState([]);
+  const [pyramidsProvinciaData, setPyramidsProvinciaData] = useState([]);
+  const [pyramid2010ProvinciaData, setPyramid2010ProvinciaData] = useState([]);
+
+  // ★ New: Education Offer (Municipal) for weighted averages
+  const [educacionOfertaMunicipalData, setEducacionOfertaMunicipalData] = useState([]);
 
   // TIC データ
   const [ticData, setTicData] = useState([]);
@@ -138,105 +158,199 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
   // National datasets
   const [nationalBasic, setNationalBasic] = useState([]);
   const [nationalEcon, setNationalEcon] = useState([]);
-  const [nationalThematic, setNationalThematic] = useState([]);
 
   // 上のほうの state 群に追加
-const [saludEstablecimientosData, setSaludEstablecimientosData] = useState({});
+  const [saludEstablecimientosData, setSaludEstablecimientosData] = useState({});
+
+  // ★ 新規
+  const [nationalTic, setNationalTic] = useState(null);
+  const [nationalEducNivel, setNationalEducNivel] = useState(null);
+  const [nationalEducOferta, setNationalEducOferta] = useState(null);
+  const [nationalHogares, setNationalHogares] = useState(null);
+  const [nationalSalud, setNationalSalud] = useState(null);
 
 
 
   // ---------------------------------------------------------------------------
-  // Load JSON
+  // Load JSON  ★ national_* も含めた版
   // ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// Load JSON  ★ デバッグログ付き版
-// ---------------------------------------------------------------------------
 
-useEffect(() => {
-  async function loadAll() {
-    const load = async (path) => {
-      // console.log("[LOAD]", path);
+  useEffect(() => {
+    async function loadAll() {
+      const load = async (path) => {
+        // console.log("[LOAD]", path);
+        try {
+          const res = await fetch(path);
 
-      try {
-        const res = await fetch(path);
+          if (!res.ok) {
+            console.error("[FAILED]", path, "HTTP", res.status);
+            throw new Error(`HTTP ${res.status}`);
+          }
 
-        if (!res.ok) {
-          console.error("[FAILED]", path, "HTTP", res.status);
-          throw new Error(`HTTP ${res.status}`);
+          const json = await res.json();
+          // console.log("[OK]", path);
+          return json;
+        } catch (err) {
+          // console.error("[ERROR] JSON invalid:", path, err.message);
+          throw err;
         }
-
-        const json = await res.json();
-      //  console.log("[OK]", path);
-        return json;
-
-      } catch (err) {
-      //  console.error("[ERROR] JSON invalid:", path, err.message);
-        throw err;
-      }
-    };
-
-    try {
-      setMunicipiosIndexData(await load(`${import.meta.env.BASE_URL}data/municipios_index.json`));
-      setIndicadoresBasicosData(await load(`${import.meta.env.BASE_URL}data/indicadores_basicos.json`));
-      setPyramidsData(await load(`${import.meta.env.BASE_URL}data/pyramids.json`));
-      setEconomiaEmpleoData(await load(`${import.meta.env.BASE_URL}data/economia_empleo.json`));
-      setViviendaData(await load(`${import.meta.env.BASE_URL}data/vivienda.json`));
-      setEducacionData(await load(`${import.meta.env.BASE_URL}data/educacion.json`));
-      setSeguridadData(await load(`${import.meta.env.BASE_URL}data/seguridad.json`));
-      setEducacionNivel(await load(`${import.meta.env.BASE_URL}data/educacion_nivel.json`));
-      setRegistroCivilData(await load(`${import.meta.env.BASE_URL}data/registro_civil.json`));
-      setSaludData(await load(`${import.meta.env.BASE_URL}data/salud.json`));
-      setTelecomData(await load(`${import.meta.env.BASE_URL}data/telecom.json`));
-      setPobrezaData(await load(`${import.meta.env.BASE_URL}data/pobreza.json`));
-      setTrabajoData(await load(`${import.meta.env.BASE_URL}data/trabajo.json`));
-      setEleccionesData(await load(`${import.meta.env.BASE_URL}data/elecciones.json`));
-
-      setPyramid2010Data(await load(`${import.meta.env.BASE_URL}data/edad_sexo_2010.json`));
-      setAdm2Map2010(await load(`${import.meta.env.BASE_URL}data/adm2_map_2010.json`));
-
-      setHogaresResumenData(await load(`${import.meta.env.BASE_URL}data/hogares_resumen.json`));
-      setHogaresTamanoData(await load(`${import.meta.env.BASE_URL}data/tamano_hogar.json`));
-      setPoblacionUrbanaRuralData(await load(`${import.meta.env.BASE_URL}data/poblacion_urbana_rural.json`));
-
-      // TIC
-      setTicData(await load(`${import.meta.env.BASE_URL}data/tic.json`));
-
-      // ★ Salud Establecimientos ADM2
-      setSaludEstablecimientosData(await load(`${import.meta.env.BASE_URL}data/salud_establecimientos.json`));
-
-      // Condición de vida (municipio)
-      setCondicionVidaData(await load(`${import.meta.env.BASE_URL}data/condicion_vida.json`));
-
-      // National
-      setNationalBasic(await load(`${import.meta.env.BASE_URL}data/national_basic.json`));
-      setNationalEcon(await load(`${import.meta.env.BASE_URL}data/national_economia_empleo.json`));
-      setNationalThematic(await load(`${import.meta.env.BASE_URL}data/national_thematic.json`));
-
-      // National Condición De Vida
-      const nationalRaw = await load(`${import.meta.env.BASE_URL}data/national_condicion_vida.json`);
-
-      const nationalWrapped = {
-        servicios: {
-          servicios_sanitarios: nationalRaw.servicios_sanitarios,
-          agua_uso_domestico: nationalRaw.agua_uso_domestico,
-          agua_para_beber: nationalRaw.agua_para_beber,
-          combustible_cocinar: nationalRaw.combustible_cocinar,
-          alumbrado: nationalRaw.alumbrado,
-          eliminacion_basura: nationalRaw.eliminacion_basura,
-        },
       };
 
-      setNationalCondicionVida(buildCondicionVidaParsed(nationalWrapped));
+      try {
+        // ---- Municipales / seccionales ----
+        setMunicipiosIndexData(
+          await load(`${import.meta.env.BASE_URL}data/municipios_index.json`)
+        );
+        setIndicadoresBasicosData(
+          await load(`${import.meta.env.BASE_URL}data/indicadores_basicos.json`)
+        );
+        setPyramidsData(
+          await load(`${import.meta.env.BASE_URL}data/pyramids.json`)
+        );
+        setEconomiaEmpleoData(
+          await load(`${import.meta.env.BASE_URL}data/economia_empleo.json`)
+        );
+        // vivienda removed
+        setEducacionData(
+          await load(`${import.meta.env.BASE_URL}data/educacion.json`)
+        );
+        // seguridad removed
+        setEducacionNivelData(
+          await load(`${import.meta.env.BASE_URL}data/educacion_nivel.json`)
+        );
+        // registro_civil removed
+        // salud removed (only salud_establecimientos kept)
+        // telecom removed
+        // pobreza removed
+        // trabajo removed
+        // elecciones removed
 
-      setLoaded(true);
+        setPyramid2010Data(
+          await load(`${import.meta.env.BASE_URL}data/edad_sexo_2010.json`)
+        );
+        setAdm2Map2010(
+          await load(`${import.meta.env.BASE_URL}data/adm2_map_2010.json`)
+        );
 
-    } catch (err) {
-      console.error("🔥 loadAll() 中断！壊れている JSON:", err.message);
+        setHogaresResumenData(
+          await load(`${import.meta.env.BASE_URL}data/hogares_resumen.json`)
+        );
+        setHogaresTamanoData(
+          await load(`${import.meta.env.BASE_URL}data/tamano_hogar.json`)
+        );
+        setPoblacionUrbanaRuralData(
+          await load(
+            `${import.meta.env.BASE_URL}data/poblacion_urbana_rural.json`
+          )
+        );
+
+        // TIC municipal
+        setTicData(await load(`${import.meta.env.BASE_URL}data/tic.json`));
+
+        // Salud: establecimientos por municipio (ADM2)
+        setSaludEstablecimientosData(
+          await load(
+            `${import.meta.env.BASE_URL}data/salud_establecimientos.json`
+          )
+        );
+
+        // Condición de vida (municipal)
+        setCondicionVidaData(
+          await load(`${import.meta.env.BASE_URL}data/condicion_vida.json`)
+        );
+
+        // ★ Load Education Offer (Municipal)
+        setEducacionOfertaMunicipalData(
+          await load(`${import.meta.env.BASE_URL}data/educacion_oferta_municipal.json`)
+        );
+
+        // ---- Provincia Level Data ----
+        // vivienda_provincia removed
+        setEducacionProvinciaData(await load(`${import.meta.env.BASE_URL}data/educacion_provincia.json`));
+        // seguridad_provincia removed
+        // registro_civil_provincia removed
+        // salud_provincia removed
+        // telecom_provincia removed
+        // pobreza_provincia removed
+        // trabajo_provincia removed
+        // elecciones_provincia removed
+        setHogaresResumenProvinciaData(await load(`${import.meta.env.BASE_URL}data/hogares_resumen_provincia.json`));
+        setHogaresTamanoProvinciaData(await load(`${import.meta.env.BASE_URL}data/tamano_hogar_provincia.json`));
+        setPoblacionUrbanaRuralProvinciaData(await load(`${import.meta.env.BASE_URL}data/poblacion_urbana_rural_provincia.json`));
+        setTicProvinciaData(await load(`${import.meta.env.BASE_URL}data/tic_provincia.json`));
+        setCondicionVidaProvinciaData(await load(`${import.meta.env.BASE_URL}data/condicion_vida_provincia.json`));
+        setSaludEstablecimientosProvinciaData(await load(`${import.meta.env.BASE_URL}data/salud_establecimientos_provincia.json`));
+        setEconomiaEmpleoProvinciaData(await load(`${import.meta.env.BASE_URL}data/economia_empleo_provincia.json`));
+        setEducacionNivelProvinciaData(await load(`${import.meta.env.BASE_URL}data/educacion_nivel_provincia.json`));
+        setPyramidsProvinciaData(await load(`${import.meta.env.BASE_URL}data/pyramids_provincia.json`));
+        setPyramid2010ProvinciaData(await load(`${import.meta.env.BASE_URL}data/edad_sexo_2010_provincia.json`));
+
+        // ---- National (básicos / economía / temáticos) ----
+        setNationalBasic(
+          await load(`${import.meta.env.BASE_URL}data/national_basic.json`)
+        );
+        setNationalEcon(
+          await load(
+            `${import.meta.env.BASE_URL}data/national_economia_empleo.json`
+          )
+        );
+        // national_thematic removed
+
+        // National TIC
+        setNationalTic(
+          await load(`${import.meta.env.BASE_URL}data/national_tic.json`)
+        );
+
+        // National educación (niveles e infraestructura/oferta)
+        setNationalEducNivel(
+          await load(
+            `${import.meta.env.BASE_URL}data/national_educacion_nivel.json`
+          )
+        );
+        setNationalEducOferta(
+          await load(
+            `${import.meta.env.BASE_URL}data/national_educacion_oferta.json`
+          )
+        );
+
+        // National hogares (estructura, tamaño, urbano/rural 等)
+        setNationalHogares(
+          await load(`${import.meta.env.BASE_URL}data/national_hogares.json`)
+        );
+
+        // National salud (establecimientos por tipo / nivel)
+        setNationalSalud(
+          await load(
+            `${import.meta.env.BASE_URL}data/national_salud_establecimientos.json`
+          )
+        );
+
+        // ---- National Condición de Vida （形式を municipal 用に合わせてラップ）----
+        const nationalRaw = await load(
+          `${import.meta.env.BASE_URL}data/national_condicion_vida.json`
+        );
+
+        const nationalWrapped = {
+          servicios: {
+            servicios_sanitarios: nationalRaw.servicios_sanitarios,
+            agua_uso_domestico: nationalRaw.agua_uso_domestico,
+            agua_para_beber: nationalRaw.agua_para_beber,
+            combustible_cocinar: nationalRaw.combustible_cocinar,
+            alumbrado: nationalRaw.alumbrado,
+            eliminacion_basura: nationalRaw.eliminacion_basura,
+          },
+        };
+
+        setNationalCondicionVida(buildCondicionVidaParsed(nationalWrapped));
+
+        setLoaded(true);
+      } catch (err) {
+        console.error("🔥 loadAll() 中断！壊れている JSON:", err.message);
+      }
     }
-  }
 
-  loadAll();
-}, []);
+    loadAll();
+  }, []);
 
 
   // ---------------------------------------------------------------------------
@@ -324,25 +438,21 @@ useEffect(() => {
     return m;
   }, [pyramid2010Data]);
 
-  const viviendaMap = useMemo(() => buildLongMap(viviendaData), [viviendaData]);
   const educacionMap = useMemo(() => buildLongMap(educacionData), [educacionData]);
-  const seguridadMap = useMemo(() => buildLongMap(seguridadData), [seguridadData]);
-  const registroCivilMap = useMemo(
-    () => buildLongMap(registroCivilData),
-    [registroCivilData]
-  );
-  const saludMap = useMemo(() => buildLongMap(saludData), [saludData]);
-  const telecomMap = useMemo(() => buildLongMap(telecomData), [telecomData]);
-  const pobrezaMap = useMemo(() => buildLongMap(pobrezaData), [pobrezaData]);
-  const trabajoMap = useMemo(() => buildLongMap(trabajoData), [trabajoData]);
-  const eleccionesMap = useMemo(
-    () => buildLongMap(eleccionesData),
-    [eleccionesData]
-  );
+  // saludMap removed
+
+  // Is saludMap used? Yes, in return object. But wait, App.jsx uses saludEstablecimientosData directly via prop.
+  // Let's check usage of saludRecords.
+  // App.jsx passes `salud={saludEstablecimientos}` to ResumenNarrativoSection.
+  // App.jsx passes `saludEstablecimientos={saludEstablecimientos}` to SaludSection.
+  // `saludRecords` (from `saludMap`) seems unused or redundant if `saludEstablecimientos` is the main one.
+  // Actually, `salud.json` was removed. `salud_establecimientos.json` is kept.
+  // `saludMap` was built from `saludData`. `saludData` is removed.
+  // So `saludMap` should be removed.
 
   const educacionNivelMap = useMemo(
-    () => buildLongMap(educacionNivel),
-    [educacionNivel]
+    () => buildLongMap(educacionNivelData),
+    [educacionNivelData]
   );
 
   const hogaresResumenMap = useMemo(
@@ -357,6 +467,18 @@ useEffect(() => {
     () => buildLongMap(poblacionUrbanaRuralData),
     [poblacionUrbanaRuralData]
   );
+
+  // Province Maps
+  const educacionProvinciaMap = useMemo(() => buildProvinceMap(educacionProvinciaData), [educacionProvinciaData]);
+  const hogaresResumenProvinciaMap = useMemo(() => buildProvinceMap(hogaresResumenProvinciaData), [hogaresResumenProvinciaData]);
+  const hogaresTamanoProvinciaMap = useMemo(() => buildProvinceMap(hogaresTamanoProvinciaData), [hogaresTamanoProvinciaData]);
+  const poblacionUrbanaRuralProvinciaMap = useMemo(() => buildProvinceMap(poblacionUrbanaRuralProvinciaData), [poblacionUrbanaRuralProvinciaData]);
+  const ticProvinciaMap = useMemo(() => buildProvinceMap(ticProvinciaData), [ticProvinciaData]);
+  const saludEstablecimientosProvinciaMap = useMemo(() => buildProvinceMap(saludEstablecimientosProvinciaData), [saludEstablecimientosProvinciaData]);
+  const economiaEmpleoProvinciaMap = useMemo(() => buildProvinceMap(economiaEmpleoProvinciaData), [economiaEmpleoProvinciaData]);
+  const educacionNivelProvinciaMap = useMemo(() => buildProvinceMap(educacionNivelProvinciaData), [educacionNivelProvinciaData]);
+  const pyramidsProvinciaMap = useMemo(() => buildProvinceMap(pyramidsProvinciaData), [pyramidsProvinciaData]);
+  const pyramid2010ProvinciaMap = useMemo(() => buildProvinceMap(pyramid2010ProvinciaData), [pyramid2010ProvinciaData]);
 
   // ---------------------------------------------------------------------------
   // Indicators
@@ -397,19 +519,28 @@ useEffect(() => {
   // Other datasets
   // ---------------------------------------------------------------------------
   const econ = useMemo(() => {
+    if (isProvinceSelection && selectedProvinceScope) {
+      const rows = economiaEmpleoProvinciaMap.get(selectedProvinceScope) || [];
+      return rows[0] || null;
+    }
     if (selectedAdm2) {
       return econMap.get(normalizeAdm2(selectedAdm2)) || null;
     }
     return null;
-  }, [econMap, selectedAdm2]);
+  }, [econMap, selectedAdm2, isProvinceSelection, selectedProvinceScope, economiaEmpleoProvinciaMap]);
 
   const pyramid = useMemo(() => {
+    if (isProvinceSelection && selectedProvinceScope) {
+      const rows = pyramidsProvinciaMap.get(selectedProvinceScope) || [];
+      // rows[0] should contain { age_groups: [...] }
+      return rows[0]?.age_groups || [];
+    }
     if (selectedAdm2) {
       const entry = pyramidMap[selectedAdm2];
       return entry?.age_groups || [];
     }
     return [];
-  }, [pyramidMap, selectedAdm2]);
+  }, [pyramidMap, pyramidsProvinciaMap, selectedAdm2, isProvinceSelection, selectedProvinceScope]);
 
   // 2010 Pyramid
   const selectedAdm22010 = useMemo(() => {
@@ -419,74 +550,61 @@ useEffect(() => {
   }, [selectedAdm2Norm, isProvinceSelection, adm2Map2010]);
 
   const pyramid2010 = useMemo(() => {
-    if (!selectedAdm22010 || isProvinceSelection) return [];
+    if (isProvinceSelection && selectedProvinceScope) {
+      const rows = pyramid2010ProvinciaMap.get(selectedProvinceScope) || [];
+      // rows is array of { age_group, male, female }
+      return rows;
+    }
+    if (!selectedAdm22010) return [];
     return pyramid2010Map.get(selectedAdm22010) || [];
-  }, [selectedAdm22010, isProvinceSelection, pyramid2010Map]);
+  }, [selectedAdm22010, isProvinceSelection, selectedProvinceScope, pyramid2010Map, pyramid2010ProvinciaMap]);
+
+  const educacionNivel = useMemo(() => {
+    if (isProvinceSelection && selectedProvinceScope) {
+      return educacionNivelProvinciaMap.get(selectedProvinceScope) || [];
+    }
+    if (!selectedAdm2Norm) return [];
+    return educacionNivelMap.get(selectedAdm2Norm) || [];
+  }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, educacionNivelMap, educacionNivelProvinciaMap]);
 
   // ---------------------------------------------------------------------------
   // Records by ADM2
   // ---------------------------------------------------------------------------
-  const viviendaRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return viviendaMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, viviendaMap]);
-
   const educacionRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
+    if (isProvinceSelection && selectedProvinceScope) {
+      return educacionProvinciaMap.get(selectedProvinceScope) || [];
+    }
+    if (!selectedAdm2Norm) return [];
     return educacionMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, educacionMap]);
-
-  const seguridadRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return seguridadMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, seguridadMap]);
-
-  const registroCivilRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return registroCivilMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, registroCivilMap]);
-
-  const saludRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return saludMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, saludMap]);
-
-  const telecomRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return telecomMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, telecomMap]);
-
-  const pobrezaRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return pobrezaMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, pobrezaMap]);
-
-  const trabajoRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return trabajoMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, trabajoMap]);
+  }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, educacionMap, educacionProvinciaMap]);
 
   const hogaresResumen = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return null;
+    if (isProvinceSelection && selectedProvinceScope) {
+      const rows = hogaresResumenProvinciaMap.get(selectedProvinceScope) || [];
+      return rows[0] || null;
+    }
+    if (!selectedAdm2Norm) return null;
     const rows = hogaresResumenMap.get(selectedAdm2Norm) || [];
     return rows[0] || null;
-  }, [selectedAdm2Norm, isProvinceSelection, hogaresResumenMap]);
+  }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, hogaresResumenMap, hogaresResumenProvinciaMap]);
 
   const hogaresTamanoRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
+    if (isProvinceSelection && selectedProvinceScope) {
+      return hogaresTamanoProvinciaMap.get(selectedProvinceScope) || [];
+    }
+    if (!selectedAdm2Norm) return [];
     return hogaresTamanoMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, hogaresTamanoMap]);
+  }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, hogaresTamanoMap, hogaresTamanoProvinciaMap]);
 
   const poblacionUrbanaRural = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return null;
+    if (isProvinceSelection && selectedProvinceScope) {
+      const rows = poblacionUrbanaRuralProvinciaMap.get(selectedProvinceScope) || [];
+      return rows[0] || null;
+    }
+    if (!selectedAdm2Norm) return null;
     const rows = poblacionUrbanaRuralMap.get(selectedAdm2Norm) || [];
     return rows[0] || null;
-  }, [selectedAdm2Norm, isProvinceSelection, poblacionUrbanaRuralMap]);
-
-  const eleccionesRecords = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return [];
-    return eleccionesMap.get(selectedAdm2Norm) || [];
-  }, [selectedAdm2Norm, isProvinceSelection, eleccionesMap]);
+  }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, poblacionUrbanaRuralMap, poblacionUrbanaRuralProvinciaMap]);
 
   // ---------------------------------------------------------------------------
   // TIC Map & Record（raw のまま）※ rate_used を Section 側で % にする
@@ -502,36 +620,28 @@ useEffect(() => {
   }, [ticData]);
 
   const tic = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return null;
+    if (isProvinceSelection && selectedProvinceScope) {
+      const rows = ticProvinciaMap.get(selectedProvinceScope) || [];
+      return rows[0] || null;
+    }
+    if (!selectedAdm2Norm) return null;
     return ticMap.get(selectedAdm2Norm) || null;
-  }, [selectedAdm2Norm, isProvinceSelection, ticMap]);
+  }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, ticMap, ticProvinciaMap]);
 
   // ---------------------------------------------------------------------------
   // Condición de Vida（municipio）
   // ---------------------------------------------------------------------------
-  /*
-  useEffect(() => {
-    if (!condicionVidaData || !condicionVidaData.length) return;
-    console.log("=== DEBUG: condicion_vida.json sample ===");
-    console.log(condicionVidaData[0]);
-  }, [condicionVidaData]);
-
-  useEffect(() => {
-    if (!selectedAdm2Norm) return;
-    const raw = condicionVidaData.find(
-      (c) => String(c.adm2_code).padStart(5, "0") === selectedAdm2Norm
-    );
-    console.log("=== DEBUG: condicionVidaRaw ===", selectedAdm2Norm, raw);
-  }, [selectedAdm2Norm, condicionVidaData]);
-*/
   const condicionVidaRaw = useMemo(() => {
-    if (!selectedAdm2Norm || isProvinceSelection) return null;
+    if (isProvinceSelection && selectedProvinceScope) {
+      return condicionVidaProvinciaData.find(c => c.provincia === selectedProvinceScope) || null;
+    }
+    if (!selectedAdm2Norm) return null;
     return (
       condicionVidaData.find(
         (c) => String(c.adm2_code).padStart(5, "0") === selectedAdm2Norm
       ) || null
     );
-  }, [condicionVidaData, selectedAdm2Norm, isProvinceSelection]);
+  }, [condicionVidaData, condicionVidaProvinciaData, selectedAdm2Norm, isProvinceSelection, selectedProvinceScope]);
 
   const condicionVida = useMemo(() => {
     return buildCondicionVidaParsed(condicionVidaRaw);
@@ -561,6 +671,7 @@ useEffect(() => {
     return provincias.map((p) => ({ value: p, label: p }));
   }, [provincias]);
 
+
   // ---------------------------------------------------------------------------
   // Return
   // ---------------------------------------------------------------------------
@@ -582,15 +693,8 @@ useEffect(() => {
     pyramid,
     pyramid2010,
 
-    viviendaRecords,
     educacionRecords,
-    seguridadRecords,
-    registroCivilRecords,
-    saludRecords,
-    telecomRecords,
-    pobrezaRecords,
-    trabajoRecords,
-    eleccionesRecords,
+    educacionNivel,
 
     hogaresResumen,
     hogaresTamanoRecords,
@@ -598,16 +702,43 @@ useEffect(() => {
 
     nationalBasic,
     nationalEcon,
-    nationalThematic,
 
-    educacionNivel: educacionNivelMap.get(selectedAdm2Norm) || [],
+    educacionNivel: (isProvinceSelection && selectedProvinceScope)
+      ? (educacionNivelProvinciaMap.get(selectedProvinceScope) || [])
+      : (educacionNivelMap.get(selectedAdm2Norm) || []),
 
-    // ↓↓↓ ここから今回の主役 ↓↓↓
-    tic,                     // raw TIC 行（internet / cellular / computer を含む）
-    condicionVida,           // municipio の % 付きデータ
-    condicionVidaRaw,        // municipio の元データ
-    nationalCondicionVida,   // national の % 付きデータ（municipio と同構造）
-      // ★ Salud Establecimientos ADM2 (今回必要)
-    saludEstablecimientos: saludEstablecimientosData,
+    tic,
+    condicionVida,
+    condicionVidaRaw,
+    nationalCondicionVida,
+    saludEstablecimientos: isProvinceSelection && selectedProvinceScope
+      ? (saludEstablecimientosProvinciaMap.get(selectedProvinceScope) || [])[0] || null
+      : saludEstablecimientosData,
+
+    saludEstablecimientosProvincia: saludEstablecimientosProvinciaData, // Expose this for now
+
+    // Exposed for comparison table
+    hogaresResumenData,
+    hogaresResumenProvinciaData,
+    poblacionUrbanaRuralData,
+    poblacionUrbanaRuralProvinciaData,
+    nationalHogares,
+    educacionData,
+    educacionProvinciaData,
+    saludEstablecimientosData,
+    saludEstablecimientosProvinciaData,
+    nationalSalud,
+    nationalBasic,
+    nationalEcon,
+    nationalTic,
+    nationalEducNivel,
+    nationalEducOferta,
+
+    condicionVidaProvinciaData,
+    ticProvinciaData,
+    educacionNivelProvinciaData,
+    economiaEmpleoProvinciaData,
+    indicadoresBasicosData,
+    educacionOfertaMunicipalData,
   };
 }
