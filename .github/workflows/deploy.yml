@@ -22,9 +22,7 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        run: |
-          npm ci
-          npm install --no-save esbuild-wasm
+        run: npm ci
 
       - name: Build
         env:
