@@ -16166,7 +16166,7 @@ function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
       MapContainer,
       {
         center: [19, -70.16],
-        zoom: 7.5,
+        zoom: 7,
         zoomSnap: 0.5,
         zoomDelta: 0.5,
         wheelPxPerZoomLevel: 60,
