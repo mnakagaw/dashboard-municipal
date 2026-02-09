@@ -16160,39 +16160,36 @@ function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
       layer.bindTooltip(feature.properties.municipio, { direction: "center" });
     }
   };
-  return (
-    /* ★重要: ここに "print-map-wrapper" クラスが必要です */
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-[360px] w-full overflow-hidden rounded-2xl border border-slate-200 print-map-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      MapContainer,
-      {
-        center: [18.9, -70.2],
-        zoom: 7.2,
-        zoomSnap: 0.1,
-        zoomDelta: 0.5,
-        wheelPxPerZoomLevel: 60,
-        className: "h-full w-full",
-        scrollWheelZoom: true,
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            TileLayer,
-            {
-              attribution: "© OSM",
-              url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            MapUpdater,
-            {
-              selectedAdm2,
-              selectedProvince,
-              geojson
-            }
-          ),
-          geojson && /* @__PURE__ */ jsxRuntimeExports.jsx(GeoJSON, { data: geojson, style: styleFeature, onEachFeature })
-        ]
-      }
-    ) })
-  );
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-[360px] w-full overflow-hidden rounded-2xl border border-slate-200 print-map-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    MapContainer,
+    {
+      center: [18.9, -70.2],
+      zoom: 7.2,
+      zoomSnap: 0.1,
+      zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 60,
+      className: "h-full w-full",
+      scrollWheelZoom: true,
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          TileLayer,
+          {
+            attribution: "© OSM",
+            url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          MapUpdater,
+          {
+            selectedAdm2,
+            selectedProvince,
+            geojson
+          }
+        ),
+        geojson && /* @__PURE__ */ jsxRuntimeExports.jsx(GeoJSON, { data: geojson, style: styleFeature, onEachFeature })
+      ]
+    }
+  ) });
 }
 
 function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
@@ -99322,26 +99319,6 @@ function ResumenNarrativoSection({
         })()
       )
     };
-    console.log("PROMPT DATA", {
-      municipio,
-      adm2,
-      indicators,
-      condVida,
-      econ,
-      educ,
-      tic,
-      saludResumen,
-      nationalBasic,
-      nationalCondVida,
-      nationalEcon,
-      nationalTic,
-      nationalEducNivel,
-      nationalEducOferta,
-      nationalHogares,
-      nationalSalud,
-      comparaciones,
-      resumenComparacion
-    });
     setLoading(true);
     if (window.location.hostname.includes("github.io")) {
       setResumen(`
