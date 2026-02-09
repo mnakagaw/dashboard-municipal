@@ -46,7 +46,7 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
     async function load() {
       try {
         // Import from src/data to ensure it's bundled by Vite
-        const mod = await import("../data/adm2.geojson");
+        const mod = await import("../data/adm2.json");
         const gj = mod.default;
         setGeojson(gj);
       } catch (e) {
