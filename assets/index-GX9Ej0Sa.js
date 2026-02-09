@@ -687,10 +687,10 @@ function useMunicipioData(selectedProvince, selectionKey) {
   const [pyramidsProvinciaData, setPyramidsProvinciaData] = reactExports.useState([]);
   const [pyramid2010ProvinciaData, setPyramid2010ProvinciaData] = reactExports.useState([]);
 
-  // ★ New: Education Offer (Municipal) for weighted averages
+  // Datos de oferta educativa municipal (para promedios ponderados)
   const [educacionOfertaMunicipalData, setEducacionOfertaMunicipalData] = reactExports.useState([]);
 
-  // TIC データ
+  // Datos de TIC (Tecnologías de Información y Comunicación)
   const [ticData, setTicData] = reactExports.useState([]);
 
   // Condición de Vida
@@ -701,10 +701,10 @@ function useMunicipioData(selectedProvince, selectionKey) {
   const [nationalBasic, setNationalBasic] = reactExports.useState([]);
   const [nationalEcon, setNationalEcon] = reactExports.useState([]);
 
-  // 上のほうの state 群に追加
+  // Datos de establecimientos de salud
   const [saludEstablecimientosData, setSaludEstablecimientosData] = reactExports.useState({});
 
-  // ★ 新規
+  // Datos nacionales adicionales para comparación
   const [nationalTic, setNationalTic] = reactExports.useState(null);
   const [nationalEducNivel, setNationalEducNivel] = reactExports.useState(null);
   const [nationalEducOferta, setNationalEducOferta] = reactExports.useState(null);
@@ -714,7 +714,7 @@ function useMunicipioData(selectedProvince, selectionKey) {
 
 
   // ---------------------------------------------------------------------------
-  // Load JSON  ★ national_* も含めた版
+  // Cargar archivos JSON (incluye datos nacionales)
   // ---------------------------------------------------------------------------
 
   reactExports.useEffect(() => {
@@ -1115,7 +1115,7 @@ function useMunicipioData(selectedProvince, selectionKey) {
   }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, poblacionUrbanaRuralMap, poblacionUrbanaRuralProvinciaMap]);
 
   // ---------------------------------------------------------------------------
-  // TIC Map & Record（raw のまま）※ rate_used を Section 側で % にする
+  // Mapa de TIC (datos sin procesar, el componente convierte a %)
   // ---------------------------------------------------------------------------
   const ticMap = reactExports.useMemo(() => {
     const m = new Map();
@@ -42574,8 +42574,7 @@ function TopSelectionAndMap({
   handleMapSelect
 }) {
   return (
-    /* ★ Web：flex縦並び → lg横並び  
-         印刷：print-top-grid が grid で2カラム化 */
+    /* Web: columnas verticales → horizontales en lg. Impresión: grid de 2 columnas */
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col lg:flex-row gap-4 print-top-grid", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "lg:flex-[0.7] flex-1 space-y-3 print-info-basic", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hide-on-print", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "max-w-md w-full", children: [
@@ -99221,7 +99220,7 @@ function ResumenNarrativoSection({
   tic,
   salud,
   educNivel,
-  // ⇩ national 系を全部ここで受け取る
+  // Recibir todos los datos nacionales para comparación
   nationalBasic,
   nationalCondVida,
   nationalEcon,
@@ -100320,7 +100319,7 @@ function App() {
     saludEstablecimientos,
     educacionRecords,
     educacionNivel,
-    // ★ここを追加
+    // Datos nacionales para comparación
     nationalTic,
     nationalEducNivel,
     nationalEducOferta,
