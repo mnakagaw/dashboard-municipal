@@ -483,7 +483,7 @@ var m$1 = reactDomExports;
   client.hydrateRoot = m$1.hydrateRoot;
 }
 
-const scriptRel = 'modulepreload';const assetsURL = function(dep) { return "/dashboard/"+dep };const seen = {};const __vitePreload = function preload(baseModule, deps, importerUrl) {
+const scriptRel = 'modulepreload';const assetsURL = function(dep) { return "/dashboard-municipal/"+dep };const seen = {};const __vitePreload = function preload(baseModule, deps, importerUrl) {
   let promise = Promise.resolve();
   if (true && deps && deps.length > 0) {
     document.getElementsByTagName("link");
@@ -16141,7 +16141,7 @@ function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   reactExports.useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${"/dashboard/"}data/adm2.geojson`);
+        const res = await fetch(`${"/dashboard-municipal/"}data/adm2.geojson`);
         if (!res.ok) return;
         const gj = await res.json();
         setGeojson(gj);
@@ -99355,6 +99355,20 @@ function ResumenNarrativoSection({
       resumenComparacion
     });
     setLoading(true);
+    if (window.location.hostname.includes("github.io")) {
+      setResumen(`
+**⚠️ Función no disponible en la versión estática (GitHub Pages).**
+
+La generación de narrativa utiliza inteligencia artificial (OpenAI) y requiere un servidor backend (PHP) para funcionar de manera segura.
+Esta versión del dashboard es estática y no tiene capacidad de procesamiento de backend.
+
+Para ver esta funcionalidad:
+1. Clone el repositorio y ejecute localmente con un servidor PHP/Apache.
+2. O despliegue en un servicio que soporte PHP.
+      `.trim());
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch(
         "https://prodecare.net/dashboard/api/generateNarrative.php",
