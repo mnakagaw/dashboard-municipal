@@ -2056,8 +2056,7 @@ body {
 
   @page {
     size: 8.5in 11in;
-    margin: 0.1in;
-    /* Further reduced */
+    margin: 0.25in;
   }
 
   html,
@@ -2068,12 +2067,8 @@ body {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
-    /* 全体を85%に縮小して収まりを最大化 */
-    zoom: 0.85 !important;
-    width: 117.6% !important;
-    /* compensate for 0.85 zoom */
-    transform: scale(0.85);
-    transform-origin: top left;
+    zoom: 1.0 !important;
+    /* Restore normal zoom */
   }
 
   .container {
@@ -2172,12 +2167,12 @@ body {
     margin-bottom: 2px !important;
   }
 
-  /* 地図高さ 150px (さらに縮小) */
+  /* 地図高さ 200px (極端すぎる縮小をやめる) */
   .print-map-wrapper,
   .print-map-card div[class*="h-[360px]"] {
-    height: 150px !important;
-    min-height: 150px !important;
-    max-height: 150px !important;
+    height: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
     overflow: hidden !important;
     margin-bottom: 0 !important;
     border-radius: 4px !important;
@@ -2185,7 +2180,7 @@ body {
 
   .print-map-card .leaflet-container {
     width: 100% !important;
-    height: 150px !important;
+    height: 200px !important;
     z-index: 0 !important;
   }
 
@@ -2235,14 +2230,14 @@ body {
     font-weight: 600 !important;
   }
 
-  /* ★修正: グラフの高さを 90px にさらに縮小 */
+  /* グラフの高さを 100px に戻す */
   .print-3-cols .recharts-responsive-container,
   .print-3-cols .recharts-wrapper,
   .print-3-cols .recharts-surface,
   .print-chart-container {
-    height: 90px !important;
-    min-height: 90px !important;
-    max-height: 90px !important;
+    height: 100px !important;
+    min-height: 100px !important;
+    max-height: 100px !important;
   }
 
   /* カードコンテンツ（グラフを囲む親）の余白削除 */
@@ -2279,7 +2274,7 @@ body {
     flex-direction: row !important;
     align-items: center !important;
     gap: 4px !important;
-    height: 90px !important;
+    height: 100px !important;
     /* ピラミッドと高さを合わせる */
     margin-bottom: 0 !important;
   }
