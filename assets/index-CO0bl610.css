@@ -2164,15 +2164,15 @@ body {
   .print-map-card h3 {
     font-size: 14px !important;
     font-weight: 700 !important;
-    margin-bottom: 4px !important;
+    margin-bottom: 2px !important;
   }
 
-  /* 地図高さ 320px (180pxだと小さすぎた) */
+  /* 地図高さ 240px (320pxだと大きすぎた) */
   .print-map-wrapper,
   .print-map-card div[class*="h-[360px]"] {
-    height: 320px !important;
-    min-height: 320px !important;
-    max-height: 320px !important;
+    height: 240px !important;
+    min-height: 240px !important;
+    max-height: 240px !important;
     overflow: hidden !important;
     margin-bottom: 0 !important;
     border-radius: 4px !important;
@@ -2180,7 +2180,7 @@ body {
 
   .print-map-card .leaflet-container {
     width: 100% !important;
-    height: 320px !important;
+    height: 240px !important;
     z-index: 0 !important;
   }
 
