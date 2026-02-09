@@ -98,7 +98,12 @@ Abra `http://localhost:5173` en su navegador.
 
 ## Datos
 
-Los datos provienen del **Censo Nacional de Población y Vivienda 2022 (ONE)** y la **Encuesta DEE 2024**.
+Los datos provienen de las siguientes fuentes:
+
+- **Censo Nacional de Población y Vivienda 2022** (ONE)
+- **Encuesta DEE 2024** (ONE)
+- **Anuario Estadístico Educativo** (MINERD)
+- **Establecimientos de Salud 1878–2025** (SNS)
 
 ### Archivos de datos (`public/data/`)
 
@@ -145,7 +150,8 @@ Cada archivo de municipio tiene su equivalente agregado a nivel provincial.
 
 ## Deployment
 
-https://mnakagaw.github.io/dashboard-municipal/
+- https://prodecare.net/dashboard/
+- https://mnakagaw.github.io/dashboard-municipal/
 
 ## Licencia
 
