@@ -194,27 +194,6 @@ export default function ResumenNarrativoSection({
       ),
     };
 
-    console.log("PROMPT DATA", {
-      municipio,
-      adm2,
-      indicators,
-      condVida,
-      econ,
-      educ,
-      tic,
-      saludResumen,
-      nationalBasic,
-      nationalCondVida,
-      nationalEcon,
-      nationalTic,
-      nationalEducNivel,
-      nationalEducOferta,
-      nationalHogares,
-      nationalSalud,
-      comparaciones,
-      resumenComparacion,
-    });
-
     setLoading(true);
 
     // Check if running on GitHub Pages

@@ -25,9 +25,7 @@ export default function TopSelectionAndMap({
          印刷：print-top-grid が grid で2カラム化 */
     <div className="flex flex-col lg:flex-row gap-4 print-top-grid">
 
-      {/* 左カラム：Informacion Basica + Selección 
-          ★修正: lg:flex-[1.3] から lg:flex-[0.7] に変更して幅を狭く
-      */}
+      {/* Left column: Información Básica + Selection */}
       <div className="lg:flex-[0.7] flex-1 space-y-3 print-info-basic">
 
         {/* Provincia/Municipio selection（印刷時は非表示） */}
@@ -82,9 +80,7 @@ export default function TopSelectionAndMap({
         </div>
       </div>
 
-      {/* 右カラム：Mapa 
-          ★修正: lg:flex-[1.1] から lg:flex-[1.3] に変更して幅を広く
-      */}
+      {/* Right column: Map */}
       <div className="lg:flex-[1.3] flex-1 print-map-card">
         <Card className="w-full h-full">
           <CardHeader>
