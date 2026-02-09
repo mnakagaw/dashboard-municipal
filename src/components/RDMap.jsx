@@ -1,6 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+function MapUpdater({ selectedAdm2, selectedProvince, geojson }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!geojson) return;
+
+    let features = [];
+
+    if (selectedAdm2) {
+      // Municipio selection
+      features = geojson.features.filter(
+        (f) => f.properties.adm2_code === selectedAdm2
+      );
+    } else if (selectedProvince) {
+      // Province selection
+      features = geojson.features.filter(
+        (f) => f.properties.provincia === selectedProvince
+      );
+    }
+
+    if (features.length > 0) {
+      // Create a temporary GeoJSON layer to get bounds
+      const layer = L.geoJSON(features);
+      const bounds = layer.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [20, 20], maxZoom: 12 });
+      }
+    } else {
+      // Reset to default view if no selection
+      map.setView([18.7, -70.16], 8); // Adjusted to center DR better
+    }
+  }, [selectedAdm2, selectedProvince, geojson, map]);
+
+  return null;
+}
 
 export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   const [geojson, setGeojson] = useState(null);
@@ -61,6 +98,11 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
         <TileLayer
           attribution='&copy; OSM'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <MapUpdater
+          selectedAdm2={selectedAdm2}
+          selectedProvince={selectedProvince}
+          geojson={geojson}
         />
         {geojson && <GeoJSON data={geojson} style={styleFeature} onEachFeature={onEachFeature} />}
       </MapContainer>
