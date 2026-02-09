@@ -217,6 +217,22 @@ export default function ResumenNarrativoSection({
 
     setLoading(true);
 
+    // Check if running on GitHub Pages
+    if (window.location.hostname.includes("github.io")) {
+      setResumen(`
+**⚠️ Función no disponible en la versión estática (GitHub Pages).**
+
+La generación de narrativa utiliza inteligencia artificial (OpenAI) y requiere un servidor backend (PHP) para funcionar de manera segura.
+Esta versión del dashboard es estática y no tiene capacidad de procesamiento de backend.
+
+Para ver esta funcionalidad:
+1. Clone el repositorio y ejecute localmente con un servidor PHP/Apache.
+2. O despliegue en un servicio que soporte PHP.
+      `.trim());
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch(
         "https://prodecare.net/dashboard/api/generateNarrative.php",
