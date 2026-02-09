@@ -5,20 +5,22 @@
 
   @page {
     size: 8.5in 11in;
-    margin: 0.2in;
+    margin: 0.1in;
+    /* Further reduced */
   }
 
   html,
   body {
     width: 8.5in;
-    height: 11in;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
-    zoom: 1 !important;
-    /* 全体を90%に縮小 */
+    /* 全体を90%に縮小して収まりを良くする */
+    zoom: 0.9 !important;
+    transform: scale(0.9);
+    transform-origin: top left;
   }
 
   .container {
@@ -73,8 +75,8 @@
   .print-top-grid {
     display: grid !important;
     grid-template-columns: 1fr 2fr !important;
-    /* Balanced columns */
-    gap: 12px !important;
+    gap: 4px !important;
+    /* Reduced */
     align-items: start !important;
   }
 
@@ -116,12 +118,12 @@
     margin-bottom: 2px !important;
   }
 
-  /* 地図高さ 170px (高さをさらに抑えて下に余裕を作る) */
+  /* 地図高さ 160px (さらに縮小) */
   .print-map-wrapper,
   .print-map-card div[class*="h-[360px]"] {
-    height: 170px !important;
-    min-height: 170px !important;
-    max-height: 170px !important;
+    height: 160px !important;
+    min-height: 160px !important;
+    max-height: 160px !important;
     overflow: hidden !important;
     margin-bottom: 0 !important;
     border-radius: 4px !important;
@@ -129,7 +131,7 @@
 
   .print-map-card .leaflet-container {
     width: 100% !important;
-    height: 170px !important;
+    height: 160px !important;
     z-index: 0 !important;
   }
 
