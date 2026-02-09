@@ -98,7 +98,50 @@ Abra `http://localhost:5173` en su navegador.
 
 ## Datos
 
-Los datos provienen del Censo Nacional de Población y Vivienda 2022 (ONE) y la Encuesta DEE 2024.
+Los datos provienen del **Censo Nacional de Población y Vivienda 2022 (ONE)** y la **Encuesta DEE 2024**.
+
+### Archivos de datos (`public/data/`)
+
+| Archivo | Descripción |
+|---------|-------------|
+| `municipios_index.json` | Índice de 158 municipios (adm2_code, provincia, región) |
+| `indicadores_basicos.json` | Población total, hombres, mujeres, crecimiento |
+| `pyramids.json` | Pirámide de población por edad y sexo (2022) |
+| `edad_sexo_2010.json` | Pirámide de población histórica (2010) |
+| `hogares_resumen.json` | Total de hogares, personas por hogar |
+| `tamano_hogar.json` | Distribución de tamaño de hogar (1-10+) |
+| `poblacion_urbana_rural.json` | Población urbana vs rural |
+| `condicion_vida.json` | Condiciones de vivienda (agua, electricidad, saneamiento) |
+| `economia_empleo.json` | Economía y empleo (DEE 2024) |
+| `educacion.json` | Indicadores educativos generales |
+| `educacion_nivel.json` | Nivel educativo por grupo de edad |
+| `educacion_oferta_municipal.json` | Oferta educativa (escuelas, universidades) |
+| `salud_establecimientos.json` | Establecimientos de salud por tipo |
+| `tic.json` | Acceso a tecnología (internet, computadora, celular) |
+
+### Datos agregados por provincia (`*_provincia.json`)
+
+Cada archivo de municipio tiene su equivalente agregado a nivel provincial.
+
+### Promedios nacionales (`national_*.json`)
+
+| Archivo | Descripción |
+|---------|-------------|
+| `national_basic.json` | Indicadores demográficos nacionales |
+| `national_condicion_vida.json` | Condiciones de vida promedio nacional |
+| `national_economia_empleo.json` | Economía y empleo nacional |
+| `national_educacion_nivel.json` | Nivel educativo nacional |
+| `national_educacion_oferta.json` | Oferta educativa nacional |
+| `national_hogares.json` | Hogares promedio nacional |
+| `national_salud_establecimientos.json` | Salud nacional |
+| `national_tic.json` | Acceso TIC nacional |
+
+### GeoJSON
+
+| Archivo | Descripción |
+|---------|-------------|
+| `adm2.geojson` | Fronteras administrativas de municipios |
+| `src/data/adm2.json` | GeoJSON bundled para el mapa interactivo |
 
 ## Deployment
 
