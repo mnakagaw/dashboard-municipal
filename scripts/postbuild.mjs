@@ -24,8 +24,9 @@ try {
 const src = path.join(rootDir, 'public', 'api');
 const dest = path.join(rootDir, 'dist', 'api');
 
-console.log(`Post-build: Copying API folder...`);
+console.log(`Post-build: Copying API folder... (Disabled for GitHub Pages stability)`);
 
+/*
 if (fs.existsSync(src)) {
     try {
         if (!fs.existsSync(dest)) {
@@ -41,3 +42,4 @@ if (fs.existsSync(src)) {
 } else {
     console.warn(`⚠️ Source directory public/api does not exist. Skipping copy.`);
 }
+*/
