@@ -110,17 +110,18 @@
   }
 
   .print-map-card h3 {
-    font-size: 14px !important;
+    font-size: 13px !important;
+    /* Smaller */
     font-weight: 700 !important;
     margin-bottom: 2px !important;
   }
 
-  /* 地図高さ 240px (320pxだと大きすぎた) */
+  /* 地図高さ 200px (さらに縮小して下に余裕を作る) */
   .print-map-wrapper,
   .print-map-card div[class*="h-[360px]"] {
-    height: 240px !important;
-    min-height: 240px !important;
-    max-height: 240px !important;
+    height: 200px !important;
+    min-height: 200px !important;
+    max-height: 200px !important;
     overflow: hidden !important;
     margin-bottom: 0 !important;
     border-radius: 4px !important;
@@ -128,7 +129,7 @@
 
   .print-map-card .leaflet-container {
     width: 100% !important;
-    height: 240px !important;
+    height: 200px !important;
     z-index: 0 !important;
   }
 
@@ -178,14 +179,14 @@
     font-weight: 600 !important;
   }
 
-  /* ★修正: グラフの高さを 110px に強制固定 */
+  /* ★修正: グラフの高さを 100px に縮小 */
   .print-3-cols .recharts-responsive-container,
   .print-3-cols .recharts-wrapper,
   .print-3-cols .recharts-surface,
   .print-chart-container {
-    height: 110px !important;
-    min-height: 110px !important;
-    max-height: 110px !important;
+    height: 100px !important;
+    min-height: 100px !important;
+    max-height: 100px !important;
   }
 
   /* カードコンテンツ（グラフを囲む親）の余白削除 */
@@ -222,7 +223,7 @@
     flex-direction: row !important;
     align-items: center !important;
     gap: 4px !important;
-    height: 110px !important;
+    height: 100px !important;
     /* ピラミッドと高さを合わせる */
     margin-bottom: 0 !important;
   }

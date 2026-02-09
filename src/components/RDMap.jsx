@@ -96,7 +96,7 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
       <MapContainer
         /* ★修正: 高さを180pxまで縮めるため、ズームを 6.5 に下げる */
         center={[19.0, -70.16]}
-        zoom={7.5}
+        zoom={7.0}
         zoomSnap={0.5}
         zoomDelta={0.5}
         wheelPxPerZoomLevel={60}
