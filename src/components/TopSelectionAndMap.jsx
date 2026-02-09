@@ -40,14 +40,13 @@ export default function TopSelectionAndMap({
   handleMapSelect,
 }) {
   return (
-    /* ★ Web：flex縦並び → lg横並び  
-         印刷：print-top-grid が grid で2カラム化 */
+    /* Web: columnas verticales → horizontales en lg. Impresión: grid de 2 columnas */
     <div className="flex flex-col lg:flex-row gap-4 print-top-grid">
 
-      {/* Left column: Información Básica + Selection */}
+      {/* Columna izquierda: Información Básica + Selector */}
       <div className="lg:flex-[0.7] flex-1 space-y-3 print-info-basic">
 
-        {/* Provincia/Municipio selection（印刷時は非表示） */}
+        {/* Selector de provincia/municipio (oculto en impresión) */}
         <div className="hide-on-print">
           <Card className="max-w-md w-full">
             <CardHeader className="pb-2">

@@ -86,7 +86,7 @@ export default function App() {
     educacionRecords,
     educacionNivel,
 
-    // ★ここを追加
+    // Datos nacionales para comparación
     nationalTic,
     nationalEducNivel,
     nationalEducOferta,

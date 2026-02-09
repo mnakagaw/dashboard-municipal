@@ -177,10 +177,10 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
   const [pyramidsProvinciaData, setPyramidsProvinciaData] = useState([]);
   const [pyramid2010ProvinciaData, setPyramid2010ProvinciaData] = useState([]);
 
-  // ★ New: Education Offer (Municipal) for weighted averages
+  // Datos de oferta educativa municipal (para promedios ponderados)
   const [educacionOfertaMunicipalData, setEducacionOfertaMunicipalData] = useState([]);
 
-  // TIC データ
+  // Datos de TIC (Tecnologías de Información y Comunicación)
   const [ticData, setTicData] = useState([]);
 
   // Condición de Vida
@@ -191,10 +191,10 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
   const [nationalBasic, setNationalBasic] = useState([]);
   const [nationalEcon, setNationalEcon] = useState([]);
 
-  // 上のほうの state 群に追加
+  // Datos de establecimientos de salud
   const [saludEstablecimientosData, setSaludEstablecimientosData] = useState({});
 
-  // ★ 新規
+  // Datos nacionales adicionales para comparación
   const [nationalTic, setNationalTic] = useState(null);
   const [nationalEducNivel, setNationalEducNivel] = useState(null);
   const [nationalEducOferta, setNationalEducOferta] = useState(null);
@@ -204,7 +204,7 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
 
 
   // ---------------------------------------------------------------------------
-  // Load JSON  ★ national_* も含めた版
+  // Cargar archivos JSON (incluye datos nacionales)
   // ---------------------------------------------------------------------------
 
   useEffect(() => {
@@ -605,7 +605,7 @@ export default function useMunicipioData(selectedProvince, selectionKey) {
   }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, poblacionUrbanaRuralMap, poblacionUrbanaRuralProvinciaMap]);
 
   // ---------------------------------------------------------------------------
-  // TIC Map & Record（raw のまま）※ rate_used を Section 側で % にする
+  // Mapa de TIC (datos sin procesar, el componente convierte a %)
   // ---------------------------------------------------------------------------
   const ticMap = useMemo(() => {
     const m = new Map();

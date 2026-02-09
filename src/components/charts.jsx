@@ -371,7 +371,7 @@ export function HouseholdSizeChart({ records }) {
           <CardTitle className="text-sm font-semibold text-sky-900">Tamaño de los hogares (1–10+)</CardTitle>
         </div>
       </CardHeader>
-      {/* ★ print-graph-content クラス */}
+      {/* Contenido del gráfico para impresión */}
       <CardContent className="h-64 md:h-72 print-graph-content">
         <div className="w-full h-full print-chart-container">
           <ResponsiveContainer width="100%" height="100%">

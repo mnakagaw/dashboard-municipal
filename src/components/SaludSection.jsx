@@ -4,10 +4,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Stethoscope } from "lucide-react";
 
 /**
- * props:
- *  - selectedAdm2: "01001" など
- *  - selectedMunicipio: useMunicipioData が返す municipio オブジェクト
- *  - saludEstablecimientos: public/data/salud_establecimientos.json をそのまま読んだオブジェクト
+ * SaludSection.jsx - Sección de Salud
+ * 
+ * Muestra los establecimientos de salud del municipio por tipo.
+ * 
+ * Props:
+ *  - selectedAdm2: Código ADM2 del municipio (ej: "01001")
+ *  - selectedMunicipio: Objeto municipio de useMunicipioData
+ *  - saludEstablecimientos: Datos de public/data/salud_establecimientos.json
+ *  - isProvinceSelection: true si se seleccionó una provincia completa
  */
 export default function SaludSection({
   selectedAdm2,
@@ -39,7 +44,7 @@ export default function SaludSection({
   const tituloMunicipio =
     selectedMunicipio?.municipio || "este municipio";
 
-  // 表示したいタイプの順序（存在しないものは 0 で表示）
+  // Orden de tipos de establecimientos a mostrar
   const orderedTipos = [
     "CENTRO DIAGNOSTICO",
     "HOSPITAL INFANTIL",
@@ -55,7 +60,7 @@ export default function SaludSection({
     "CENTRO COMUNITARIO",
   ];
 
-  // 2列に割る
+  // Dividir en 2 columnas
   const mid = Math.ceil(orderedTipos.length / 2);
   const leftTipos = orderedTipos.slice(0, mid);
   const rightTipos = orderedTipos.slice(mid);
@@ -82,7 +87,7 @@ export default function SaludSection({
 
         <CardContent className="pt-2">
           <div className="grid gap-4 md:grid-cols-2">
-            {/* 左側のテーブル */}
+            {/* Tabla izquierda */}
             <table className="w-full text-xs md:text-sm">
               <tbody>
                 {leftTipos.map((tipo) => (
@@ -100,7 +105,7 @@ export default function SaludSection({
               </tbody>
             </table>
 
-            {/* 右側のテーブル */}
+            {/* Tabla derecha */}
             <table className="w-full text-xs md:text-sm">
               <tbody>
                 {rightTipos.map((tipo) => (

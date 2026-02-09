@@ -54,7 +54,7 @@ export default function ResumenNarrativoSection({
   tic,
   salud,
   educNivel,
-  // ⇩ national 系を全部ここで受け取る
+  // Recibir todos los datos nacionales para comparación
   nationalBasic,
   nationalCondVida,
   nationalEcon,
@@ -68,7 +68,7 @@ export default function ResumenNarrativoSection({
   const [resumen, setResumen] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ⭐ Municipio / ADM2 が変わったらリセット
+  // Reiniciar cuando cambia el municipio/ADM2
   useEffect(() => {
     setResumen("");
     setLoading(false);
@@ -80,10 +80,10 @@ export default function ResumenNarrativoSection({
         ? String(indicators.adm2_code).padStart(5, "0")
         : null;
 
-    // ★ Contexto provincial?
+    // ¿Contexto provincial?
     const isProvinceContext = !adm2 && !!indicators?.provincia;
 
-    // ★ Tipo de territorio y nombre para GPT
+    // Tipo de territorio y nombre para el prompt de IA
     const tipoTerritorio = isProvinceContext ? "provincia" : "municipio";
     const nombreTerritorio =
       municipio ||
@@ -93,7 +93,7 @@ export default function ResumenNarrativoSection({
         : "") ||
       "";
 
-    // この municipio の Salud だけに絞る（巨大 payload 回避のため要約）
+    // Solo incluir datos de salud de este municipio (evitar payload demasiado grande)
     const saludEntradaRaw =
       adm2 && salud && salud[adm2] ? salud[adm2] : null;
 
@@ -130,7 +130,7 @@ export default function ResumenNarrativoSection({
       };
     }
 
-    // ★ Comparaciones con promedio nacional
+    // Comparaciones con promedio nacional
     const comparaciones = {
       // Agua de uso doméstico - acueducto dentro de la vivienda (%)
       agua_domestico_acueducto: buildComparison(
