@@ -16165,8 +16165,8 @@ function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-[360px] w-full overflow-hidden rounded-2xl border border-slate-200 print-map-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
       MapContainer,
       {
-        center: [19, -70.16],
-        zoom: 7,
+        center: [18.8, -70.5],
+        zoom: 6.5,
         zoomSnap: 0.5,
         zoomDelta: 0.5,
         wheelPxPerZoomLevel: 60,
