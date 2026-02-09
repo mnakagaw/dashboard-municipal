@@ -23,17 +23,25 @@ function MapUpdater({ selectedAdm2, selectedProvince, geojson }) {
       );
     }
 
-    if (features.length > 0) {
-      // Create a temporary GeoJSON layer to get bounds
-      const layer = L.geoJSON(features);
-      const bounds = layer.getBounds();
-      if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [20, 20], maxZoom: 12 });
-      }
-    } else {
-      // Reset to default view if no selection
-      map.setView([18.7, -70.16], 8); // Adjusted to center DR better
-    }
+    // If features are selected, we simply re-render (style updates),
+    // but we DO NOT zoom in. The user wants to see the context of the whole country.
+
+    // Always ensure we are at the default view if users haven't moved it themselves? 
+    // Actually, simply doing nothing here preserves the user's current view.
+    // If we want to FORCE the "Whole DR" view on every selection change, we could do:
+    // map.setView([18.7, -70.16], 8); 
+    // But usually "don't zoom" is enough.
+
+    // However, if the user explicitly said "Set default to allow entering whole DR", 
+    // maybe they want the initial view to be better?
+    // Current MapContainer center is [17.7, -69.5], zoom 6.6.
+    // The previous 'else' block set view to [18.7, -70.16], 8.
+    // I will unify this to a good default and remove the zooming/panning on select.
+
+    // Let's just remove the moving entirely for now to respect "don't zoom".
+    // Or providing a "Reset View" button might be better later.
+    // For now, removing the auto-zoom logic.
+
   }, [selectedAdm2, selectedProvince, geojson, map]);
 
   return null;
@@ -87,11 +95,11 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
     <div className="h-[360px] w-full overflow-hidden rounded-2xl border border-slate-200 print-map-wrapper">
       <MapContainer
         /* ★修正: 高さを180pxまで縮めるため、ズームを 6.5 に下げる */
-        center={[17.7, -69.5]}
-        zoom={6.6}
-        zoomSnap={0.1}
-        zoomDelta={0.1}
-        wheelPxPerZoomLevel={300}
+        center={[18.7, -70.16]}
+        zoom={8}
+        zoomSnap={0.5}
+        zoomDelta={0.5}
+        wheelPxPerZoomLevel={60}
         className="h-full w-full"
         scrollWheelZoom={true}
       >
