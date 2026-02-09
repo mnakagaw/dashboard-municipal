@@ -1879,88 +1879,33 @@ body {
   min-width: 180px;
   min-height: 180px;
 }
-
-@media print {
-
-  /* Prevent Leaflet from resizing or zooming weirdly during print layout */
-  .print-map-wrapper {
-    width: 100% !important;
-    height: 380px !important;
-    page-break-inside: avoid;
-    -moz-column-break-inside: avoid;
-         break-inside: avoid;
-    /* Force rendering of borders and backgrounds */
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  /* Ensure the grid/flex layout doesn't overlap */
-  .print-top-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    gap: 1rem !important;
-  }
-
-  .print-info-basic {
-    flex: 0 0 35% !important;
-    /* Give fixed width to info side */
-    min-width: 0;
-  }
-
-  .print-map-card {
-    flex: 1 !important;
-    min-width: 0;
-  }
-
-  /* Hide zoom controls on print */
-  .leaflet-control-zoom {
-    display: none !important;
-  }
-
-  /* Stabilize cards in print */
-  .card,
-  .Card {
-    page-break-inside: avoid;
-    -moz-column-break-inside: avoid;
-         break-inside: avoid;
-  }
-}
-
 .last\:border-0:last-child {
   border-width: 0px;
 }
-
 .last\:border-b-0:last-child {
   border-bottom-width: 0px;
 }
-
 .hover\:bg-blue-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1));
 }
-
 .hover\:bg-slate-50:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1));
 }
-
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
 }
-
 .focus\:ring-2:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
-
 .focus\:ring-emerald-500:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(16 185 129 / var(--tw-ring-opacity, 1));
 }
-
 @media (min-width: 640px) {
 
   .sm\:px-4 {
@@ -1968,7 +1913,6 @@ body {
     padding-right: 1rem;
   }
 }
-
 @media (min-width: 768px) {
 
   .md\:h-64 {
@@ -2080,7 +2024,6 @@ body {
     line-height: 1rem;
   }
 }
-
 @media (min-width: 1024px) {
 
   .lg\:flex-\[0\.7\] {
@@ -2181,14 +2124,17 @@ body {
      =============================================================== */
   .print-top-grid {
     display: grid !important;
-    grid-template-columns: 0.65fr 1.35fr !important;
-    gap: 8px !important;
+    grid-template-columns: 1fr 2fr !important;
+    /* Balanced columns */
+    gap: 12px !important;
     align-items: start !important;
   }
 
   .print-info-basic {
     width: 100% !important;
     padding: 0 !important;
+    min-width: 0 !important;
+    /* Safety */
   }
 
   .print-basic-indicators .card-title,
@@ -2211,28 +2157,30 @@ body {
     padding: 0 !important;
     box-shadow: none !important;
     border: 1px solid #ddd !important;
+    min-width: 0 !important;
+    /* Safety */
   }
 
   .print-map-card h3 {
     font-size: 14px !important;
     font-weight: 700 !important;
-    margin-bottom: 2px !important;
+    margin-bottom: 4px !important;
   }
 
-  /* 地図高さ 180px */
+  /* 地図高さ 320px (180pxだと小さすぎた) */
   .print-map-wrapper,
   .print-map-card div[class*="h-[360px]"] {
-    height: 180px !important;
-    min-height: 180px !important;
-    max-height: 180px !important;
+    height: 320px !important;
+    min-height: 320px !important;
+    max-height: 320px !important;
     overflow: hidden !important;
     margin-bottom: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 4px !important;
   }
 
   .print-map-card .leaflet-container {
     width: 100% !important;
-    height: 180px !important;
+    height: 320px !important;
     z-index: 0 !important;
   }
 
@@ -2242,7 +2190,9 @@ body {
     height: auto !important;
   }
 
-  .hide-on-print {
+  .hide-on-print,
+  .leaflet-control-zoom {
+    /* Hide zoom controls also */
     display: none !important;
   }
 
