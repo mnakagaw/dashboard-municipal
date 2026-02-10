@@ -1,6 +1,10 @@
 /* ===============================================================
    PRINT SPECIFIC STYLES (NO GAPS / COMPACT HEIGHT)
    =============================================================== */
+.print-static-map {
+  display: none;
+}
+
 @media print {
 
   @page {
@@ -142,6 +146,17 @@
   .leaflet-control-zoom {
     /* Hide zoom controls also */
     display: none !important;
+  }
+
+  .print-map-wrapper .print-map-live {
+    display: none !important;
+  }
+
+  .print-map-wrapper .print-static-map {
+    display: block !important;
+    width: 100% !important;
+    height: 200px !important;
+    border-radius: 4px !important;
   }
 
 

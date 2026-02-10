@@ -1,72 +1,137 @@
-/**
- * RDMap.jsx - Mapa Interactivo de República Dominicana
- * 
- * Este componente renderiza un mapa interactivo usando Leaflet que muestra:
- * - Todos los municipios de República Dominicana (158)
- * - El municipio seleccionado resaltado en rojo
- * - Tooltips con el nombre del municipio al pasar el cursor
- * 
- * Tecnologías utilizadas:
- * - Leaflet: Biblioteca de mapas interactivos
- * - react-leaflet: Wrapper de React para Leaflet
- * - OpenStreetMap: Proveedor de tiles del mapa base
- * 
- * Datos:
- * - GeoJSON de municipios (src/data/adm2.json)
- * 
- * Props:
- * - selectedAdm2: Código del municipio seleccionado (ej: "02001")
- * - selectedProvince: Nombre de la provincia (para selección provincial)
- * - onSelectMunicipio: Callback cuando el usuario hace clic en un municipio
- */
-
-import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
+import React, { useEffect, useMemo, useState } from "react";
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 
-function MapUpdater({ selectedAdm2, selectedProvince, geojson }) {
-  const map = useMap();
+function buildPathFromRings(rings, project) {
+  return (rings || [])
+    .map((ring) => {
+      if (!ring?.length) return "";
+      const [firstLon, firstLat] = ring[0];
+      const [firstX, firstY] = project(firstLon, firstLat);
+      const commands = [`M ${firstX} ${firstY}`];
+      for (let i = 1; i < ring.length; i += 1) {
+        const [lon, lat] = ring[i];
+        const [x, y] = project(lon, lat);
+        commands.push(`L ${x} ${y}`);
+      }
+      commands.push("Z");
+      return commands.join(" ");
+    })
+    .join(" ");
+}
 
-  useEffect(() => {
-    if (!geojson) return;
+function PrintStaticAdm2Map({ geojson, selectedAdm2, selectedProvince }) {
+  const width = 1000;
+  const height = 500;
 
-    let features = [];
+  const { features, project } = useMemo(() => {
+    const feats = geojson?.features || [];
+    let minLon = Infinity;
+    let maxLon = -Infinity;
+    let minLat = Infinity;
+    let maxLat = -Infinity;
 
-    if (selectedAdm2) {
-      // Municipio selection
-      features = geojson.features.filter(
-        (f) => f.properties.adm2_code === selectedAdm2
-      );
-    } else if (selectedProvince) {
-      // Province selection
-      features = geojson.features.filter(
-        (f) => f.properties.provincia === selectedProvince
-      );
-    }
+    const scanCoords = (coords) => {
+      if (!Array.isArray(coords)) return;
+      if (typeof coords[0] === "number" && typeof coords[1] === "number") {
+        const lon = coords[0];
+        const lat = coords[1];
+        if (lon < minLon) minLon = lon;
+        if (lon > maxLon) maxLon = lon;
+        if (lat < minLat) minLat = lat;
+        if (lat > maxLat) maxLat = lat;
+        return;
+      }
+      for (const c of coords) scanCoords(c);
+    };
 
-    // If features are selected, we simply re-render (style updates),
-    // but we DO NOT zoom in. The user wants to see the context of the whole country.
+    for (const f of feats) scanCoords(f?.geometry?.coordinates);
 
-    // Always ensure we are at the default view if users haven't moved it themselves? 
-    // Actually, simply doing nothing here preserves the user's current view.
-    // If we want to FORCE the "Whole DR" view on every selection change, we could do:
-    // map.setView([18.7, -70.16], 8); 
-    // But usually "don't zoom" is enough.
+    const lonSpan = maxLon - minLon || 1;
+    const latSpan = maxLat - minLat || 1;
+    const pad = 8;
+    const drawableW = width - pad * 2;
+    const drawableH = height - pad * 2;
 
-    // However, if the user explicitly said "Set default to allow entering whole DR", 
-    // maybe they want the initial view to be better?
-    // Current MapContainer center is [17.7, -69.5], zoom 6.6.
-    // The previous 'else' block set view to [18.7, -70.16], 8.
-    // I will unify this to a good default and remove the zooming/panning on select.
+    // Keep isotropic scale so the map is not vertically squashed in print.
+    const scale = Math.min(drawableW / lonSpan, drawableH / latSpan);
+    const usedW = lonSpan * scale;
+    const usedH = latSpan * scale;
+    const offsetX = pad + (drawableW - usedW) / 2;
+    const offsetY = pad + (drawableH - usedH) / 2;
 
-    // Let's just remove the moving entirely for now to respect "don't zoom".
-    // Or providing a "Reset View" button might be better later.
-    // For now, removing the auto-zoom logic.
+    const p = (lon, lat) => {
+      const x = offsetX + (lon - minLon) * scale;
+      const y = offsetY + (maxLat - lat) * scale;
+      return [x.toFixed(2), y.toFixed(2)];
+    };
 
-  }, [selectedAdm2, selectedProvince, geojson, map]);
+    return { features: feats, project: p };
+  }, [geojson]);
 
-  return null;
+  return (
+    <div className="print-static-map h-full w-full">
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="h-full w-full"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <rect x="0" y="0" width={width} height={height} fill="#e5e7eb" />
+        {features.map((feature, index) => {
+          const geom = feature?.geometry;
+          const props = feature?.properties || {};
+          const isSelected =
+            (selectedAdm2 && props.adm2_code === selectedAdm2) ||
+            (!selectedAdm2 &&
+              selectedProvince &&
+              props.provincia === selectedProvince);
+          const stroke = isSelected ? "#b91c1c" : "#64748b";
+          const fill = isSelected ? "#fecaca" : "#f1f5f9";
+          const strokeWidth = isSelected ? 2.2 : 1.1;
+
+          if (!geom) return null;
+
+          if (geom.type === "Polygon") {
+            const d = buildPathFromRings(geom.coordinates, project);
+            if (!d) return null;
+            return (
+              <path
+                key={`poly-${index}`}
+                d={d}
+                fill={fill}
+                stroke={stroke}
+                strokeWidth={strokeWidth}
+                vectorEffect="non-scaling-stroke"
+              />
+            );
+          }
+
+          if (geom.type === "MultiPolygon") {
+            return (
+              <g key={`mpoly-${index}`}>
+                {(geom.coordinates || []).map((poly, i) => {
+                  const d = buildPathFromRings(poly, project);
+                  if (!d) return null;
+                  return (
+                    <path
+                      key={`mp-${index}-${i}`}
+                      d={d}
+                      fill={fill}
+                      stroke={stroke}
+                      strokeWidth={strokeWidth}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  );
+                })}
+              </g>
+            );
+          }
+
+          return null;
+        })}
+      </svg>
+    </div>
+  );
 }
 
 export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
@@ -75,10 +140,8 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   useEffect(() => {
     async function load() {
       try {
-        // Import from src/data to ensure it's bundled by Vite
         const mod = await import("../data/adm2.json");
-        const gj = mod.default;
-        setGeojson(gj);
+        setGeojson(mod.default);
       } catch (e) {
         console.error("Error cargando GeoJSON", e);
       }
@@ -87,11 +150,11 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   }, []);
 
   const styleFeature = (feature) => {
-    const adm2 = feature.properties.adm2_code;
-    const provincia = feature.properties.provincia;
     const isSelected =
       (selectedAdm2 && feature.properties.adm2_code === selectedAdm2) ||
-      (!selectedAdm2 && selectedProvince && feature.properties.provincia === selectedProvince);
+      (!selectedAdm2 &&
+        selectedProvince &&
+        feature.properties.provincia === selectedProvince);
 
     return {
       color: isSelected ? "#b91c1c" : "#64748b",
@@ -104,7 +167,12 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
   const onEachFeature = (feature, layer) => {
     layer.on({
       click: () => {
-        if (onSelectMunicipio) onSelectMunicipio(feature.properties.adm2_code, feature.properties.provincia);
+        if (onSelectMunicipio) {
+          onSelectMunicipio(
+            feature.properties.adm2_code,
+            feature.properties.provincia
+          );
+        }
       },
     });
     if (feature.properties.municipio) {
@@ -114,26 +182,33 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
 
   return (
     <div className="h-[360px] w-full overflow-hidden rounded-2xl border border-slate-200 print-map-wrapper">
-      <MapContainer
-        center={[18.9, -70.2]}
-        zoom={7.2}
-        zoomSnap={0.1}
-        zoomDelta={0.5}
-        wheelPxPerZoomLevel={60}
-        className="h-full w-full"
-        scrollWheelZoom={true}
-      >
-        <TileLayer
-          attribution='&copy; OSM'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <MapUpdater
+      <div className="print-map-live h-full w-full">
+        <MapContainer
+          center={[18.9, -70.2]}
+          zoom={7}
+          zoomSnap={1}
+          zoomDelta={1}
+          wheelPxPerZoomLevel={60}
+          className="h-full w-full"
+          scrollWheelZoom={true}
+        >
+          <TileLayer
+            attribution="&copy; OSM"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {geojson && (
+            <GeoJSON data={geojson} style={styleFeature} onEachFeature={onEachFeature} />
+          )}
+        </MapContainer>
+      </div>
+
+      {geojson && (
+        <PrintStaticAdm2Map
+          geojson={geojson}
           selectedAdm2={selectedAdm2}
           selectedProvince={selectedProvince}
-          geojson={geojson}
         />
-        {geojson && <GeoJSON data={geojson} style={styleFeature} onEachFeature={onEachFeature} />}
-      </MapContainer>
+      )}
     </div>
   );
 }

@@ -620,9 +620,8 @@ EXTENSIÓN:
       </button>
 
       <h3 className="text-md mt-4 font-bold">Resumen Narrativo</h3>
-      <div className="mt-2 text-sm leading-relaxed">
+      <div className="mt-2 text-sm leading-relaxed prose prose-sm max-w-none">
         <ReactMarkdown
-          className="prose prose-sm max-w-none"
           remarkPlugins={[remarkGfm]}
         >
           {resumen || "_Aún no se ha generado el resumen._"}
