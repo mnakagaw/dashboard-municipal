@@ -1835,6 +1835,16 @@ video {
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+.\!ring {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
+}
+.ring {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -2048,6 +2058,10 @@ body {
 }/* ===============================================================
    PRINT SPECIFIC STYLES (NO GAPS / COMPACT HEIGHT)
    =============================================================== */
+.print-static-map {
+  display: none;
+}
+
 @media print {
 
   @page {
@@ -2190,6 +2204,17 @@ body {
   .leaflet-control-zoom {
     /* Hide zoom controls also */
     display: none !important;
+  }
+
+  .print-map-wrapper .print-map-live {
+    display: none !important;
+  }
+
+  .print-map-wrapper .print-static-map {
+    display: block !important;
+    width: 100% !important;
+    height: 200px !important;
+    border-radius: 4px !important;
   }
 
 
