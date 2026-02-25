@@ -505,4 +505,26 @@
   .rounded-2xl {
     border-radius: 4px !important;
   }
+
+  /* ===== Print font size overrides ===== */
+
+  /* (1) Region/municipio name: larger */
+  .print-basic-indicators .font-semibold.text-slate-800 {
+    font-size: 14px !important;
+  }
+
+  /* (2) Composición por sexo title: larger */
+  .print-gender-ratio .text-lg {
+    font-size: 14px !important;
+  }
+
+  /* (3) Pirámide 2022 title: smaller to fit one line */
+  .print-pyramid .text-lg {
+    font-size: 12px !important;
+  }
+
+  /* (4) Urbana / Rural card: larger text */
+  .print-hogares-left .text-xs {
+    font-size: 12px !important;
+  }
 }
