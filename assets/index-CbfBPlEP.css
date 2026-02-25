@@ -2535,6 +2535,12 @@ body {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 
+  .condicion-print-grid-4 {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+  }
+
   .print-flex {
     display: flex !important;
     flex-direction: row !important;
