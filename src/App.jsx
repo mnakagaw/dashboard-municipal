@@ -1,7 +1,7 @@
 /**
  * App.jsx - Componente Principal de la Aplicación
  * 
- * Este es el componente raíz del dashboard municipal.
+ * Este es el componente raíz del Tablero de Diagnóstico Territorial.
  * Coordina todos los demás componentes y maneja el estado global.
  * 
  * Estructura del Dashboard:
