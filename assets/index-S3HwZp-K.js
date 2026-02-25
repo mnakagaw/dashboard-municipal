@@ -100062,6 +100062,9 @@ A partir de los datos siguientes, redacta un **"Resumen Narrativo de Diagnóstic
 
 No copies textos de ejemplo anteriores; solo úsalo como referencia de estilo.
 Tu redacción debe ser sobria, realista y basada exclusivamente en los datos numéricos y reglas que siguen.
+**Bajo ninguna circunstancia utilices conocimientos externos, no busques en internet y no agregues información cualitativa que no esté explícitamente respaldada por los datos provistos.**
+
+**ANTES DE FINALIZAR Y ENTREGAR LA RESPUESTA, realiza una revisión exhaustiva de todo tu texto para asegurarte de que no existan contradicciones internas, incongruencias o interpretaciones erróneas de los datos proporcionados. El documento final debe ser perfectamente lógico y consistente.**
 
 INFORMACIÓN SOBRE EL ÁMBITO DEL ANÁLISIS:
 - tipo_territorio: "${tipoTerritorio}" (puede ser "municipio", "provincia" o "región").
@@ -100180,9 +100183,10 @@ ${JSON.stringify(comparaciones)}
 REGLAS DE INTERPRETACIÓN (MUY IMPORTANTES):
 
 - El ámbito analizado puede ser un municipio, una provincia o una región:
-  - Si tipo_territorio = "región", **no uses expresiones** como "este municipio" o "la provincia". En su lugar, di siempre "esta región", "la región" o "el territorio regional".
-  - Si tipo_territorio = "provincia", **no uses expresiones** como "este municipio". En su lugar, di siempre "esta provincia", "la provincia" o "el territorio".
-  - Si tipo_territorio = "municipio", puedes usar "este municipio" o "el municipio" con normalidad.
+  - Adapta estrictamente la terminología institucional al tipo de territorio.
+  - Si tipo_territorio = "región", **no uses expresiones** como "este municipio" ni "la provincia", usa "esta región", "la región" o "el territorio regional". Asimismo, no uses "Plan Municipal de Desarrollo" ni "planificación municipal" (usa "Plan Regional de Ordenamiento y Desarrollo Territorial" o "planificación regional"). Usa el plural "los gobiernos locales" o "los ayuntamientos" en lugar del singular "el ayuntamiento".
+  - Si tipo_territorio = "provincia", **no uses expresiones** como "este municipio", usa "esta provincia", "la provincia" o "el territorio provincial". Usa "planificación provincial" o "desarrollo provincial" en lugar de municipal, y usa el plural para hablar de "los ayuntamientos" de la provincia.
+  - Si tipo_territorio = "municipio", puedes usar "este municipio", "el municipio", "el ayuntamiento" y "planificación municipal" con normalidad.
 
 - Evita adjetivos muy fuertes como "muy alto", "muy bajo",
   "crítico", "significativo" o "significativamente inferior/superior"
