@@ -100401,7 +100401,7 @@ FORMATO DEL TEXTO:
 - Después de cada título en negrita, escribe **1–3 párrafos cortos**.
 - Cuando sea útil, usa viñetas con "•".
 - Usa un tono profesional, claro y narrativo, similar a un informe técnico,
-  como en un diagnóstico usado para un Plan Municipal de Desarrollo.
+  como en un diagnóstico usado para un Plan ${tipoTerritorio === "región" ? "Regional de Ordenamiento y Desarrollo Territorial" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}.
 
 
 SECCIÓN 8 — IMPACTO ESTRATÉGICO (MUY IMPORTANTE):
