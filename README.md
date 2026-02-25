@@ -47,7 +47,7 @@ Este tablero permite visualizar y comparar indicadores demográficos, económico
 
 Cuando se selecciona una provincia o región, los datos se agregan automáticamente a partir de los municipios que la componen. El resumen narrativo generado por IA adapta automáticamente su terminología al nivel territorial (Plan Municipal / Provincial / Regional de Desarrollo).
 
-## Instalación
+## Instalación (desarrollo)
 
 ```bash
 npm install
@@ -55,6 +55,14 @@ npm run dev
 ```
 
 Abra `http://localhost:5173` en su navegador.
+
+### Nota sobre el `base` path
+
+El archivo `vite.config.mjs` contiene la configuración `base: "/dashboard/"`. Este valor determina la ruta base de todos los assets (CSS, JS, imágenes) en el build de producción.
+
+- **Para el servidor de producción** (prodecare.net/dashboard/): usar `base: "/dashboard/"`
+- **Para uso offline o local**: cambiar a `base: "./"` antes de ejecutar `npm run build`
+- **Para desarrollo** (`npm run dev`): el valor de `base` no afecta, ya que Vite usa la raíz del proyecto
 
 ## Scripts
 
@@ -188,7 +196,39 @@ Cada archivo de municipio tiene su equivalente agregado a nivel provincial.
 
 ## Deployment
 
-- https://prodecare.net/dashboard/
+- **Producción**: https://prodecare.net/dashboard/
+
+Para desplegar al servidor FTP:
+```bash
+npm run build
+node scripts/deploy.mjs
+```
+
+## Versión Offline (sin conexión a Internet)
+
+La carpeta `dist-offline/` contiene una versión pre-compilada del tablero que se puede usar sin conexión a Internet.
+
+### Cómo usar
+
+1. Descargue la carpeta `dist-offline/` desde este repositorio (o cópiela a una USB).
+2. Abra el archivo `index.html` directamente en su navegador.
+
+### Limitaciones del modo offline
+
+| Función | Disponible offline | Razón |
+|---------|-------------------|-------|
+| Datos y gráficos | ✅ Sí | Todos los datos están incluidos |
+| Impresión / PDF | ✅ Sí | Usa funciones del navegador |
+| Mapa de fondo | ❌ No | Requiere conexión a OpenStreetMap |
+| Resumen narrativo (IA) | ❌ No | Requiere conexión al servidor API |
+
+### Cómo regenerar la versión offline
+
+1. Cambie `base` en `vite.config.mjs` de `"/dashboard/"` a `"./"`
+2. Ejecute `npm run build`
+3. Copie la carpeta `dist/` como `dist-offline/`
+4. Elimine `dist-offline/api/` si existe
+5. Restaure `base` a `"/dashboard/"` en `vite.config.mjs`
 
 ## Licencia
 
