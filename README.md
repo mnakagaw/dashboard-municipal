@@ -211,7 +211,10 @@ La carpeta `dist-offline/` contiene una versión pre-compilada del tablero que s
 ### Cómo usar
 
 1. Descargue la carpeta `dist-offline/` desde este repositorio (o cópiela a una USB).
-2. Abra el archivo `index.html` directamente en su navegador.
+2. Haga doble clic en `iniciar_servidor.bat` (requiere [Python](https://www.python.org/downloads/) o [Node.js](https://nodejs.org/)).
+3. Abra su navegador en `http://localhost:8000`.
+
+> ⚠️ **Nota**: Chrome y Edge **no permiten** abrir esta aplicación directamente desde el explorador de archivos (`file://`) debido a restricciones de seguridad (CORS). Debe usar el script de inicio o el navegador Firefox.
 
 ### Limitaciones del modo offline
 
