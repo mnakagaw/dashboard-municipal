@@ -100186,7 +100186,7 @@ REGLAS DE INTERPRETACIÓN (MUY IMPORTANTES):
 
 - El ámbito analizado puede ser un municipio, una provincia o una región:
   - Adapta estrictamente la terminología institucional al tipo de territorio.
-  - Si tipo_territorio = "región", **no uses expresiones** como "este municipio" ni "la provincia", usa "esta región", "la región" o "el territorio regional". Asimismo, no uses "Plan Municipal de Desarrollo" ni "planificación municipal" (usa "Plan Regional de Ordenamiento y Desarrollo Territorial" o "planificación regional"). Usa el plural "los gobiernos locales" o "los ayuntamientos" en lugar del singular "el ayuntamiento".
+  - Si tipo_territorio = "región", **no uses expresiones** como "este municipio" ni "la provincia", usa "esta región", "la región" o "el territorio regional". Asimismo, no uses "Plan Municipal de Desarrollo" ni "planificación municipal" (usa "Plan Regional de Desarrollo" o "planificación regional"). Usa el plural "los gobiernos locales" o "los ayuntamientos" en lugar del singular "el ayuntamiento".
   - Si tipo_territorio = "provincia", **no uses expresiones** como "este municipio", usa "esta provincia", "la provincia" o "el territorio provincial". Usa "planificación provincial" o "desarrollo provincial" en lugar de municipal, y usa el plural para hablar de "los ayuntamientos" de la provincia.
   - Si tipo_territorio = "municipio", puedes usar "este municipio", "el municipio", "el ayuntamiento" y "planificación municipal" con normalidad.
 
@@ -100398,17 +100398,17 @@ FORMATO DEL TEXTO:
   **5. Educación**
   **6. Economía y empleo**
   **7. Salud**
-  **8. Implicaciones estratégicas para el Plan ${tipoTerritorio === "región" ? "Regional de Ordenamiento y Desarrollo Territorial" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}**
+  **8. Implicaciones estratégicas para el Plan ${tipoTerritorio === "región" ? "Regional de Desarrollo" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}**
 
 - Después de cada título en negrita, escribe **1–3 párrafos cortos**.
 - Cuando sea útil, usa viñetas con "•".
 - Usa un tono profesional, claro y narrativo, similar a un informe técnico,
-  como en un diagnóstico usado para un Plan ${tipoTerritorio === "región" ? "Regional de Ordenamiento y Desarrollo Territorial" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}.
+  como en un diagnóstico usado para un Plan ${tipoTerritorio === "región" ? "Regional de Desarrollo" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}.
 
 
 SECCIÓN 8 — IMPACTO ESTRATÉGICO (MUY IMPORTANTE):
 
-- En la sección **8. Implicaciones estratégicas para el Plan ${tipoTerritorio === "región" ? "Regional de Ordenamiento y Desarrollo Territorial" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}**:
+- En la sección **8. Implicaciones estratégicas para el Plan ${tipoTerritorio === "región" ? "Regional de Desarrollo" : tipoTerritorio === "provincia" ? "Provincial de Desarrollo" : "Municipal de Desarrollo"}**:
   - Resume de forma sintética las principales brechas y oportunidades detectadas
     en las secciones anteriores.
   - **Incluye dentro de esta misma sección entre 4 y 7 viñetas** con
