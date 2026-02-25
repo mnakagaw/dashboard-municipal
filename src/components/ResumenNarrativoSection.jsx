@@ -564,7 +564,7 @@ FORMATO DEL TEXTO:
   **5. Educación**
   **6. Economía y empleo**
   **7. Salud**
-  **8. Implicaciones estratégicas para el Plan Municipal de Desarrollo**
+  **8. Implicaciones estratégicas para el Plan ${tipoTerritorio === 'región' ? 'Regional de Ordenamiento y Desarrollo Territorial' : (tipoTerritorio === 'provincia' ? 'Provincial de Desarrollo' : 'Municipal de Desarrollo')}**
 
 - Después de cada título en negrita, escribe **1–3 párrafos cortos**.
 - Cuando sea útil, usa viñetas con "•".
@@ -574,11 +574,11 @@ FORMATO DEL TEXTO:
 
 SECCIÓN 8 — IMPACTO ESTRATÉGICO (MUY IMPORTANTE):
 
-- En la sección **8. Implicaciones estratégicas para el Plan Municipal de Desarrollo**:
+- En la sección **8. Implicaciones estratégicas para el Plan ${tipoTerritorio === 'región' ? 'Regional de Ordenamiento y Desarrollo Territorial' : (tipoTerritorio === 'provincia' ? 'Provincial de Desarrollo' : 'Municipal de Desarrollo')}**:
   - Resume de forma sintética las principales brechas y oportunidades detectadas
     en las secciones anteriores.
   - **Incluye dentro de esta misma sección entre 4 y 7 viñetas** con
-    propuestas estratégicas concretas para el municipio, centradas en:
+    propuestas estratégicas concretas para el territorio, centradas en:
       • servicios básicos (agua, saneamiento, residuos, electricidad, TIC),
       • educación,
       • empleo y economía local,
