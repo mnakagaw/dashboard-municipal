@@ -60,6 +60,11 @@ export function buildResumenComparacion({
     educacionProvinciaData,
     saludEstablecimientosProvinciaData,
 
+    // Locally Aggregated (for Prov/Reg mode)
+    hogaresResumenLocal,
+    poblacionUrbanaRuralLocal,
+    saludLocal,
+
     // National Data
     nationalBasic,
     nationalCondVida,
@@ -75,6 +80,7 @@ export function buildResumenComparacion({
 
     const actualProvName = selectedMunicipio.provincia;
     const isProvinciaMode = !selectedMunicipio.adm2_code;
+    const isNacionalMode = selectedMunicipio.region === "Nacional" || selectedMunicipio.municipio === "República Dominicana";
     const adm2 = selectedMunicipio.adm2_code;
 
     // --- 1. PREPARE ROBUST DATA SOURCES ---
@@ -112,17 +118,17 @@ export function buildResumenComparacion({
     );
 
     // Municipal Rows
-    const hogaresMun = isProvinciaMode
+    const hogaresMun = hogaresResumenLocal || (isProvinciaMode
         ? null
-        : getMunicipioRow(hogaresResumenData, adm2);
-    const pobUrbMun = isProvinciaMode
+        : getMunicipioRow(hogaresResumenData, adm2));
+    const pobUrbMun = poblacionUrbanaRuralLocal || (isProvinciaMode
         ? null
-        : getMunicipioRow(poblacionUrbanaRuralData, adm2);
+        : getMunicipioRow(poblacionUrbanaRuralData, adm2));
     const educMun = isProvinciaMode
         ? null
         : getMunicipioRow(educacionData, adm2);
 
-    const saludMun = (() => {
+    const saludMun = saludLocal || (() => {
         if (isProvinciaMode) return null;
         if (!saludEstablecimientosData) return null;
         // saludEstablecimientosData is an object keyed by ADM2 code (string)
@@ -135,7 +141,10 @@ export function buildResumenComparacion({
 
     // -- DEMOGRAFIA: Personas por hogar --
     const getPersonasPorHogar = (scope) => {
-        if (scope === "mun") return hogaresMun?.personas_por_hogar;
+        if (scope === "mun") {
+            if (isNacionalMode) return nationalHogares?.personas_por_hogar;
+            return hogaresMun?.personas_por_hogar;
+        }
         if (scope === "prov") return hogaresProv?.personas_por_hogar;
         if (scope === "nac") return nationalHogares?.personas_por_hogar;
         return null;
@@ -144,6 +153,7 @@ export function buildResumenComparacion({
     // -- DEMOGRAFIA: % Población Urbana --
     const getPoblacionUrbanaPct = (scope) => {
         if (scope === "mun") {
+            if (isNacionalMode) return getPoblacionUrbanaPct("nac");
             if (!pobUrbMun || !pobUrbMun.poblacion_total) return null;
             const urb = pobUrbMun.urbana ?? pobUrbMun.poblacion_urbana ?? 0;
             return (urb / pobUrbMun.poblacion_total) * 100;
@@ -174,7 +184,10 @@ export function buildResumenComparacion({
     };
 
     // -- CONDICION VIDA --
-    const getCondVidaPct = (source, group, category) => {
+    const getCondVidaPct = (source, group, category, scope) => {
+        if (scope === "mun" && isNacionalMode) {
+            source = nationalCondVida;
+        }
         if (!source) return null;
         // Parsed?
         if (source[group]?.categorias?.[category]?.pct !== undefined) {
@@ -200,16 +213,29 @@ export function buildResumenComparacion({
     };
 
     // -- TIC --
-    const getTicPct = (obj) =>
-        obj?.rate_used != null
+    const getTicPct = (obj, scope) => {
+        if (scope === "mun" && isNacionalMode) obj = nationalTic;
+        return obj?.rate_used != null
             ? obj.rate_used * 100
             : obj?.internet?.rate_used != null
                 ? obj.internet.rate_used * 100
                 : null;
+    };
 
     // -- EDUCACION: Abandono Secundaria --
     const getAbandono = (scope) => {
         if (scope === "mun") {
+            if (isNacionalMode) return getAbandono("nac");
+            if (isProvinciaMode) {
+                if (educ && educ.length > 0) {
+                    let sum = 0; let count = 0;
+                    educ.forEach(p => {
+                        const ab = p.anuario?.eficiencia?.secundario?.abandono;
+                        if (typeof ab === 'number') { sum += ab; count++; }
+                    });
+                    if (count > 0) return sum / count;
+                }
+            }
             return educMun?.anuario?.eficiencia?.secundario?.abandono;
         }
         if (scope === "prov") {
@@ -251,7 +277,8 @@ export function buildResumenComparacion({
     };
 
     // -- EDUCACION: Nivel --
-    const getEducPct = (dataObj, type) => {
+    const getEducPct = (dataObj, type, scope) => {
+        if (scope === "mun" && isNacionalMode) dataObj = nationalEducNivel;
         let nivelSource = null;
         if (Array.isArray(dataObj) && dataObj[0]?.nivel) {
             nivelSource = dataObj[0].nivel;
@@ -276,6 +303,7 @@ export function buildResumenComparacion({
         let pop = 0;
 
         if (scope === "mun") {
+            if (isNacionalMode) return getEmpleosMil("nac");
             employees = econ?.dee_2024?.total_employees || 0;
             pop = indicadores?.poblacion_total || 0;
         } else if (scope === "prov") {
@@ -293,7 +321,8 @@ export function buildResumenComparacion({
     };
 
     // -- ECONOMIA: Micro --
-    const getMicroPct = (dataObj) => {
+    const getMicroPct = (dataObj, scope) => {
+        if (scope === "mun" && isNacionalMode) dataObj = nationalEcon;
         const root = dataObj?.dee_2024 || dataObj;
         if (!root?.employment_size_bands) return null;
         const band = root.employment_size_bands.find(
@@ -310,6 +339,7 @@ export function buildResumenComparacion({
         let pop = 0;
 
         if (scope === "mun") {
+            if (isNacionalMode) return getSalud10k("nac");
             centros = saludMun?.centros?.length || 0;
             pop = indicadores?.poblacion_total || 0;
         } else if (scope === "prov") {
@@ -376,17 +406,20 @@ export function buildResumenComparacion({
                     municipio: getCondVidaPct(
                         condVida,
                         "agua_domestico",
-                        "del_acueducto_dentro_de_la_vivienda"
+                        "del_acueducto_dentro_de_la_vivienda",
+                        "mun"
                     ),
                     provincia: getCondVidaPct(
                         condVidaProv,
                         "agua_domestico",
-                        "del_acueducto_dentro_de_la_vivienda"
+                        "del_acueducto_dentro_de_la_vivienda",
+                        "prov"
                     ),
                     nacional: getCondVidaPct(
                         nationalCondVida,
                         "agua_domestico",
-                        "del_acueducto_dentro_de_la_vivienda"
+                        "del_acueducto_dentro_de_la_vivienda",
+                        "nac"
                     ),
                     fmt: fmtPct,
                 },
@@ -394,9 +427,9 @@ export function buildResumenComparacion({
                     id: "inodoro_privado",
                     label: "% Inodoro privado",
                     unidad: "porcentaje",
-                    municipio: getCondVidaPct(condVida, "sanitarios", "inodoro"),
-                    provincia: getCondVidaPct(condVidaProv, "sanitarios", "inodoro"),
-                    nacional: getCondVidaPct(nationalCondVida, "sanitarios", "inodoro"),
+                    municipio: getCondVidaPct(condVida, "sanitarios", "inodoro", "mun"),
+                    provincia: getCondVidaPct(condVidaProv, "sanitarios", "inodoro", "prov"),
+                    nacional: getCondVidaPct(nationalCondVida, "sanitarios", "inodoro", "nac"),
                     fmt: fmtPct,
                 },
                 {
@@ -406,17 +439,20 @@ export function buildResumenComparacion({
                     municipio: getCondVidaPct(
                         condVida,
                         "basura",
-                        "la_recoge_el_ayuntamiento"
+                        "la_recoge_el_ayuntamiento",
+                        "mun"
                     ),
                     provincia: getCondVidaPct(
                         condVidaProv,
                         "basura",
-                        "la_recoge_el_ayuntamiento"
+                        "la_recoge_el_ayuntamiento",
+                        "prov"
                     ),
                     nacional: getCondVidaPct(
                         nationalCondVida,
                         "basura",
-                        "la_recoge_el_ayuntamiento"
+                        "la_recoge_el_ayuntamiento",
+                        "nac"
                     ),
                     fmt: fmtPct,
                 },
@@ -429,9 +465,9 @@ export function buildResumenComparacion({
                     id: "internet_hogares",
                     label: "% Hogares con Internet",
                     unidad: "porcentaje",
-                    municipio: getTicPct(tic),
-                    provincia: getTicPct(ticProv),
-                    nacional: getTicPct(nationalTic),
+                    municipio: getTicPct(tic, "mun"),
+                    provincia: getTicPct(ticProv, "prov"),
+                    nacional: getTicPct(nationalTic, "nac"),
                     fmt: fmtPct,
                 },
             ],
@@ -443,18 +479,18 @@ export function buildResumenComparacion({
                     id: "educ_ninguno",
                     label: "% Sin ningún nivel educativo",
                     unidad: "porcentaje",
-                    municipio: getEducPct(educNivel, "ninguno"),
-                    provincia: getEducPct(educNivelProv, "ninguno"),
-                    nacional: getEducPct(nationalEducNivel, "ninguno"),
+                    municipio: getEducPct(educNivel, "ninguno", "mun"),
+                    provincia: getEducPct(educNivelProv, "ninguno", "prov"),
+                    nacional: getEducPct(nationalEducNivel, "ninguno", "nac"),
                     fmt: fmtPct,
                 },
                 {
                     id: "educ_secundaria_plus",
                     label: "% Secundaria o superior",
                     unidad: "porcentaje",
-                    municipio: getEducPct(educNivel, "secundaria_plus"),
-                    provincia: getEducPct(educNivelProv, "secundaria_plus"),
-                    nacional: getEducPct(nationalEducNivel, "secundaria_plus"),
+                    municipio: getEducPct(educNivel, "secundaria_plus", "mun"),
+                    provincia: getEducPct(educNivelProv, "secundaria_plus", "prov"),
+                    nacional: getEducPct(nationalEducNivel, "secundaria_plus", "nac"),
                     fmt: fmtPct,
                 },
                 {
@@ -475,9 +511,9 @@ export function buildResumenComparacion({
                     id: "microempresas",
                     label: "% Microempresas (del total)",
                     unidad: "porcentaje",
-                    municipio: getMicroPct(econ),
-                    provincia: getMicroPct(econProv),
-                    nacional: getMicroPct(nationalEcon),
+                    municipio: getMicroPct(econ, "mun"),
+                    provincia: getMicroPct(econProv, "prov"),
+                    nacional: getMicroPct(nationalEcon, "nac"),
                     fmt: fmtPct,
                 },
                 {

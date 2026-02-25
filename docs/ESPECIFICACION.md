@@ -3,7 +3,6 @@
 
 **Versión:** 1.0  
 **Fecha:** Febrero 2026  
-**Autor:** Equipo de Desarrollo
 
 ---
 

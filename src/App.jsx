@@ -51,19 +51,24 @@ import { EconomyEmployment } from "./components/charts";
 import { buildResumenComparacion } from "./utils/resumenComparacionHelpers";
 
 export default function App() {
+  const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectionKey, setSelectionKey] = useState(null);
 
-  const data = useMunicipioData(selectedProvince, selectionKey);
+  const data = useMunicipioData(selectedRegion, selectedProvince, selectionKey);
 
   const {
     municipiosIndex,
     provincias,
+    regionsIndexData,
     municipioOptions,
     provinciaOptions,
+    regionOptions,
     isProvinceSelection,
+    isRegionSelection,
     selectedAdm2,
     selectedProvinceScope,
+    selectedRegionScope,
     selectedMunicipio,
 
     pyramid,
@@ -113,17 +118,26 @@ export default function App() {
   } = data;
 
   useEffect(() => {
-    if (!selectedProvince && provincias.length) {
-      const prov = provincias[0];
-      setSelectedProvince(prov);
-      const first = municipiosIndex.find((m) => m.provincia === prov);
-      if (first) setSelectionKey(first.adm2_code);
+    if (!selectedRegion && regionsIndexData.length) {
+      const firstReg = regionsIndexData[0];
+      setSelectedRegion(firstReg.id);
+
+      const firstProv = firstReg.provincias[0];
+      setSelectedProvince(firstProv);
+
+      const firstMuni = municipiosIndex.find(m => m.provincia === firstProv);
+      if (firstMuni) setSelectionKey(firstMuni.adm2_code);
     }
-  }, [provincias, municipiosIndex, selectedProvince]);
+  }, [regionsIndexData, municipiosIndex, selectedRegion]);
 
   const handleMapSelect = (adm2, provFromMap) => {
     setSelectionKey(adm2);
-    if (provFromMap) setSelectedProvince(provFromMap);
+    if (provFromMap) {
+      setSelectedProvince(provFromMap);
+      // Find region for this province
+      const reg = regionsIndexData.find(r => r.provincias.includes(provFromMap));
+      if (reg) setSelectedRegion(reg.id);
+    }
   };
 
   return (
@@ -133,13 +147,13 @@ export default function App() {
         <div className="mx-auto w-full max-w-6xl px-4 py-3 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-center justify-between">
           <div className="text-center md:text-left flex-1">
             <h1 className="text-lg font-semibold text-slate-900 md:text-xl">
-              Diagnóstico Municipal
+              Diagnóstico Territorial
               {selectedMunicipio?.municipio
                 ? ` – ${selectedMunicipio.municipio}`
                 : ""}
             </h1>
             <p className="text-xs text-slate-500 md:text-sm">
-              Panel de diagnóstico municipal – población, salud, economía y
+              Panel de diagnóstico territorial – población, salud, economía y
               empleo, educación
             </p>
           </div>
@@ -165,10 +179,13 @@ export default function App() {
         className="w-full mx-auto flex flex-col gap-4 md:gap-5 px-2 sm:px-4 py-4 md:py-6 md:max-w-6xl"
       >
         <TopSelectionAndMap
+          selectedRegion={selectedRegion}
+          setSelectedRegion={setSelectedRegion}
           selectedProvince={selectedProvince}
           setSelectedProvince={setSelectedProvince}
           selectionKey={selectionKey}
           setSelectionKey={setSelectionKey}
+          regionOptions={regionOptions}
           provinciaOptions={provinciaOptions}
           municipioOptions={municipioOptions}
           municipiosIndex={municipiosIndex}
@@ -177,7 +194,9 @@ export default function App() {
           nationalBasic={nationalBasic}
           selectedAdm2={selectedAdm2}
           isProvinceSelection={isProvinceSelection}
+          isRegionSelection={isRegionSelection}
           selectedProvinceScope={selectedProvinceScope}
+          selectedRegionScope={selectedRegionScope}
           handleMapSelect={handleMapSelect}
         />
 
@@ -193,6 +212,7 @@ export default function App() {
           poblacionUrbanaRural={poblacionUrbanaRural}
           hogaresTamanoRecords={hogaresTamanoRecords}
           isProvinceSelection={isProvinceSelection}
+          isRegionSelection={isRegionSelection}
         />
 
         <CondicionVidaSection
@@ -208,7 +228,9 @@ export default function App() {
           records={educacionRecords}
           selectedMunicipio={selectedMunicipio}
           isProvinceSelection={isProvinceSelection}
+          isRegionSelection={isRegionSelection}
           educacionNivel={educacionNivel}
+          regionsIndexData={regionsIndexData}
         />
 
         <div className="page-break"></div>
@@ -241,6 +263,9 @@ export default function App() {
             poblacionUrbanaRuralData,
             educacionData,
             saludEstablecimientosData,
+            hogaresResumenLocal: hogaresResumen,
+            poblacionUrbanaRuralLocal: poblacionUrbanaRural,
+            saludLocal: saludEstablecimientos,
 
             condicionVidaProvinciaData,
             ticProvinciaData,
@@ -270,6 +295,7 @@ export default function App() {
                 selectedMunicipio={selectedMunicipio}
                 saludEstablecimientos={saludEstablecimientos}
                 isProvinceSelection={isProvinceSelection}
+                isRegionSelection={isRegionSelection}
               />
 
               {/*<div className="page-break"></div>*/}

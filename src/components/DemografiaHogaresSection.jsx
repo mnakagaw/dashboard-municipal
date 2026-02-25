@@ -7,8 +7,13 @@ export default function DemografiaHogaresSection({
   poblacionUrbanaRural,
   hogaresTamanoRecords,
   isProvinceSelection,
+  isRegionSelection,
 }) {
-  const territoryLabel = isProvinceSelection ? "esta provincia" : "este municipio";
+  const territoryLabel = isRegionSelection
+    ? "esta región"
+    : isProvinceSelection
+      ? "esta provincia"
+      : "este municipio";
   return (
     <div className="mt-4 w-full">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr),minmax(0,2fr)] print-hogares-grid">

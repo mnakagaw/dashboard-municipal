@@ -1858,5 +1858,66 @@
         "rural_m": 2673
       }
     }
+  },
+  {
+    "provincia": "Distrito Nacional",
+    "region": "Ozama o Metropolitana",
+    "nivel": {
+      "ninguno": {
+        "total": 51998,
+        "h": 25951,
+        "m": 26047,
+        "urbano_total": 51998,
+        "urbano_h": 25951,
+        "urbano_m": 26047,
+        "rural_total": 0,
+        "rural_h": 0,
+        "rural_m": 0
+      },
+      "preprimaria": {
+        "total": 48919,
+        "h": 24161,
+        "m": 24758,
+        "urbano_total": 48919,
+        "urbano_h": 24161,
+        "urbano_m": 24758,
+        "rural_total": 0,
+        "rural_h": 0,
+        "rural_m": 0
+      },
+      "primaria": {
+        "total": 263370,
+        "h": 133506,
+        "m": 129864,
+        "urbano_total": 263370,
+        "urbano_h": 133506,
+        "urbano_m": 129864,
+        "rural_total": 0,
+        "rural_h": 0,
+        "rural_m": 0
+      },
+      "secundaria": {
+        "total": 288437,
+        "h": 143670,
+        "m": 144767,
+        "urbano_total": 288437,
+        "urbano_h": 143670,
+        "urbano_m": 144767,
+        "rural_total": 0,
+        "rural_h": 0,
+        "rural_m": 0
+      },
+      "superior": {
+        "total": 334537,
+        "h": 141722,
+        "m": 192815,
+        "urbano_total": 334537,
+        "urbano_h": 141722,
+        "urbano_m": 192815,
+        "rural_total": 0,
+        "rural_h": 0,
+        "rural_m": 0
+      }
+    }
   }
 ]

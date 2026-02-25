@@ -1248,9 +1248,38 @@
     "municipio": "Santo Domingo de Guzmán",
     "provincia": "Distrito Nacional",
     "region": "Ozama o Metropolitana",
-    "distrito_educativo": null,
+    "distrito_educativo": "1503",
     "censo": null,
-    "anuario": null
+    "anuario": {
+      "distrito_educativo": "1503",
+      "eficiencia": {
+        "inicial": {
+          "abandono": 1.8,
+          "promocion": 98.2,
+          "reprobacion": 0.0
+        },
+        "primario": {
+          "abandono": 1.8,
+          "promocion": 95.7,
+          "reprobacion": 2.5
+        },
+        "secundario": {
+          "abandono": 3.5,
+          "promocion": 92.7,
+          "reprobacion": 3.8
+        }
+      },
+      "infraestructura": {
+        "aulas_por_plantel": 18.0,
+        "secciones_por_centro": 13.8,
+        "secciones_por_aula": 1.2,
+        "docentes_por_centro": 20.7,
+        "alumnos_por_centro": 250.1,
+        "alumnos_por_aula": 32.6,
+        "alumnos_por_seccion": 18.1,
+        "alumnos_por_docente": 16.7
+      }
+    }
   },
   {
     "adm2_code": "06002",

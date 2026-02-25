@@ -11,6 +11,7 @@ import { GraduationCap } from "lucide-react";
 
 import ofertaData from "../data/educacion_oferta_municipal.json";
 import ofertaProvinciaData from "../data/educacion_oferta_municipal_provincia.json";
+import nationalEducOferta from "../data/national_educacion_oferta.json";
 import educacionData from "../data/educacion.json";
 import nivelData from "../data/educacion_nivel.json";
 
@@ -53,7 +54,7 @@ function CycleTooltip({ active, payload, label }) {
       <div>
         <strong>{label}</strong>
       </div>
-      <div>{item.value}% (RD: {item.payload.rd})</div>
+      <div>{typeof item.value === "number" ? parseFloat(item.value.toFixed(2)) : item.value}% (RD: {item.payload.rd})</div>
     </div>
   );
 }
@@ -76,7 +77,7 @@ function StatCard({ label, v, rd }) {
     <div className="rounded-xl bg-white p-4 shadow-sm border border-slate-200 print-card">
       <div className="text-xs text-slate-500">{label}</div>
       <div className="text-lg font-semibold">
-        {v}{" "}
+        {typeof v === "number" ? parseFloat(v.toFixed(2)) : v}{" "}
         <span className="text-xs text-slate-500">(RD: {rd})</span>
       </div>
     </div>
@@ -139,7 +140,7 @@ function CycleChartCard({ title, data }) {
 
         <div className="flex-1 text-xs space-y-1">
           {pieData.map((d) => (
-            <div key={d.key} className="flex justify-between items-center print-flex">
+            <div key={d.key} className="flex flex-col print-flex mb-1">
               <span
                 className="font-medium flex items-center gap-1"
                 style={{ color: CHART_COLORS[d.key] }}
@@ -150,8 +151,8 @@ function CycleChartCard({ title, data }) {
                 />
                 {d.name}:
               </span>
-              <span>
-                {d.value}%{" "}
+              <span className="pl-3 mt-0.5">
+                {typeof d.value === "number" ? parseFloat(d.value.toFixed(2)) : d.value}%{" "}
                 <span className="text-slate-500 text-xs">(RD: {d.rd})</span>
               </span>
             </div>
@@ -173,7 +174,14 @@ function toPct(value, base) {
 /* ============================================================
    Main Component
 ============================================================ */
-export default function EducacionDashboard({ records, selectedMunicipio, isProvinceSelection, educacionNivel }) {
+export default function EducacionDashboard({
+  records,
+  selectedMunicipio,
+  isProvinceSelection,
+  isRegionSelection,
+  educacionNivel,
+  regionsIndexData,
+}) {
   const muni = records?.[0] || null;
 
   if (!muni) return <div>No hay datos disponibles.</div>;
@@ -182,6 +190,50 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
      Oferta Educativa
   --------------------------- */
   const oferta = (() => {
+    // National selection
+    if (isRegionSelection && (selectedMunicipio?.region === "Nacional" || selectedMunicipio?.region?.toLowerCase() === "nacional")) {
+      return nationalEducOferta;
+    }
+
+    // Region selection
+    if (isRegionSelection && selectedMunicipio?.region && regionsIndexData) {
+      const regionName = selectedMunicipio.region;
+      const reg = regionsIndexData.find((r) => r.name === regionName);
+      if (reg && reg.provincias) {
+        const provs = reg.provincias;
+        const relevantOfertas = provs.map(p => ofertaProvinciaData.find(o => o.provincia === p)).filter(Boolean);
+        if (relevantOfertas.length > 0) {
+          const agg = {
+            centros_total: 0,
+            niveles: {
+              inicial_primario: { centros: 0, matricula: 0 },
+              secundario: { centros: 0, matricula: 0 },
+              adultos: { centros: 0, matricula: 0 }
+            }
+          };
+          for (const o of relevantOfertas) {
+            agg.centros_total += (o.centros_total || 0);
+            if (o.niveles) {
+              if (o.niveles.inicial_primario) {
+                agg.niveles.inicial_primario.centros += (o.niveles.inicial_primario.centros || 0);
+                agg.niveles.inicial_primario.matricula += (o.niveles.inicial_primario.matricula || 0);
+              }
+              if (o.niveles.secundario) {
+                agg.niveles.secundario.centros += (o.niveles.secundario.centros || 0);
+                agg.niveles.secundario.matricula += (o.niveles.secundario.matricula || 0);
+              }
+              if (o.niveles.adultos) {
+                agg.niveles.adultos.centros += (o.niveles.adultos.centros || 0);
+                agg.niveles.adultos.matricula += (o.niveles.adultos.matricula || 0);
+              }
+            }
+          }
+          return agg;
+        }
+      }
+      return null;
+    }
+
     // Provincia selection
     if (isProvinceSelection && selectedMunicipio?.provincia) {
       const provinciaName = String(selectedMunicipio.provincia).trim();
@@ -213,11 +265,11 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
   /* ---------------------------
      Anuario fallback
   --------------------------- */
-  let infra = muni.anuario?.infraestructura || null;
-  let efic = muni.anuario?.eficiencia || null;
+  let infra = muni?.anuario?.infraestructura || null;
+  let efic = muni?.anuario?.eficiencia || null;
 
   const distritoCodeFromAnuario = (() => {
-    const raw = muni.anuario?.distrito_educativo;
+    const raw = muni?.anuario?.distrito_educativo;
     if (!raw) return null;
     const match = String(raw).match(/\d{4}/);
     return match ? match[0] : null;
@@ -227,7 +279,7 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
     distritoCodeFromAnuario ||
     (oferta ? String(oferta.distrito_educativo).padStart(4, "0") : null);
 
-  const distritoRecord = distritoCode
+  const distritoRecord = distritoCode && !isRegionSelection && !isProvinceSelection
     ? educacionData.find(
       (d) =>
         String(d.distrito_educativo || d.distrito_educativo_code).padStart(
@@ -242,6 +294,59 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
   }
   if (!efic && distritoRecord?.anuario?.eficiencia) {
     efic = distritoRecord.anuario.eficiencia;
+  }
+
+  const shouldAggregate = isRegionSelection || (isProvinceSelection && (!infra || !efic));
+
+  // If we should aggregate (e.g. Region mode, or missing Province mode), aggregate from all 'records'
+  if (shouldAggregate && records && records.length > 0) {
+    const aggInfra = {};
+    const aggEfic = { inicial: {}, primario: {}, secundario: {} };
+    let cInfra = 0;
+    let cEficInit = 0, cEficPrim = 0, cEficSec = 0;
+
+    for (const r of records) {
+      const pInfra = r.anuario?.infraestructura;
+      if (pInfra) {
+        cInfra++;
+        ['aulas_por_plantel', 'secciones_por_centro', 'secciones_por_aula', 'docentes_por_centro', 'alumnos_por_centro', 'alumnos_por_aula', 'alumnos_por_seccion', 'alumnos_por_docente'].forEach(k => {
+          aggInfra[k] = (aggInfra[k] || 0) + (pInfra[k] || 0);
+        });
+      }
+
+      const pEfic = r.anuario?.eficiencia;
+      if (pEfic) {
+        if (pEfic.inicial) {
+          cEficInit++;
+          ['abandono', 'promocion', 'reprobacion'].forEach(k => {
+            aggEfic.inicial[k] = (aggEfic.inicial[k] || 0) + (pEfic.inicial[k] || 0);
+          });
+        }
+        if (pEfic.primario) {
+          cEficPrim++;
+          ['abandono', 'promocion', 'reprobacion'].forEach(k => {
+            aggEfic.primario[k] = (aggEfic.primario[k] || 0) + (pEfic.primario[k] || 0);
+          });
+        }
+        if (pEfic.secundario) {
+          cEficSec++;
+          ['abandono', 'promocion', 'reprobacion'].forEach(k => {
+            aggEfic.secundario[k] = (aggEfic.secundario[k] || 0) + (pEfic.secundario[k] || 0);
+          });
+        }
+      }
+    }
+
+    if (cInfra > 0) {
+      infra = {};
+      Object.keys(aggInfra).forEach(k => infra[k] = aggInfra[k] / cInfra);
+    }
+    if (cEficInit > 0 || cEficPrim > 0 || cEficSec > 0) {
+      efic = { inicial: {}, primario: {}, secundario: {} };
+      if (cEficInit > 0) ['abandono', 'promocion', 'reprobacion'].forEach(k => efic.inicial[k] = aggEfic.inicial[k] / cEficInit);
+      if (cEficPrim > 0) ['abandono', 'promocion', 'reprobacion'].forEach(k => efic.primario[k] = aggEfic.primario[k] / cEficPrim);
+      if (cEficSec > 0) ['abandono', 'promocion', 'reprobacion'].forEach(k => efic.secundario[k] = aggEfic.secundario[k] / cEficSec);
+    }
   }
 
   infra = infra || {};
@@ -343,18 +448,22 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
       <h3 className="text-lg font-semibold">
         {selectedMunicipio?.municipio || muni.municipio}
       </h3>
-      <div className="text-sm text-slate-600 mb-3">
-        Provincia: {selectedMunicipio?.provincia || muni.provincia}
-      </div>
+      {selectedMunicipio?.provincia && (
+        <div className="text-sm text-slate-600 mb-3">
+          Provincia: {selectedMunicipio.provincia}
+        </div>
+      )}
 
       {/* Oferta + Nivel */}
       <div className="grid gap-4 md:grid-cols-[1fr,1.35fr] mb-6 items-start print-grid print-grid-2">
         {/* Oferta Educativa */}
         <div className="rounded-xl bg-white p-4 shadow-sm border border-slate-200 print-card">
           <h3 className="font-semibold text-orange-700 mb-2">
-            {isProvinceSelection
-              ? `Oferta Educativa – Provincia ${selectedMunicipio?.provincia || muni.provincia}`
-              : `Oferta Educativa – Municipio ${muni.municipio}`}
+            {isRegionSelection
+              ? `Oferta Educativa – Región ${selectedMunicipio?.region}`
+              : isProvinceSelection
+                ? `Oferta Educativa – Provincia ${selectedMunicipio?.provincia || muni.provincia}`
+                : `Oferta Educativa – Municipio ${muni.municipio}`}
           </h3>
 
           {oferta ? (
@@ -383,9 +492,11 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
             </>
           ) : (
             <p className="text-sm text-slate-500">
-              {isProvinceSelection
-                ? "No hay datos sobre oferta educativa para esta provincia."
-                : "No hay datos sobre oferta educativa para este municipio."}
+              {isRegionSelection
+                ? "Resumen de centros no disponible para la región completa."
+                : isProvinceSelection
+                  ? "No hay datos sobre oferta educativa para esta provincia."
+                  : "No hay datos sobre oferta educativa para este municipio."}
             </p>
           )}
         </div>
@@ -454,11 +565,19 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
 
       {/* Distrito Educativo */}
       {(() => {
-        const labelFromAnuario = muni.anuario?.distrito_educativo;
-        const labelFromOferta = oferta
-          ? `${oferta.distrito_educativo} ${oferta.distrito_nombre}`
-          : null;
-        const label = labelFromAnuario || labelFromOferta;
+        let label = null;
+        if (isRegionSelection || isProvinceSelection) {
+          label = "Multiple";
+          // Special case: if the province is DN and only has one municipality with one district (1503)? 
+          // Wait, Distrito Nacional HAS ONE municipality (DN), but that municipality has MULTIPLE districts.
+          // Let's just use Multiple for any Region/Province scope to be accurate and safe.
+        } else {
+          const labelFromAnuario = muni?.anuario?.distrito_educativo;
+          const labelFromOferta = oferta
+            ? `${oferta.distrito_educativo} ${oferta.distrito_nombre || ""}`
+            : null;
+          label = labelFromAnuario || labelFromOferta;
+        }
 
         return (
           <div className="mb-4 print-card">
@@ -471,7 +590,9 @@ export default function EducacionDashboard({ records, selectedMunicipio, isProvi
               </span>
             </div>
             <p className="mt-1 text-xs text-slate-500">
-              Los indicadores siguientes corresponden al distrito educativo.
+              {label === "Multiple"
+                ? "Los indicadores siguientes representan un promedio consolidado de los distritos correspondientes."
+                : "Los indicadores siguientes corresponden al distrito educativo."}
             </p>
           </div>
         );

@@ -3723,5 +3723,120 @@
         "female": 0
       }
     ]
+  },
+  {
+    "provincia": "Distrito Nacional",
+    "age_groups": [
+      {
+        "age_group": "Menos de 1",
+        "male": 6761,
+        "female": 6902
+      },
+      {
+        "age_group": "1-4",
+        "male": 29917,
+        "female": 28961
+      },
+      {
+        "age_group": "5-9",
+        "male": 38812,
+        "female": 37546
+      },
+      {
+        "age_group": "10-14",
+        "male": 39429,
+        "female": 38494
+      },
+      {
+        "age_group": "15-19",
+        "male": 37900,
+        "female": 37969
+      },
+      {
+        "age_group": "20-24",
+        "male": 43400,
+        "female": 45157
+      },
+      {
+        "age_group": "25-29",
+        "male": 40394,
+        "female": 43880
+      },
+      {
+        "age_group": "30-34",
+        "male": 39143,
+        "female": 43440
+      },
+      {
+        "age_group": "35-39",
+        "male": 33251,
+        "female": 38107
+      },
+      {
+        "age_group": "40-44",
+        "male": 32266,
+        "female": 35925
+      },
+      {
+        "age_group": "45-49",
+        "male": 27606,
+        "female": 31384
+      },
+      {
+        "age_group": "50-54",
+        "male": 27402,
+        "female": 30752
+      },
+      {
+        "age_group": "55-59",
+        "male": 24884,
+        "female": 28640
+      },
+      {
+        "age_group": "60-64",
+        "male": 20867,
+        "female": 24723
+      },
+      {
+        "age_group": "65-69",
+        "male": 17000,
+        "female": 21509
+      },
+      {
+        "age_group": "70-74",
+        "male": 13350,
+        "female": 17419
+      },
+      {
+        "age_group": "75-79",
+        "male": 7888,
+        "female": 11530
+      },
+      {
+        "age_group": "80-84",
+        "male": 5390,
+        "female": 8055
+      },
+      {
+        "age_group": "85-89",
+        "male": 2743,
+        "female": 5017
+      },
+      {
+        "age_group": "90-94",
+        "male": 1244,
+        "female": 2523
+      },
+      {
+        "age_group": "95-99",
+        "male": 334,
+        "female": 864
+      },
+      {
+        "age_group": "100 o más",
+        "male": 70,
+        "female": 258
+      }
+    ]
   }
 ]

@@ -25,7 +25,7 @@ import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-function MapUpdater({ selectedAdm2, selectedProvince, geojson }) {
+function MapUpdater({ selectedAdm2, selectedProvince, selectedRegion, geojson }) {
   const map = useMap();
 
   useEffect(() => {
@@ -34,48 +34,30 @@ function MapUpdater({ selectedAdm2, selectedProvince, geojson }) {
     let features = [];
 
     if (selectedAdm2) {
-      // Municipio selection
       features = geojson.features.filter(
         (f) => f.properties.adm2_code === selectedAdm2
       );
     } else if (selectedProvince) {
-      // Province selection
       features = geojson.features.filter(
         (f) => f.properties.provincia === selectedProvince
       );
+    } else if (selectedRegion) {
+      // Note: Since we don't have region_id in adm2.json, 
+      // we'd normally need a mapping. But the parent passes styling logic.
+      // Zooming to region bounds could be added here if needed.
     }
 
-    // If features are selected, we simply re-render (style updates),
-    // but we DO NOT zoom in. The user wants to see the context of the whole country.
-
-    // Always ensure we are at the default view if users haven't moved it themselves? 
-    // Actually, simply doing nothing here preserves the user's current view.
-    // If we want to FORCE the "Whole DR" view on every selection change, we could do:
-    // map.setView([18.7, -70.16], 8); 
-    // But usually "don't zoom" is enough.
-
-    // However, if the user explicitly said "Set default to allow entering whole DR", 
-    // maybe they want the initial view to be better?
-    // Current MapContainer center is [17.7, -69.5], zoom 6.6.
-    // The previous 'else' block set view to [18.7, -70.16], 8.
-    // I will unify this to a good default and remove the zooming/panning on select.
-
-    // Let's just remove the moving entirely for now to respect "don't zoom".
-    // Or providing a "Reset View" button might be better later.
-    // For now, removing the auto-zoom logic.
-
-  }, [selectedAdm2, selectedProvince, geojson, map]);
+  }, [selectedAdm2, selectedProvince, selectedRegion, geojson, map]);
 
   return null;
 }
 
-export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
+export function RDMap({ selectedAdm2, selectedProvince, selectedRegion, onSelectMunicipio }) {
   const [geojson, setGeojson] = useState(null);
 
   useEffect(() => {
     async function load() {
       try {
-        // Import from src/data to ensure it's bundled by Vite
         const mod = await import("../data/adm2.json");
         const gj = mod.default;
         setGeojson(gj);
@@ -86,12 +68,34 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
     load();
   }, []);
 
+  // We need to know which provinces belong to which region for highlighting.
+  // We can use a simple mapping or just check the data if available.
+  // Since we have regions_index.json, we can use it.
+  const [regionsIndex, setRegionsIndex] = useState([]);
+  useEffect(() => {
+    import("../data/regions_index.json").then(m => setRegionsIndex(m.default));
+  }, []);
+
   const styleFeature = (feature) => {
+    const prov = feature.properties.provincia;
     const adm2 = feature.properties.adm2_code;
-    const provincia = feature.properties.provincia;
-    const isSelected =
-      (selectedAdm2 && feature.properties.adm2_code === selectedAdm2) ||
-      (!selectedAdm2 && selectedProvince && feature.properties.provincia === selectedProvince);
+
+    let isSelected = false;
+
+    if (selectedAdm2) {
+      isSelected = adm2 === selectedAdm2;
+    } else if (selectedProvince) {
+      isSelected = prov === selectedProvince;
+    } else if (selectedRegion) {
+      if (selectedRegion === "nacional") {
+        isSelected = true;
+      } else {
+        const regObj = regionsIndex.find(r => r.id === selectedRegion);
+        if (regObj) {
+          isSelected = regObj.provincias.includes(prov);
+        }
+      }
+    }
 
     return {
       color: isSelected ? "#b91c1c" : "#64748b",
@@ -130,6 +134,7 @@ export function RDMap({ selectedAdm2, selectedProvince, onSelectMunicipio }) {
         <MapUpdater
           selectedAdm2={selectedAdm2}
           selectedProvince={selectedProvince}
+          selectedRegion={selectedRegion}
           geojson={geojson}
         />
         {geojson && <GeoJSON data={geojson} style={styleFeature} onEachFeature={onEachFeature} />}

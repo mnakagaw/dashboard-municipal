@@ -115,27 +115,34 @@
     margin-bottom: 2px !important;
   }
 
-  /* 地図高さ 200px (極端すぎる縮小をやめる) */
-  .print-map-wrapper,
-  .print-map-card div[class*="h-[360px]"] {
-    height: 200px !important;
-    min-height: 200px !important;
-    max-height: 200px !important;
-    overflow: hidden !important;
-    margin-bottom: 0 !important;
-    border-radius: 4px !important;
+  /* ===== Print Map: Hide Leaflet, show static SVG instead ===== */
+  /* Leaflet's internal SVG/Canvas does not render in Chrome's print engine.
+     We use a standalone SVG component (PrintMapSVG) that Chrome CAN print. */
+
+  /* Hide the entire Leaflet map during print */
+  .print-map-wrapper {
+    display: none !important;
   }
 
-  .print-map-card .leaflet-container {
+  /* Show the static SVG map (hidden on screen via .print-map-svg-container) */
+  .print-map-svg-container {
+    display: block !important;
     width: 100% !important;
     height: 200px !important;
-    z-index: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  .print-map-card .leaflet-container img {
-    max-width: none !important;
-    width: auto !important;
-    height: auto !important;
+  .print-map-svg-container svg {
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print-map-svg-container path {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .hide-on-print,

@@ -21,13 +21,17 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Select } from "./ui/select";
 import { RDMap } from "./RDMap";
+import { PrintMapSVG } from "./PrintMapSVG";
 import { BasicIndicators } from "./charts";
 
 export default function TopSelectionAndMap({
+  selectedRegion,
+  setSelectedRegion,
   selectedProvince,
   setSelectedProvince,
   selectionKey,
   setSelectionKey,
+  regionOptions,
   provinciaOptions,
   municipioOptions,
   municipiosIndex,
@@ -36,7 +40,9 @@ export default function TopSelectionAndMap({
   nationalBasic,
   selectedAdm2,
   isProvinceSelection,
+  isRegionSelection,
   selectedProvinceScope,
+  selectedRegionScope,
   handleMapSelect,
 }) {
   return (
@@ -46,13 +52,30 @@ export default function TopSelectionAndMap({
       {/* Columna izquierda: Información Básica + Selector */}
       <div className="lg:flex-[0.7] flex-1 space-y-3 print-info-basic">
 
-        {/* Selector de provincia/municipio (oculto en impresión) */}
+        {/* Selector de región/provincia/municipio (oculto en impresión) */}
         <div className="hide-on-print">
           <Card className="max-w-md w-full">
             <CardHeader className="pb-2">
-              <CardTitle>Seleccionar provincia y municipio</CardTitle>
+              <CardTitle>Ubicación Geográfica</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 pt-0">
+            <CardContent className="space-y-4 pt-0">
+
+              {/* Región */}
+              <div className="space-y-1 text-xs md:text-sm">
+                <div className="text-[11px] text-slate-600 md:text-xs">
+                  Región (Ley 345-22)
+                </div>
+                <Select
+                  value={selectedRegion}
+                  onChange={(val) => {
+                    setSelectedRegion(val);
+                    setSelectedProvince(null);
+                    setSelectionKey(null);
+                  }}
+                  options={regionOptions}
+                  placeholder="Seleccione una región"
+                />
+              </div>
 
               {/* Provincia */}
               <div className="space-y-1 text-xs md:text-sm">
@@ -60,16 +83,17 @@ export default function TopSelectionAndMap({
                   Provincia
                 </div>
                 <Select
-                  value={selectedProvince}
+                  value={selectedProvince || (isRegionSelection ? "__all__" : null)}
                   onChange={(val) => {
-                    setSelectedProvince(val);
-                    const firstMunicipio = municipiosIndex.find(
-                      (m) => m.provincia === val
-                    );
-                    setSelectionKey(
-                      firstMunicipio ? firstMunicipio.adm2_code : null
-                    );
+                    if (val === "__all__") {
+                      setSelectedProvince(null);
+                      setSelectionKey(null);
+                    } else {
+                      setSelectedProvince(val);
+                      setSelectionKey(null);
+                    }
                   }}
+                  disabled={!selectedRegion}
                   options={provinciaOptions}
                   placeholder="Seleccione una provincia"
                 />
@@ -78,11 +102,18 @@ export default function TopSelectionAndMap({
               {/* Municipio */}
               <div className="space-y-1 text-xs md:text-sm">
                 <div className="text-[11px] text-slate-600 md:text-xs">
-                  Municipio / provincia completa
+                  Municipio
                 </div>
                 <Select
-                  value={selectionKey}
-                  onChange={(v) => setSelectionKey(v)}
+                  value={selectionKey || (isProvinceSelection ? "__all__" : null)}
+                  onChange={(val) => {
+                    if (val === "__all__") {
+                      setSelectionKey(null);
+                    } else {
+                      setSelectionKey(val);
+                    }
+                  }}
+                  disabled={!selectedProvince}
                   options={municipioOptions}
                   placeholder="Seleccione un municipio"
                 />
@@ -102,15 +133,20 @@ export default function TopSelectionAndMap({
       <div className="lg:flex-[1.3] flex-1 print-map-card">
         <Card className="w-full h-full">
           <CardHeader>
-            <CardTitle>Mapa de municipios (ADM2)</CardTitle>
+            <CardTitle>Mapa Interactivos</CardTitle>
           </CardHeader>
           <CardContent>
             <RDMap
               selectedAdm2={selectedAdm2}
-              selectedProvince={
-                isProvinceSelection ? selectedProvinceScope : null
-              }
+              selectedProvince={isProvinceSelection ? selectedProvinceScope : null}
+              selectedRegion={isRegionSelection ? selectedRegionScope : null}
               onSelectMunicipio={handleMapSelect}
+            />
+            {/* Static SVG map for print mode (hidden on screen) */}
+            <PrintMapSVG
+              selectedAdm2={selectedAdm2}
+              selectedProvince={isProvinceSelection ? selectedProvinceScope : null}
+              selectedRegion={isRegionSelection ? selectedRegionScope : null}
             />
             <p className="mt-2 text-[10px] text-slate-400 md:text-xs">
               Fuente: ONE, división político-administrativa y cartografía oficial.

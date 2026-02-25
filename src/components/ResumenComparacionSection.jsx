@@ -29,14 +29,14 @@ export default function ResumenComparacionSection({
                         <thead className="bg-slate-50 text-slate-700">
                             <tr className="border-b border-slate-200">
                                 <th className="py-2 pl-4 text-left font-semibold w-1/3">Indicador</th>
+                                <th className="py-2 text-right font-bold text-emerald-700 bg-emerald-50/30 px-2">
+                                    {selectedMunicipio.municipio || "Municipio"}
+                                </th>
                                 {!isProvinciaMode && (
-                                    <th className="py-2 text-right font-bold text-emerald-700 bg-emerald-50/30 px-2">
-                                        {selectedMunicipio.municipio || "Municipio"}
+                                    <th className="py-2 text-right font-semibold text-blue-700 px-2">
+                                        Prov. {actualProvName}
                                     </th>
                                 )}
-                                <th className="py-2 text-right font-semibold text-blue-700 px-2">
-                                    Prov. {actualProvName}
-                                </th>
                                 <th className="py-2 text-right text-slate-500 pr-4 px-2">
                                     País
                                 </th>
@@ -55,14 +55,14 @@ export default function ResumenComparacionSection({
                                             <td className="py-2 pl-4 text-slate-600">
                                                 {row.label}
                                             </td>
+                                            <td className="py-2 px-2 text-right font-medium text-slate-900 bg-emerald-50/10">
+                                                {row.fmt(row.municipio)}
+                                            </td>
                                             {!isProvinciaMode && (
-                                                <td className="py-2 px-2 text-right font-medium text-slate-900 bg-emerald-50/10">
-                                                    {row.fmt(row.municipio)}
+                                                <td className="py-2 px-2 text-right text-slate-700">
+                                                    {row.fmt(row.provincia)}
                                                 </td>
                                             )}
-                                            <td className="py-2 px-2 text-right text-slate-700">
-                                                {row.fmt(row.provincia)}
-                                            </td>
                                             <td className="py-2 px-2 text-right text-slate-500 pr-4">
                                                 {row.fmt(row.nacional)}
                                             </td>

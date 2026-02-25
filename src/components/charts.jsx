@@ -169,7 +169,7 @@ export function PopulationPyramid({ pyramid }) {
       <CardContent className="h-64 md:h-72 flex flex-col justify-between print-graph-content">
         <div className="w-full h-full print-chart-container">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="vertical" stackOffset="sign">
+            <BarChart data={data} layout="vertical" stackOffset="sign" margin={{ left: 10, right: 30, top: 5, bottom: 5 }}>
               <XAxis type="number" tickFormatter={(v) => Math.abs(v).toLocaleString("es-DO")} />
               <YAxis dataKey="age_group" type="category" width={50} />
               <Tooltip />
@@ -200,7 +200,7 @@ export function PopulationPyramid2010({ pyramid }) {
       <CardContent className="h-64 md:h-72 flex flex-col justify-between print-graph-content">
         <div className="w-full h-full print-chart-container">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="vertical" stackOffset="sign">
+            <BarChart data={data} layout="vertical" stackOffset="sign" margin={{ left: 10, right: 30, top: 5, bottom: 5 }}>
               <XAxis type="number" tickFormatter={(v) => Math.abs(v).toLocaleString("es-DO")} />
               <YAxis dataKey="age_group" type="category" width={50} />
               <Tooltip />
@@ -516,8 +516,8 @@ export function EconomyEmployment({
             },
             {
               label: "Empleo total (DEE 2024)",
-              muni: totalEmployees,
-              nat: ndee.total_employees,
+              muni: totalEmployees != null ? totalEmployees.toLocaleString("es-DO", { maximumFractionDigits: 2 }) : null,
+              nat: ndee.total_employees != null ? ndee.total_employees.toLocaleString("es-DO", { maximumFractionDigits: 2 }) : null,
             },
             {
               label: "Tamaño promedio de establecimiento",
@@ -595,7 +595,7 @@ export function EconomyEmployment({
                       <div>
                         <div className="font-semibold text-slate-800 leading-tight">{b.label}</div>
                         <div className="text-slate-600">
-                          {b.employees_count?.toLocaleString("es-DO")}
+                          {b.employees_count != null ? b.employees_count.toLocaleString("es-DO", { maximumFractionDigits: 2 }) : "—"}
                           <span className="ml-1 text-[10px] text-slate-500">({(b.employees_share * 100).toFixed(1)}%)</span>
                         </div>
                       </div>
@@ -666,7 +666,7 @@ export function EconomyEmployment({
                       <span>Est.: <span className="font-semibold">{s.establishments.toLocaleString("es-DO")}</span></span>
                       {s.employees != null && (
                         <span>
-                          Emp.: <span className="font-semibold">{s.employees.toLocaleString("es-DO")}</span>
+                          Emp.: <span className="font-semibold">{s.employees.toLocaleString("es-DO", { maximumFractionDigits: 2 })}</span>
                           <span className="ml-1 text-[10px] text-slate-500">({(s.employees_share * 100).toFixed(1)}%)</span>
                         </span>
                       )}

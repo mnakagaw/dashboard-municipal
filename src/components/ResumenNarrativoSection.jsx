@@ -80,16 +80,20 @@ export default function ResumenNarrativoSection({
         ? String(indicators.adm2_code).padStart(5, "0")
         : null;
 
-    // ¿Contexto provincial?
+    // ¿Contexto de región o provincia?
+    const isRegionContext = !adm2 && !indicators?.provincia && !!indicators?.region;
     const isProvinceContext = !adm2 && !!indicators?.provincia;
 
     // Tipo de territorio y nombre para el prompt de IA
-    const tipoTerritorio = isProvinceContext ? "provincia" : "municipio";
+    const tipoTerritorio = isRegionContext ? "región" : (isProvinceContext ? "provincia" : "municipio");
     const nombreTerritorio =
       municipio ||
       indicators?.municipio ||
       (isProvinceContext && indicators?.provincia
         ? `Provincia de ${indicators.provincia}`
+        : "") ||
+      (isRegionContext && indicators?.region
+        ? `Región ${indicators.region}`
         : "") ||
       "";
 
@@ -220,15 +224,15 @@ Para ver esta funcionalidad:
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             prompt: `
-Eres experto en planificación municipal en República Dominicana.
-A partir de los datos siguientes, redacta un **"Resumen Narrativo de Diagnóstico ${tipoTerritorio === "provincia" ? "Provincial" : "Municipal"
+Eres experto en planificación municipal en República Dominicana (dominio de la Ley 345-22 de Regiones Únicas de Planificación).
+A partir de los datos siguientes, redacta un **"Resumen Narrativo de Diagnóstico ${tipoTerritorio === "región" ? "Regional" : (tipoTerritorio === "provincia" ? "Provincial" : "Municipal")
               }: ${nombreTerritorio}"**.
 
 No copies textos de ejemplo anteriores; solo úsalo como referencia de estilo.
 Tu redacción debe ser sobria, realista y basada exclusivamente en los datos numéricos y reglas que siguen.
 
 INFORMACIÓN SOBRE EL ÁMBITO DEL ANÁLISIS:
-- tipo_territorio: "${tipoTerritorio}" (puede ser "municipio" o "provincia").
+- tipo_territorio: "${tipoTerritorio}" (puede ser "municipio", "provincia" o "región").
 - nombre_territorio: "${nombreTerritorio}".
 
 DATOS CUANTITATIVOS DEL MUNICIPIO (NO INVENTAR NÚMEROS):
@@ -343,12 +347,10 @@ ${JSON.stringify(comparaciones)}
 
 REGLAS DE INTERPRETACIÓN (MUY IMPORTANTES):
 
-- El ámbito analizado puede ser un municipio o una provincia:
-  - Si tipo_territorio = "provincia", **no uses expresiones** como
-    "este municipio" o "el municipio". En su lugar, di siempre
-    "esta provincia", "la provincia" o "el territorio".
-  - Si tipo_territorio = "municipio", puedes usar "este municipio"
-    o "el municipio" con normalidad.
+- El ámbito analizado puede ser un municipio, una provincia o una región:
+  - Si tipo_territorio = "región", **no uses expresiones** como "este municipio" o "la provincia". En su lugar, di siempre "esta región", "la región" o "el territorio regional".
+  - Si tipo_territorio = "provincia", **no uses expresiones** como "este municipio". En su lugar, di siempre "esta provincia", "la provincia" o "el territorio".
+  - Si tipo_territorio = "municipio", puedes usar "este municipio" o "el municipio" con normalidad.
 
 - Evita adjetivos muy fuertes como "muy alto", "muy bajo",
   "crítico", "significativo" o "significativamente inferior/superior"
@@ -608,7 +610,7 @@ EXTENSIÓN:
   return (
     <div className="card p-4 my-6">
       <h2 className="text-lg font-bold mb-2">
-        📝 Resumen de Diagnóstico Automático (GPT)
+        📝 Resumen de Diagnóstico Automático (ChatGPT)
       </h2>
 
       <button
@@ -621,12 +623,11 @@ EXTENSIÓN:
 
       <h3 className="text-md mt-4 font-bold">Resumen Narrativo</h3>
       <div className="mt-2 text-sm leading-relaxed">
-        <ReactMarkdown
-          className="prose prose-sm max-w-none"
-          remarkPlugins={[remarkGfm]}
-        >
-          {resumen || "_Aún no se ha generado el resumen._"}
-        </ReactMarkdown>
+        <div className="prose prose-sm max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {resumen || "_Aún no se ha generado el resumen._"}
+          </ReactMarkdown>
+        </div>
       </div>
     </div>
   );

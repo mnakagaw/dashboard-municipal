@@ -556,5 +556,26 @@
       "used": 8888,
       "rate_used": 0.0968
     }
+  },
+  {
+    "provincia": "Distrito Nacional",
+    "internet": {
+      "provincia": "Distrito Nacional",
+      "total": 956569,
+      "used": 824719,
+      "rate_used": 0.8621636285516256
+    },
+    "cellular": {
+      "provincia": "Distrito Nacional",
+      "total": 956569,
+      "used": 801016,
+      "rate_used": 0.8373844437777097
+    },
+    "computer": {
+      "provincia": "Distrito Nacional",
+      "total": 956569,
+      "used": 644616,
+      "rate_used": 0.6738834313050078
+    }
   }
 ]

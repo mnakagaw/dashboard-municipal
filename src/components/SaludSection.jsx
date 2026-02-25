@@ -19,11 +19,12 @@ export default function SaludSection({
   selectedMunicipio,
   saludEstablecimientos,
   isProvinceSelection,
+  isRegionSelection,
 }) {
   const adm2 = selectedAdm2 || null;
 
   const centros = useMemo(() => {
-    if (isProvinceSelection) {
+    if (isProvinceSelection || isRegionSelection) {
       return saludEstablecimientos?.centros || [];
     }
     if (!adm2 || !saludEstablecimientos) return [];
@@ -77,7 +78,7 @@ export default function SaludSection({
               Salud – Establecimientos de Salud (tipo de centro)
             </CardTitle>
             <div className="text-xs md:text-sm text-slate-700">
-              Total en municipio:{" "}
+              Total en {isRegionSelection && selectedMunicipio?.municipio === "República Dominicana" ? "país" : isRegionSelection ? "región" : isProvinceSelection ? "provincia" : "municipio"}:{" "}
               <span className="font-semibold">
                 {tituloMunicipio} ({total})
               </span>
