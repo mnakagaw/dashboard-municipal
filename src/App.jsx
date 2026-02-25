@@ -140,6 +140,10 @@ export default function App() {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* HEADER */}
@@ -164,7 +168,7 @@ export default function App() {
               Fuente: ONE, Censo 2022, DEE 2024, Anuario Estadístico 2024.
             </div>
             <button
-              onClick={() => window.print()}
+              onClick={handlePrint}
               className="hide-on-print text-xs md:text-sm px-3 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
             >
               🖨️ Imprimir (exportar PDF)
