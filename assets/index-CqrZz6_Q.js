@@ -75038,7 +75038,7 @@ function EducacionDashboard({
     secundaria: levelShares(nivel.secundaria),
     superior: levelShares(nivel.superior)
   } : null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "\n      my-6 rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm \n      print-no-margin print-no-padding print-allow-break\n    ", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "\r\n      my-6 rounded-2xl border border-orange-200 bg-orange-50 p-6 shadow-sm \r\n      print-no-margin print-no-padding print-allow-break\r\n    ", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-10 w-10 bg-orange-200 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(GraduationCap, { className: "h-6 w-6 text-orange-700" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold text-orange-700", children: "Educación – contexto general" })
