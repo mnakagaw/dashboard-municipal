@@ -56,6 +56,19 @@ npm run dev
 
 Abra `http://localhost:5173` en su navegador.
 
+### Variables de Entorno (`.env`)
+
+Para utilizar la funcionalidad del "Resumen Narrativo (IA)", es necesario configurar un archivo `.env` en la raíz del proyecto.
+
+```env
+# Habilitar el botón de generar narrativo
+VITE_ENABLE_AI=true
+
+# URL absoluta del backend PHP para la generación (para desarrollo local)
+# Si no se define, se usará la ruta relativa '/api/generateNarrative.php'
+VITE_API_URL=https://prodecare.net/dashboard/api/generateNarrative.php
+```
+
 ### Nota sobre el `base` path
 
 El archivo `vite.config.mjs` contiene la configuración `base: "/dashboard/"`. Este valor determina la ruta base de todos los assets (CSS, JS, imágenes) en el build de producción.
@@ -139,7 +152,7 @@ El archivo `vite.config.mjs` contiene la configuración `base: "/dashboard/"`. E
 - **Leaflet** (mapas interactivos)
 - **Recharts** (gráficos)
 - **Tailwind CSS** (estilos)
-- **OpenAI API** (resumen narrativo automático)
+- **OpenAI API** (resumen narrativo automático a través de un backend PHP)
 
 ## Datos
 
