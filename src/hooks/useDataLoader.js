@@ -16,7 +16,7 @@ export default function useDataLoader() {
     // Index
     const [regionsIndexData, setRegionsIndexData] = useState([]);
 
-    // All datasets
+    // Todos los conjuntos de datos principales
     const [municipiosIndexData, setMunicipiosIndexData] = useState([]);
     const [indicadoresBasicosData, setIndicadoresBasicosData] = useState([]);
     const [pyramidsData, setPyramidsData] = useState([]);
@@ -31,7 +31,7 @@ export default function useDataLoader() {
     const [hogaresTamanoData, setHogaresTamanoData] = useState([]);
     const [poblacionUrbanaRuralData, setPoblacionUrbanaRuralData] = useState([]);
 
-    // Province datasets
+    // Conjuntos de datos a nivel provincial
     const [educacionProvinciaData, setEducacionProvinciaData] = useState([]);
     const [hogaresResumenProvinciaData, setHogaresResumenProvinciaData] = useState([]);
     const [hogaresTamanoProvinciaData, setHogaresTamanoProvinciaData] = useState([]);
@@ -54,7 +54,7 @@ export default function useDataLoader() {
     const [condicionVidaData, setCondicionVidaData] = useState([]);
     const [nationalCondicionVida, setNationalCondicionVida] = useState(null);
 
-    // National datasets
+    // Conjuntos de datos a nivel nacional
     const [nationalBasic, setNationalBasic] = useState([]);
     const [nationalEcon, setNationalEcon] = useState([]);
 
@@ -74,7 +74,7 @@ export default function useDataLoader() {
     useEffect(() => {
         async function loadAll() {
             try {
-                // ---- Municipales / seccionales ----
+                // ---- Nivel Municipal
                 const [
                     municipiosIndexData,
                     indicadoresBasicosData,
@@ -167,7 +167,7 @@ export default function useDataLoader() {
                 setPyramidsProvinciaData(pyramidsProvinciaData);
                 setPyramid2010ProvinciaData(pyramid2010ProvinciaData);
 
-                // ---- National ----
+                // ---- Nivel Nacional ----
                 const [
                     nationalBasic,
                     nationalEcon,

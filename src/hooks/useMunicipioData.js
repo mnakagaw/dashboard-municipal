@@ -78,7 +78,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   } = raw;
 
   // ---------------------------------------------------------------------------
-  // Index
+  // Índices
   // ---------------------------------------------------------------------------
   const municipiosIndex = useMemo(() => {
     return [...municipiosIndexData].sort((a, b) => {
@@ -95,7 +95,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   }, [municipiosIndex]);
 
   // ---------------------------------------------------------------------------
-  // Selection logic
+  // Lógica de selección
   // ---------------------------------------------------------------------------
   const isRegionSelection = useMemo(() => !!regionId && !provinceName && !adm2Code, [regionId, provinceName, adm2Code]);
   const isProvinceSelection = useMemo(() => !!provinceName && !adm2Code, [provinceName, adm2Code]);
@@ -138,7 +138,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   }, [municipiosIndex, selectedAdm2, isProvinceSelection, selectedProvinceScope, isRegionSelection, selectedRegionScope, regionsIndexData]);
 
   // ---------------------------------------------------------------------------
-  // Maps
+  // Mapas de datos agrupados
   // ---------------------------------------------------------------------------
   const indicadoresMap = useMemo(() => {
     const m = new Map();
@@ -192,7 +192,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
     [poblacionUrbanaRuralData]
   );
 
-  // Province Maps
+  // Mapas a nivel provincial
   const educacionProvinciaMap = useMemo(() => buildProvinceMap(educacionProvinciaData), [educacionProvinciaData]);
   const hogaresResumenProvinciaMap = useMemo(() => buildProvinceMap(hogaresResumenProvinciaData), [hogaresResumenProvinciaData]);
   const hogaresTamanoProvinciaMap = useMemo(() => buildProvinceMap(hogaresTamanoProvinciaData), [hogaresTamanoProvinciaData]);
@@ -205,7 +205,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   const pyramid2010ProvinciaMap = useMemo(() => buildProvinceMap(pyramid2010ProvinciaData), [pyramid2010ProvinciaData]);
 
   // ---------------------------------------------------------------------------
-  // Indicators
+  // Indicadores básicos
   // ---------------------------------------------------------------------------
   const indicadores = useMemo(() => {
     if (selectedAdm2) {
@@ -278,7 +278,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   ]);
 
   // ---------------------------------------------------------------------------
-  // Other datasets
+  // Otros conjuntos de datos
   // ---------------------------------------------------------------------------
   const econ = useMemo(() => {
     if (selectedAdm2) {
@@ -296,11 +296,11 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
 
       if (!allRows.length) return null;
 
-      // Aggregate simple fields
+      // Agregar campos simples
       const total_establishments = allRows.reduce((sum, r) => sum + (r.dee_2024?.total_establishments || 0), 0);
       const total_employees = allRows.reduce((sum, r) => sum + (r.dee_2024?.total_employees || 0), 0);
 
-      // Aggregate size bands
+      // Agregar franjas de tamaño de empresa
       const bandsMap = {};
       allRows.forEach(row => {
         (row.dee_2024?.employment_size_bands || []).forEach(b => {
@@ -316,7 +316,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
         employees_share: total_employees > 0 ? b.employees / total_employees : 0
       }));
 
-      // Aggregate sectors (CIIU)
+      // Agregar sectores (CIIU)
       const sectorsMap = {};
       allRows.forEach(row => {
         (row.dee_2024?.sectors || []).forEach(s => {
@@ -331,10 +331,10 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
       const aggregatedSectors = Object.values(sectorsMap).map(s => ({
         ...s,
         employees_share: total_employees > 0 ? s.employees / total_employees : 0,
-        lq: null // LQ requires national comparison, omit for aggregated regions
+        lq: null // LQ requiere comparación nacional, se omite para agregaciones regionales
       }));
 
-      // Top specialization
+      // Especialización principal
       const topSpec = aggregatedSectors.length > 0
         ? aggregatedSectors.reduce((best, s) => s.establishments > (best?.establishments || 0) ? s : best, null)
         : null;
@@ -369,7 +369,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
 
       if (!allRows.length) return [];
 
-      // Aggregate by age_group
+      // Agregar por grupo de edad
       const ageGroupMap = {};
       allRows.forEach(row => {
         (row.age_groups || []).forEach(g => {
@@ -385,7 +385,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
     return [];
   }, [pyramidMap, pyramidsProvinciaMap, selectedAdm2, isProvinceSelection, selectedProvinceScope, isRegionSelection, selectedRegionScope, regionsIndexData]);
 
-  // 2010 Pyramid
+  // Pirámide 2010
   const selectedAdm22010 = useMemo(() => {
     if (!selectedAdm2Norm || isProvinceSelection || isRegionSelection) return null;
     const code2010 = adm2Map2010[selectedAdm2Norm];
@@ -421,7 +421,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
 
 
   // ---------------------------------------------------------------------------
-  // Records by ADM2
+  // Registros por ADM2
   // ---------------------------------------------------------------------------
   const householdsAggregation = (rows) => {
     if (!rows.length) return null;
@@ -585,7 +585,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   }, [selectedAdm2Norm, isProvinceSelection, selectedProvinceScope, isRegionSelection, selectedRegionScope, ticMap, ticProvinciaMap, regionsIndexData]);
 
   // ---------------------------------------------------------------------------
-  // Condición de Vida（municipio）
+  // Condición de Vida (municipio)
   // ---------------------------------------------------------------------------
   const condicionVidaRaw = useMemo(() => {
     if (selectedAdm2Norm) {
@@ -631,7 +631,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   }, [condicionVidaRaw]);
 
   // ---------------------------------------------------------------------------
-  // Options for selects
+  // Opciones para los selectores desplegables
   // ---------------------------------------------------------------------------
   const regionOptions = useMemo(() => {
     const list = regionsIndexData.map((reg) => ({
@@ -656,7 +656,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
 
     const opts = list.map((p) => ({ value: p, label: p }));
 
-    // Add "Region Completa" option at Provincia level if region is selected
+    // Añadir opción "Región Completa" a nivel de Provincia si se seleccionó una región
     if (regionId) {
       const reg = regionsIndexData.find((r) => r.id === regionId);
       opts.unshift({
@@ -677,7 +677,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
       label: m.municipio,
     }));
 
-    // Add "Provincia Completa" option at Municipio level
+    // Añadir opción "Provincia Completa" a nivel de Municipio
     opts.unshift({
       value: `__all__`,
       label: `${provinceName} (provincia completa)`,
@@ -687,7 +687,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   }, [municipiosIndex, provinceName]);
 
   // ---------------------------------------------------------------------------
-  // Return
+  // Retorno
   // ---------------------------------------------------------------------------
   return {
     loaded,
@@ -746,7 +746,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
         const allProvsHealth = provinces.map(p => (saludEstablecimientosProvinciaMap.get(p) || [])[0]).filter(Boolean);
         if (!allProvsHealth.length) return null;
 
-        // Combine all centros
+        // Combinar todos los centros de salud
         const allCentros = allProvsHealth.flatMap(h => h.centros || []);
         return {
           provincia: `Región ${reg?.name}`,
@@ -759,7 +759,7 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
 
     saludEstablecimientosProvincia: saludEstablecimientosProvinciaData,
 
-    // Exposed for comparison table
+    // Expuesto para la tabla de comparación
     hogaresResumenData,
     hogaresResumenProvinciaData,
     poblacionUrbanaRuralData,

@@ -8,6 +8,13 @@
 // ---------------------------------------------------------------------------
 // normalizeAdm2 - Normaliza código ADM2 a 5 dígitos con padding
 // ---------------------------------------------------------------------------
+/**
+ * Normaliza un código ADM2 a un string de 5 dígitos con ceros iniciales.
+ * Útil para asegurar consistencia en las comparaciones de claves.
+ * 
+ * @param {string|number} code - El código ADM2 original.
+ * @returns {string|null} El código normalizado de 5 dígitos o null si es inválido.
+ */
 export function normalizeAdm2(code) {
     if (!code) return null;
     const c = String(code).trim();
@@ -17,6 +24,13 @@ export function normalizeAdm2(code) {
 // ---------------------------------------------------------------------------
 // buildLongMap - Construye un Map agrupado por adm2_code normalizado
 // ---------------------------------------------------------------------------
+/**
+ * Convierte un arreglo de datos de municipios en un Map agrupado por el código
+ * ADM2 normalizado, facilitando la búsqueda rápida por municipio.
+ * 
+ * @param {Array} longData - Arreglo con datos a nivel de municipio.
+ * @returns {Map<string, Array>} Map donde cada clave es el código ADM2 y el valor es el arreglo de datos asociados.
+ */
 export function buildLongMap(longData) {
     const map = new Map();
     for (const row of longData || []) {
@@ -31,6 +45,13 @@ export function buildLongMap(longData) {
 // ---------------------------------------------------------------------------
 // buildProvinceMap - Construye un Map agrupado por nombre de provincia
 // ---------------------------------------------------------------------------
+/**
+ * Convierte un arreglo de datos provinciales en un Map agrupado por el nombre 
+ * de la provincia, facilitando la búsqueda rápida para contextos provinciales y regionales.
+ * 
+ * @param {Array} data - Arreglo con datos a nivel de provincia.
+ * @returns {Map<string, Array>} Map donde la clave es el nombre de la provincia.
+ */
 export function buildProvinceMap(data) {
     const map = new Map();
     for (const row of data || []) {
@@ -46,6 +67,13 @@ export function buildProvinceMap(data) {
 // buildCondicionVidaParsed - Convierte datos brutos de condición de vida
 // a porcentajes para cada categoría de servicio
 // ---------------------------------------------------------------------------
+/**
+ * Procesa los datos crudos de "Condición de Vida" para calcular y añadir los 
+ * porcentajes correspondientes a cada subcategoría, facilitando su visualización.
+ * 
+ * @param {Object} raw - Datos crudos devueltos por la API o el archivo JSON.
+ * @returns {Object|null} Objeto jerárquico estructurado con valores absolutos ("abs") y porcentuales ("pct").
+ */
 export function buildCondicionVidaParsed(raw) {
     if (!raw || !raw.servicios) return null;
 
