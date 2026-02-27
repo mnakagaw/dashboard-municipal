@@ -543,331 +543,445 @@ const scriptRel = 'modulepreload';const assetsURL = function(dep) { return "/das
   });
 };
 
+/**
+ * dataHelpers.js - Funciones utilitarias para procesamiento de datos
+ *
+ * Funciones puras extraídas de useMunicipioData.js para mejorar
+ * la mantenibilidad, testabilidad y reutilización.
+ */
+
 // ---------------------------------------------------------------------------
-// Utility
+// normalizeAdm2 - Normaliza código ADM2 a 5 dígitos con padding
 // ---------------------------------------------------------------------------
 function normalizeAdm2(code) {
-  if (!code) return null;
-  const c = String(code).trim();
-  return c.padStart(5, "0");
-}
-
-function buildLongMap(longData) {
-  const map = new Map();
-  for (const row of longData || []) {
-    const key = normalizeAdm2(row.adm2_code);
-    if (!key) continue;
-    if (!map.has(key)) map.set(key, []);
-    map.get(key).push(row);
-  }
-  return map;
-}
-
-function buildProvinceMap(data) {
-  const map = new Map();
-  for (const row of data || []) {
-    if (!row.provincia) continue;
-    // Normalize key? Maybe just use the string as is.
-    const key = row.provincia;
-    if (!map.has(key)) map.set(key, []);
-    map.get(key).push(row);
-  }
-  return map;
+    if (!code) return null;
+    const c = String(code).trim();
+    return c.padStart(5, "0");
 }
 
 // ---------------------------------------------------------------------------
-// Condición de Vida → Percent Builder
+// buildLongMap - Construye un Map agrupado por adm2_code normalizado
+// ---------------------------------------------------------------------------
+function buildLongMap(longData) {
+    const map = new Map();
+    for (const row of longData || []) {
+        const key = normalizeAdm2(row.adm2_code);
+        if (!key) continue;
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(row);
+    }
+    return map;
+}
+
+// ---------------------------------------------------------------------------
+// buildProvinceMap - Construye un Map agrupado por nombre de provincia
+// ---------------------------------------------------------------------------
+function buildProvinceMap(data) {
+    const map = new Map();
+    for (const row of data || []) {
+        if (!row.provincia) continue;
+        const key = row.provincia;
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(row);
+    }
+    return map;
+}
+
+// ---------------------------------------------------------------------------
+// buildCondicionVidaParsed - Convierte datos brutos de condición de vida
+// a porcentajes para cada categoría de servicio
 // ---------------------------------------------------------------------------
 function buildCondicionVidaParsed(raw) {
-  if (!raw || !raw.servicios) return null;
+    if (!raw || !raw.servicios) return null;
 
-  const out = {};
+    const out = {};
 
-  const convert = (total, categorias) => {
-    const result = {};
-    for (const [key, val] of Object.entries(categorias || {})) {
-      result[key] = {
-        abs: val,
-        pct: total > 0 ? (val / total) * 100 : 0,
-      };
+    const convert = (total, categorias) => {
+        const result = {};
+        for (const [key, val] of Object.entries(categorias || {})) {
+            result[key] = {
+                abs: val,
+                pct: total > 0 ? (val / total) * 100 : 0,
+            };
+        }
+        return result;
+    };
+
+    const s = raw.servicios;
+
+    // Sanitarios
+    if (s.servicios_sanitarios) {
+        const t = s.servicios_sanitarios.total;
+        out.sanitarios = {
+            total: t,
+            categorias: convert(t, s.servicios_sanitarios.categorias),
+        };
     }
-    return result;
-  };
 
-  const s = raw.servicios;
+    // Agua uso doméstico
+    if (s.agua_uso_domestico) {
+        const t = s.agua_uso_domestico.total;
+        out.agua_domestico = {
+            total: t,
+            categorias: convert(t, s.agua_uso_domestico.categorias),
+        };
+    }
 
-  // Sanitarios
-  if (s.servicios_sanitarios) {
-    const t = s.servicios_sanitarios.total;
-    out.sanitarios = {
-      total: t,
-      categorias: convert(t, s.servicios_sanitarios.categorias),
-    };
-  }
+    // Agua para beber
+    if (s.agua_para_beber) {
+        const t = s.agua_para_beber.total;
+        out.agua_beber = {
+            total: t,
+            categorias: convert(t, s.agua_para_beber.categorias),
+        };
+    }
 
-  // Agua uso doméstico
-  if (s.agua_uso_domestico) {
-    const t = s.agua_uso_domestico.total;
-    out.agua_domestico = {
-      total: t,
-      categorias: convert(t, s.agua_uso_domestico.categorias),
-    };
-  }
+    // Alumbrado
+    if (s.alumbrado) {
+        const t = s.alumbrado.total;
+        out.alumbrado = {
+            total: t,
+            categorias: convert(t, s.alumbrado.categorias),
+        };
+    }
 
-  // Agua para beber
-  if (s.agua_para_beber) {
-    const t = s.agua_para_beber.total;
-    out.agua_beber = {
-      total: t,
-      categorias: convert(t, s.agua_para_beber.categorias),
-    };
-  }
+    // Combustible
+    if (s.combustible_cocinar) {
+        const t = s.combustible_cocinar.total;
+        out.combustible = {
+            total: t,
+            categorias: convert(t, s.combustible_cocinar.categorias),
+        };
+    }
 
-  // Alumbrado
-  if (s.alumbrado) {
-    const t = s.alumbrado.total;
-    out.alumbrado = {
-      total: t,
-      categorias: convert(t, s.alumbrado.categorias),
-    };
-  }
+    // Basura
+    if (s.eliminacion_basura) {
+        const t = s.eliminacion_basura.total;
+        out.basura = {
+            total: t,
+            categorias: convert(t, s.eliminacion_basura.categorias),
+        };
+    }
 
-  // Combustible
-  if (s.combustible_cocinar) {
-    const t = s.combustible_cocinar.total;
-    out.combustible = {
-      total: t,
-      categorias: convert(t, s.combustible_cocinar.categorias),
-    };
-  }
-
-  // Basura
-  if (s.eliminacion_basura) {
-    const t = s.eliminacion_basura.total;
-    out.basura = {
-      total: t,
-      categorias: convert(t, s.eliminacion_basura.categorias),
-    };
-  }
-
-  return out;
+    return out;
 }
+
+function useDataLoader() {
+    const [loaded, setLoaded] = reactExports.useState(false);
+
+    // Index
+    const [regionsIndexData, setRegionsIndexData] = reactExports.useState([]);
+
+    // All datasets
+    const [municipiosIndexData, setMunicipiosIndexData] = reactExports.useState([]);
+    const [indicadoresBasicosData, setIndicadoresBasicosData] = reactExports.useState([]);
+    const [pyramidsData, setPyramidsData] = reactExports.useState([]);
+    const [economiaEmpleoData, setEconomiaEmpleoData] = reactExports.useState([]);
+    const [educacionData, setEducacionData] = reactExports.useState([]);
+    const [educacionNivelData, setEducacionNivelData] = reactExports.useState([]);
+
+    const [pyramid2010Data, setPyramid2010Data] = reactExports.useState([]);
+    const [adm2Map2010, setAdm2Map2010] = reactExports.useState({});
+
+    const [hogaresResumenData, setHogaresResumenData] = reactExports.useState([]);
+    const [hogaresTamanoData, setHogaresTamanoData] = reactExports.useState([]);
+    const [poblacionUrbanaRuralData, setPoblacionUrbanaRuralData] = reactExports.useState([]);
+
+    // Province datasets
+    const [educacionProvinciaData, setEducacionProvinciaData] = reactExports.useState([]);
+    const [hogaresResumenProvinciaData, setHogaresResumenProvinciaData] = reactExports.useState([]);
+    const [hogaresTamanoProvinciaData, setHogaresTamanoProvinciaData] = reactExports.useState([]);
+    const [poblacionUrbanaRuralProvinciaData, setPoblacionUrbanaRuralProvinciaData] = reactExports.useState([]);
+    const [ticProvinciaData, setTicProvinciaData] = reactExports.useState([]);
+    const [condicionVidaProvinciaData, setCondicionVidaProvinciaData] = reactExports.useState([]);
+    const [saludEstablecimientosProvinciaData, setSaludEstablecimientosProvinciaData] = reactExports.useState([]);
+    const [economiaEmpleoProvinciaData, setEconomiaEmpleoProvinciaData] = reactExports.useState([]);
+    const [educacionNivelProvinciaData, setEducacionNivelProvinciaData] = reactExports.useState([]);
+    const [pyramidsProvinciaData, setPyramidsProvinciaData] = reactExports.useState([]);
+    const [pyramid2010ProvinciaData, setPyramid2010ProvinciaData] = reactExports.useState([]);
+
+    // Datos de oferta educativa municipal (para promedios ponderados)
+    const [educacionOfertaMunicipalData, setEducacionOfertaMunicipalData] = reactExports.useState([]);
+
+    // Datos de TIC (Tecnologías de Información y Comunicación)
+    const [ticData, setTicData] = reactExports.useState([]);
+
+    // Condición de Vida
+    const [condicionVidaData, setCondicionVidaData] = reactExports.useState([]);
+    const [nationalCondicionVida, setNationalCondicionVida] = reactExports.useState(null);
+
+    // National datasets
+    const [nationalBasic, setNationalBasic] = reactExports.useState([]);
+    const [nationalEcon, setNationalEcon] = reactExports.useState([]);
+
+    // Datos de establecimientos de salud
+    const [saludEstablecimientosData, setSaludEstablecimientosData] = reactExports.useState({});
+
+    // Datos nacionales adicionales para comparación
+    const [nationalTic, setNationalTic] = reactExports.useState(null);
+    const [nationalEducNivel, setNationalEducNivel] = reactExports.useState(null);
+    const [nationalEducOferta, setNationalEducOferta] = reactExports.useState(null);
+    const [nationalHogares, setNationalHogares] = reactExports.useState(null);
+    const [nationalSalud, setNationalSalud] = reactExports.useState(null);
+
+    // ---------------------------------------------------------------------------
+    // Cargar archivos JSON (incluye datos nacionales)
+    // ---------------------------------------------------------------------------
+    reactExports.useEffect(() => {
+        async function loadAll() {
+            try {
+                // ---- Municipales / seccionales ----
+                const [
+                    municipiosIndexData,
+                    indicadoresBasicosData,
+                    pyramidsData,
+                    economiaEmpleoData,
+                    educacionData,
+                    educacionNivelData,
+                    pyramid2010Data,
+                    adm2Map2010,
+                    hogaresResumenData,
+                    hogaresTamanoData,
+                    poblacionUrbanaRuralData,
+                    ticData,
+                    saludEstablecimientosData,
+                    condicionVidaData,
+                    educacionOfertaMunicipalData,
+                    regionsIndexData,
+                ] = await Promise.all([
+                    __vitePreload(() => import('./municipios_index-DPNSjsKA.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./indicadores_basicos-DeJ8LgLw.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./pyramids-CzVa6Qe-.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./economia_empleo-DBHodwoE.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => Promise.resolve().then(() => educacion),true?void 0:void 0).then((m) => m.default),
+                    __vitePreload(() => Promise.resolve().then(() => educacion_nivel),true?void 0:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./edad_sexo_2010-DKpX7JTa.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./adm2_map_2010-CoexI8Wo.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./hogares_resumen-DEQW-zOt.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./tamano_hogar-DuZUD58q.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./poblacion_urbana_rural-CNTgi-X0.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./tic-DxHRQXI3.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./salud_establecimientos-Ba3wa4UX.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./condicion_vida-BDjLV7UJ.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => Promise.resolve().then(() => educacion_oferta_municipal),true?void 0:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./regions_index-78aeIjqX.js'),true?[]:void 0).then((m) => m.default),
+                ]);
+
+                setMunicipiosIndexData(municipiosIndexData);
+                setIndicadoresBasicosData(indicadoresBasicosData);
+                setPyramidsData(pyramidsData);
+                setEconomiaEmpleoData(economiaEmpleoData);
+                setEducacionData(educacionData);
+                setEducacionNivelData(educacionNivelData);
+                setPyramid2010Data(pyramid2010Data);
+                setAdm2Map2010(adm2Map2010);
+                setHogaresResumenData(hogaresResumenData);
+                setHogaresTamanoData(hogaresTamanoData);
+                setPoblacionUrbanaRuralData(poblacionUrbanaRuralData);
+                setTicData(ticData);
+                setSaludEstablecimientosData(saludEstablecimientosData);
+                setCondicionVidaData(condicionVidaData);
+                setEducacionOfertaMunicipalData(educacionOfertaMunicipalData);
+                setRegionsIndexData(regionsIndexData);
+
+                // ---- Provincia Level Data ----
+                const [
+                    educacionProvinciaData,
+                    hogaresResumenProvinciaData,
+                    hogaresTamanoProvinciaData,
+                    poblacionUrbanaRuralProvinciaData,
+                    ticProvinciaData,
+                    condicionVidaProvinciaData,
+                    saludEstablecimientosProvinciaData,
+                    economiaEmpleoProvinciaData,
+                    educacionNivelProvinciaData,
+                    pyramidsProvinciaData,
+                    pyramid2010ProvinciaData,
+                ] = await Promise.all([
+                    __vitePreload(() => import('./educacion_provincia-bAQ1OE3O.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./hogares_resumen_provincia-BxKZwHk3.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./tamano_hogar_provincia-B18lmA4d.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./poblacion_urbana_rural_provincia-B8EiN6-3.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./tic_provincia-hnsDK8Sq.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./condicion_vida_provincia-CZNMPGYn.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./salud_establecimientos_provincia-CcJZQ6ke.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./economia_empleo_provincia-DYxpY2XC.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./educacion_nivel_provincia-DuUylJYb.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./pyramids_provincia-4fMDVIDU.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./edad_sexo_2010_provincia-C1I_0TG6.js'),true?[]:void 0).then((m) => m.default),
+                ]);
+
+                setEducacionProvinciaData(educacionProvinciaData);
+                setHogaresResumenProvinciaData(hogaresResumenProvinciaData);
+                setHogaresTamanoProvinciaData(hogaresTamanoProvinciaData);
+                setPoblacionUrbanaRuralProvinciaData(poblacionUrbanaRuralProvinciaData);
+                setTicProvinciaData(ticProvinciaData);
+                setCondicionVidaProvinciaData(condicionVidaProvinciaData);
+                setSaludEstablecimientosProvinciaData(saludEstablecimientosProvinciaData);
+                setEconomiaEmpleoProvinciaData(economiaEmpleoProvinciaData);
+                setEducacionNivelProvinciaData(educacionNivelProvinciaData);
+                setPyramidsProvinciaData(pyramidsProvinciaData);
+                setPyramid2010ProvinciaData(pyramid2010ProvinciaData);
+
+                // ---- National ----
+                const [
+                    nationalBasic,
+                    nationalEcon,
+                    nationalTic,
+                    nationalEducNivel,
+                    nationalEducOferta,
+                    nationalHogares,
+                    nationalSalud,
+                    nationalCondicionVidaRaw,
+                ] = await Promise.all([
+                    __vitePreload(() => import('./national_basic-C_sZmeGW.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./national_economia_empleo-ZBdQ64gQ.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./national_tic--YVLcMDN.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./national_educacion_nivel-DHTLS4zd.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => Promise.resolve().then(() => national_educacion_oferta),true?void 0:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./national_hogares-DmJuUJaU.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./national_salud_establecimientos-TprSbSYg.js'),true?[]:void 0).then((m) => m.default),
+                    __vitePreload(() => import('./national_condicion_vida-BAoAnt6V.js'),true?[]:void 0).then((m) => m.default),
+                ]);
+
+                setNationalBasic(nationalBasic);
+                setNationalEcon(nationalEcon);
+                setNationalTic(nationalTic);
+                setNationalEducNivel(nationalEducNivel);
+                setNationalEducOferta(nationalEducOferta);
+                setNationalHogares(nationalHogares);
+                setNationalSalud(nationalSalud);
+
+                const nationalWrapped = {
+                    servicios: {
+                        servicios_sanitarios: nationalCondicionVidaRaw.servicios_sanitarios,
+                        agua_uso_domestico: nationalCondicionVidaRaw.agua_uso_domestico,
+                        agua_para_beber: nationalCondicionVidaRaw.agua_para_beber,
+                        combustible_cocinar: nationalCondicionVidaRaw.combustible_cocinar,
+                        alumbrado: nationalCondicionVidaRaw.alumbrado,
+                        eliminacion_basura: nationalCondicionVidaRaw.eliminacion_basura,
+                    },
+                };
+                setNationalCondicionVida(buildCondicionVidaParsed(nationalWrapped));
+
+                setLoaded(true);
+            } catch (err) {
+                console.error("🔥 Data loading failed:", err);
+            }
+        }
+
+        loadAll();
+    }, []);
+
+    return {
+        loaded,
+        regionsIndexData,
+        municipiosIndexData,
+        indicadoresBasicosData,
+        pyramidsData,
+        economiaEmpleoData,
+        educacionData,
+        educacionNivelData,
+        pyramid2010Data,
+        adm2Map2010,
+        hogaresResumenData,
+        hogaresTamanoData,
+        poblacionUrbanaRuralData,
+        educacionProvinciaData,
+        hogaresResumenProvinciaData,
+        hogaresTamanoProvinciaData,
+        poblacionUrbanaRuralProvinciaData,
+        ticProvinciaData,
+        condicionVidaProvinciaData,
+        saludEstablecimientosProvinciaData,
+        economiaEmpleoProvinciaData,
+        educacionNivelProvinciaData,
+        pyramidsProvinciaData,
+        pyramid2010ProvinciaData,
+        educacionOfertaMunicipalData,
+        ticData,
+        condicionVidaData,
+        nationalCondicionVida,
+        nationalBasic,
+        nationalEcon,
+        saludEstablecimientosData,
+        nationalTic,
+        nationalEducNivel,
+        nationalEducOferta,
+        nationalHogares,
+        nationalSalud,
+    };
+}
+
+/**
+ * useMunicipioData.js - Hook Principal de Datos
+ *
+ * Este es el hook más importante de la aplicación. Se encarga de:
+ * 1. Obtener datos crudos desde useDataLoader
+ * 2. Filtrar los datos según el municipio/provincia/región seleccionado
+ * 3. Proporcionar los datos procesados a todos los componentes
+ *
+ * Flujo de datos:
+ * ┌─────────────────┐     ┌──────────────────┐     ┌───────────────────┐
+ * │  useDataLoader   │ ──► │ useMunicipioData │ ──► │  React Components │
+ * │  (carga JSON)    │     │  (filtra/agrega) │     │  (charts, maps)   │
+ * └─────────────────┘     └──────────────────┘     └───────────────────┘
+ *
+ * Parámetros:
+ * @param {string} regionId - ID de la región seleccionada
+ * @param {string} provinceName - Nombre de la provincia seleccionada
+ * @param {string} adm2Code - Código ADM2 o "prov:NombreProvincia"
+ *
+ * Retorna un objeto con todos los datos filtrados para el municipio/provincia
+ * seleccionado, listos para usar en los componentes.
+ */
+
 
 // ---------------------------------------------------------------------------
 // Main Hook
 // ---------------------------------------------------------------------------
 function useMunicipioData(regionId, provinceName, adm2Code) {
-  const [loaded, setLoaded] = reactExports.useState(false);
+  // Obtener todos los datos crudos desde el data loader
+  const raw = useDataLoader();
 
-  // Index
-  const [regionsIndexData, setRegionsIndexData] = reactExports.useState([]);
-
-  // ... (rest of states remain same)
-
-  // All datasets
-  const [municipiosIndexData, setMunicipiosIndexData] = reactExports.useState([]);
-  const [indicadoresBasicosData, setIndicadoresBasicosData] = reactExports.useState([]);
-  const [pyramidsData, setPyramidsData] = reactExports.useState([]);
-  const [economiaEmpleoData, setEconomiaEmpleoData] = reactExports.useState([]);
-  const [educacionData, setEducacionData] = reactExports.useState([]);
-  const [educacionNivelData, setEducacionNivelData] = reactExports.useState([]);
-
-  const [pyramid2010Data, setPyramid2010Data] = reactExports.useState([]);
-  const [adm2Map2010, setAdm2Map2010] = reactExports.useState({});
-
-  const [hogaresResumenData, setHogaresResumenData] = reactExports.useState([]);
-  const [hogaresTamanoData, setHogaresTamanoData] = reactExports.useState([]);
-  const [poblacionUrbanaRuralData, setPoblacionUrbanaRuralData] = reactExports.useState([]);
-
-  // Province datasets
-  const [educacionProvinciaData, setEducacionProvinciaData] = reactExports.useState([]);
-  const [hogaresResumenProvinciaData, setHogaresResumenProvinciaData] = reactExports.useState([]);
-  const [hogaresTamanoProvinciaData, setHogaresTamanoProvinciaData] = reactExports.useState([]);
-  const [poblacionUrbanaRuralProvinciaData, setPoblacionUrbanaRuralProvinciaData] = reactExports.useState([]);
-  const [ticProvinciaData, setTicProvinciaData] = reactExports.useState([]);
-  const [condicionVidaProvinciaData, setCondicionVidaProvinciaData] = reactExports.useState([]);
-  const [saludEstablecimientosProvinciaData, setSaludEstablecimientosProvinciaData] = reactExports.useState([]);
-  const [economiaEmpleoProvinciaData, setEconomiaEmpleoProvinciaData] = reactExports.useState([]);
-  const [educacionNivelProvinciaData, setEducacionNivelProvinciaData] = reactExports.useState([]);
-  const [pyramidsProvinciaData, setPyramidsProvinciaData] = reactExports.useState([]);
-  const [pyramid2010ProvinciaData, setPyramid2010ProvinciaData] = reactExports.useState([]);
-
-  // Datos de oferta educativa municipal (para promedios ponderados)
-  const [educacionOfertaMunicipalData, setEducacionOfertaMunicipalData] = reactExports.useState([]);
-
-  // Datos de TIC (Tecnologías de Información y Comunicación)
-  const [ticData, setTicData] = reactExports.useState([]);
-
-  // Condición de Vida
-  const [condicionVidaData, setCondicionVidaData] = reactExports.useState([]);
-  const [nationalCondicionVida, setNationalCondicionVida] = reactExports.useState(null);
-
-  // National datasets
-  const [nationalBasic, setNationalBasic] = reactExports.useState([]);
-  const [nationalEcon, setNationalEcon] = reactExports.useState([]);
-
-  // Datos de establecimientos de salud
-  const [saludEstablecimientosData, setSaludEstablecimientosData] = reactExports.useState({});
-
-  // Datos nacionales adicionales para comparación
-  const [nationalTic, setNationalTic] = reactExports.useState(null);
-  const [nationalEducNivel, setNationalEducNivel] = reactExports.useState(null);
-  const [nationalEducOferta, setNationalEducOferta] = reactExports.useState(null);
-  const [nationalHogares, setNationalHogares] = reactExports.useState(null);
-  const [nationalSalud, setNationalSalud] = reactExports.useState(null);
-
-
-
-  // ---------------------------------------------------------------------------
-  // Cargar archivos JSON (incluye datos nacionales)
-  // ---------------------------------------------------------------------------
-
-  reactExports.useEffect(() => {
-    async function loadAll() {
-      try {
-        // ---- Municipales / seccionales ----
-        const [
-          municipiosIndexData,
-          indicadoresBasicosData,
-          pyramidsData,
-          economiaEmpleoData,
-          educacionData,
-          educacionNivelData,
-          pyramid2010Data,
-          adm2Map2010,
-          hogaresResumenData,
-          hogaresTamanoData,
-          poblacionUrbanaRuralData,
-          ticData,
-          saludEstablecimientosData,
-          condicionVidaData,
-          educacionOfertaMunicipalData,
-          regionsIndexData,
-        ] = await Promise.all([
-          __vitePreload(() => import('./municipios_index-DPNSjsKA.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./indicadores_basicos-DeJ8LgLw.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./pyramids-CzVa6Qe-.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./economia_empleo-DBHodwoE.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => Promise.resolve().then(() => educacion),true?void 0:void 0).then((m) => m.default),
-          __vitePreload(() => Promise.resolve().then(() => educacion_nivel),true?void 0:void 0).then((m) => m.default),
-          __vitePreload(() => import('./edad_sexo_2010-DKpX7JTa.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./adm2_map_2010-CoexI8Wo.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./hogares_resumen-DEQW-zOt.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./tamano_hogar-DuZUD58q.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./poblacion_urbana_rural-CNTgi-X0.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./tic-DxHRQXI3.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./salud_establecimientos-Ba3wa4UX.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./condicion_vida-BDjLV7UJ.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => Promise.resolve().then(() => educacion_oferta_municipal),true?void 0:void 0).then((m) => m.default),
-          __vitePreload(() => import('./regions_index-78aeIjqX.js'),true?[]:void 0).then((m) => m.default),
-        ]);
-
-        setMunicipiosIndexData(municipiosIndexData);
-        setIndicadoresBasicosData(indicadoresBasicosData);
-        setPyramidsData(pyramidsData);
-        setEconomiaEmpleoData(economiaEmpleoData);
-        setEducacionData(educacionData);
-        setEducacionNivelData(educacionNivelData);
-        setPyramid2010Data(pyramid2010Data);
-        setAdm2Map2010(adm2Map2010);
-        setHogaresResumenData(hogaresResumenData);
-        setHogaresTamanoData(hogaresTamanoData);
-        setPoblacionUrbanaRuralData(poblacionUrbanaRuralData);
-        setTicData(ticData);
-        setSaludEstablecimientosData(saludEstablecimientosData);
-        setCondicionVidaData(condicionVidaData);
-        setEducacionOfertaMunicipalData(educacionOfertaMunicipalData);
-        setRegionsIndexData(regionsIndexData);
-
-        // ---- Provincia Level Data ----
-        const [
-          educacionProvinciaData,
-          hogaresResumenProvinciaData,
-          hogaresTamanoProvinciaData,
-          poblacionUrbanaRuralProvinciaData,
-          ticProvinciaData,
-          condicionVidaProvinciaData,
-          saludEstablecimientosProvinciaData,
-          economiaEmpleoProvinciaData,
-          educacionNivelProvinciaData,
-          pyramidsProvinciaData,
-          pyramid2010ProvinciaData,
-        ] = await Promise.all([
-          __vitePreload(() => import('./educacion_provincia-bAQ1OE3O.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./hogares_resumen_provincia-BxKZwHk3.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./tamano_hogar_provincia-B18lmA4d.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./poblacion_urbana_rural_provincia-B8EiN6-3.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./tic_provincia-hnsDK8Sq.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./condicion_vida_provincia-CZNMPGYn.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./salud_establecimientos_provincia-CcJZQ6ke.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./economia_empleo_provincia-DYxpY2XC.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./educacion_nivel_provincia-DuUylJYb.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./pyramids_provincia-4fMDVIDU.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./edad_sexo_2010_provincia-C1I_0TG6.js'),true?[]:void 0).then((m) => m.default),
-        ]);
-
-        setEducacionProvinciaData(educacionProvinciaData);
-        setHogaresResumenProvinciaData(hogaresResumenProvinciaData);
-        setHogaresTamanoProvinciaData(hogaresTamanoProvinciaData);
-        setPoblacionUrbanaRuralProvinciaData(poblacionUrbanaRuralProvinciaData);
-        setTicProvinciaData(ticProvinciaData);
-        setCondicionVidaProvinciaData(condicionVidaProvinciaData);
-        setSaludEstablecimientosProvinciaData(saludEstablecimientosProvinciaData);
-        setEconomiaEmpleoProvinciaData(economiaEmpleoProvinciaData);
-        setEducacionNivelProvinciaData(educacionNivelProvinciaData);
-        setPyramidsProvinciaData(pyramidsProvinciaData);
-        setPyramid2010ProvinciaData(pyramid2010ProvinciaData);
-
-        // ---- National ----
-        const [
-          nationalBasic,
-          nationalEcon,
-          nationalTic,
-          nationalEducNivel,
-          nationalEducOferta,
-          nationalHogares,
-          nationalSalud,
-          nationalCondicionVidaRaw,
-        ] = await Promise.all([
-          __vitePreload(() => import('./national_basic-C_sZmeGW.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./national_economia_empleo-ZBdQ64gQ.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./national_tic--YVLcMDN.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./national_educacion_nivel-DHTLS4zd.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => Promise.resolve().then(() => national_educacion_oferta),true?void 0:void 0).then((m) => m.default),
-          __vitePreload(() => import('./national_hogares-DmJuUJaU.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./national_salud_establecimientos-TprSbSYg.js'),true?[]:void 0).then((m) => m.default),
-          __vitePreload(() => import('./national_condicion_vida-BAoAnt6V.js'),true?[]:void 0).then((m) => m.default),
-        ]);
-
-        setNationalBasic(nationalBasic);
-        setNationalEcon(nationalEcon);
-        setNationalTic(nationalTic);
-        setNationalEducNivel(nationalEducNivel);
-        setNationalEducOferta(nationalEducOferta);
-        setNationalHogares(nationalHogares);
-        setNationalSalud(nationalSalud);
-
-        const nationalWrapped = {
-          servicios: {
-            servicios_sanitarios: nationalCondicionVidaRaw.servicios_sanitarios,
-            agua_uso_domestico: nationalCondicionVidaRaw.agua_uso_domestico,
-            agua_para_beber: nationalCondicionVidaRaw.agua_para_beber,
-            combustible_cocinar: nationalCondicionVidaRaw.combustible_cocinar,
-            alumbrado: nationalCondicionVidaRaw.alumbrado,
-            eliminacion_basura: nationalCondicionVidaRaw.eliminacion_basura,
-          },
-        };
-        setNationalCondicionVida(buildCondicionVidaParsed(nationalWrapped));
-
-        setLoaded(true);
-      } catch (err) {
-        console.error("🔥 Data loading failed:", err);
-      }
-    }
-
-    loadAll();
-  }, []);
-
+  const {
+    loaded,
+    regionsIndexData,
+    municipiosIndexData,
+    indicadoresBasicosData,
+    pyramidsData,
+    economiaEmpleoData,
+    educacionData,
+    educacionNivelData,
+    pyramid2010Data,
+    adm2Map2010,
+    hogaresResumenData,
+    hogaresTamanoData,
+    poblacionUrbanaRuralData,
+    educacionProvinciaData,
+    hogaresResumenProvinciaData,
+    hogaresTamanoProvinciaData,
+    poblacionUrbanaRuralProvinciaData,
+    ticProvinciaData,
+    condicionVidaProvinciaData,
+    saludEstablecimientosProvinciaData,
+    economiaEmpleoProvinciaData,
+    educacionNivelProvinciaData,
+    pyramidsProvinciaData,
+    pyramid2010ProvinciaData,
+    educacionOfertaMunicipalData,
+    ticData,
+    condicionVidaData,
+    nationalCondicionVida,
+    nationalBasic,
+    nationalEcon,
+    saludEstablecimientosData,
+    nationalTic,
+    nationalEducNivel,
+    nationalEducOferta,
+    nationalHogares,
+    nationalSalud,
+  } = raw;
 
   // ---------------------------------------------------------------------------
   // Index
@@ -965,16 +1079,6 @@ function useMunicipioData(regionId, provinceName, adm2Code) {
   }, [pyramid2010Data]);
 
   const educacionMap = reactExports.useMemo(() => buildLongMap(educacionData), [educacionData]);
-  // saludMap removed
-
-  // Is saludMap used? Yes, in return object. But wait, App.jsx uses saludEstablecimientosData directly via prop.
-  // Let's check usage of saludRecords.
-  // App.jsx passes `salud={saludEstablecimientos}` to ResumenNarrativoSection.
-  // App.jsx passes `saludEstablecimientos={saludEstablecimientos}` to SaludSection.
-  // `saludRecords` (from `saludMap`) seems unused or redundant if `saludEstablecimientos` is the main one.
-  // Actually, `salud.json` was removed. `salud_establecimientos.json` is kept.
-  // `saludMap` was built from `saludData`. `saludData` is removed.
-  // So `saludMap` should be removed.
 
   const educacionNivelMap = reactExports.useMemo(
     () => buildLongMap(educacionNivelData),
@@ -1585,6 +1689,677 @@ function useMunicipioData(regionId, provinceName, adm2Code) {
     indicadoresBasicosData,
     educacionOfertaMunicipalData,
   };
+}
+
+// src/utils/educationHelpers.js
+
+/**
+ * Calculates education level percentages from a level object containing counts.
+ * 
+ * @param {Object} nivel - Object with keys: ninguno, preprimaria, primaria, secundaria, superior
+ *                         Each key should be an object with a 'total' property (or be the count itself if structure varies, 
+ *                         but based on JSONs it's usually { total: number }).
+ * @returns {Object|null} - { ninguno: number, secundaria_superior: number } (percentages) or null if invalid.
+ */
+function computeNivelPct(nivel) {
+    if (!nivel) return null;
+
+    // Helper to safely get total from a level node (handle { total: X } or null)
+    const getVal = (node) => node?.total ?? 0;
+
+    const n = getVal(nivel.ninguno);
+    const pre = getVal(nivel.preprimaria);
+    const pri = getVal(nivel.primaria) || getVal(nivel.primaria_basica);
+    const sec = getVal(nivel.secundaria) || getVal(nivel.secundaria_media);
+    const sup = getVal(nivel.superior) || getVal(nivel.universitaria_superior);
+    const post = getVal(nivel.postgrado);
+
+    const total = n + pre + pri + sec + sup + post;
+
+    if (total === 0) return null;
+
+    const toPct = (val) => (val * 100) / total;
+
+    return {
+        ninguno: toPct(n),
+        secundaria_superior: toPct(sec + sup + post),
+    };
+}
+
+// src/utils/resumenComparacionHelpers.js
+
+// --------------------------------------------------------------------------
+// Helpers (Internal)
+// --------------------------------------------------------------------------
+
+function getProvinciaRow(dataset, actualProvName) {
+    if (!dataset || !actualProvName) return null;
+    return dataset.find((r) => r.provincia === actualProvName) || null;
+}
+
+function getMunicipioRow(dataset, adm2) {
+    if (!dataset || !adm2) return null;
+    return (
+        dataset.find(
+            (r) => String(r.adm2_code).padStart(5, "0") === String(adm2).padStart(5, "0")
+        ) || null
+    );
+}
+
+function getProvinciaDemografia(indicadoresBasicosData, actualProvName) {
+    if (!indicadoresBasicosData || !actualProvName) return null;
+    const rows = indicadoresBasicosData.filter(
+        (r) => r.provincia === actualProvName
+    );
+    if (!rows.length) return null;
+
+    return {
+        poblacion_total: rows.reduce((acc, r) => acc + (r.poblacion_total || 0), 0),
+    };
+}
+
+// --------------------------------------------------------------------------
+// Main Builder Function
+// --------------------------------------------------------------------------
+function buildResumenComparacion({
+    selectedMunicipio,
+    indicadores, // Local Demog
+    condVida, // Local CondVida (Parsed)
+    econ, // Local Econ
+    educ, // Local Educ (Records array)
+    educNivel, // Local Educ Nivel (Map entry)
+    tic, // Local Tic
+
+    // Data Sources
+    hogaresResumenData,
+    poblacionUrbanaRuralData,
+    educacionData,
+    saludEstablecimientosData,
+
+    // Province Data
+    condicionVidaProvinciaData,
+    ticProvinciaData,
+    educacionNivelProvinciaData,
+    economiaEmpleoProvinciaData,
+    indicadoresBasicosData,
+    hogaresResumenProvinciaData,
+    poblacionUrbanaRuralProvinciaData,
+    educacionProvinciaData,
+    saludEstablecimientosProvinciaData,
+
+    // Locally Aggregated (for Prov/Reg mode)
+    hogaresResumenLocal,
+    poblacionUrbanaRuralLocal,
+    saludLocal,
+
+    // National Data
+    nationalBasic,
+    nationalCondVida,
+    nationalEcon,
+    nationalTic,
+    nationalEducNivel,
+    nationalHogares,
+    nationalSalud,
+    nationalEducOferta,
+    educacionOfertaMunicipalData,
+}) {
+    if (!selectedMunicipio) return [];
+
+    const actualProvName = selectedMunicipio.provincia;
+    const isProvinciaMode = !selectedMunicipio.adm2_code;
+    const isNacionalMode = selectedMunicipio.region === "Nacional" || selectedMunicipio.municipio === "República Dominicana";
+    const adm2 = selectedMunicipio.adm2_code;
+
+    // --- 1. PREPARE ROBUST DATA SOURCES ---
+
+    // Demographics (Province)
+    const demogProv = getProvinciaDemografia(
+        indicadoresBasicosData,
+        actualProvName
+    );
+
+    // Province Rows
+    const condVidaProv = getProvinciaRow(
+        condicionVidaProvinciaData,
+        actualProvName
+    );
+    const ticProv = getProvinciaRow(ticProvinciaData, actualProvName);
+    const educNivelProv = getProvinciaRow(
+        educacionNivelProvinciaData,
+        actualProvName
+    );
+    const econProv = getProvinciaRow(economiaEmpleoProvinciaData, actualProvName);
+
+    const hogaresProv = getProvinciaRow(
+        hogaresResumenProvinciaData,
+        actualProvName
+    );
+    const pobUrbProv = getProvinciaRow(
+        poblacionUrbanaRuralProvinciaData,
+        actualProvName
+    );
+    const educProv = getProvinciaRow(educacionProvinciaData, actualProvName);
+    const saludProv = getProvinciaRow(
+        saludEstablecimientosProvinciaData,
+        actualProvName
+    );
+
+    // Municipal Rows
+    const hogaresMun = hogaresResumenLocal || (isProvinciaMode
+        ? null
+        : getMunicipioRow(hogaresResumenData, adm2));
+    const pobUrbMun = poblacionUrbanaRuralLocal || (isProvinciaMode
+        ? null
+        : getMunicipioRow(poblacionUrbanaRuralData, adm2));
+    const educMun = isProvinciaMode
+        ? null
+        : getMunicipioRow(educacionData, adm2);
+
+    const saludMun = saludLocal || (() => {
+        if (isProvinciaMode) return null;
+        if (!saludEstablecimientosData) return null;
+        // saludEstablecimientosData is an object keyed by ADM2 code (string)
+        // or loaded as such in useMunicipioData.
+        // Let's assume it's the object passed from useMunicipioData.
+        return saludEstablecimientosData[adm2] || null;
+    })();
+
+    // --- 2. GETTER FUNCTIONS ---
+
+    // -- DEMOGRAFIA: Personas por hogar --
+    const getPersonasPorHogar = (scope) => {
+        if (scope === "mun") {
+            if (isNacionalMode) return nationalHogares?.personas_por_hogar;
+            return hogaresMun?.personas_por_hogar;
+        }
+        if (scope === "prov") return hogaresProv?.personas_por_hogar;
+        if (scope === "nac") return nationalHogares?.personas_por_hogar;
+        return null;
+    };
+
+    // -- DEMOGRAFIA: % Población Urbana --
+    const getPoblacionUrbanaPct = (scope) => {
+        if (scope === "mun") {
+            if (isNacionalMode) return getPoblacionUrbanaPct("nac");
+            if (!pobUrbMun || !pobUrbMun.poblacion_total) return null;
+            const urb = pobUrbMun.urbana ?? pobUrbMun.poblacion_urbana ?? 0;
+            return (urb / pobUrbMun.poblacion_total) * 100;
+        }
+        if (scope === "prov") {
+            if (!pobUrbProv || !pobUrbProv.poblacion_total) return null;
+            const urb = pobUrbProv.urbana ?? pobUrbProv.poblacion_urbana ?? 0;
+            return (urb / pobUrbProv.poblacion_total) * 100;
+        }
+        if (scope === "nac") {
+            if (
+                poblacionUrbanaRuralProvinciaData &&
+                poblacionUrbanaRuralProvinciaData.length
+            ) {
+                const total = poblacionUrbanaRuralProvinciaData.reduce(
+                    (a, b) => a + (b.poblacion_total || 0),
+                    0
+                );
+                const urb = poblacionUrbanaRuralProvinciaData.reduce(
+                    (a, b) => a + (b.urbana || b.poblacion_urbana || 0),
+                    0
+                );
+                if (total > 0) return (urb / total) * 100;
+            }
+            return null;
+        }
+        return null;
+    };
+
+    // -- CONDICION VIDA --
+    const getCondVidaPct = (source, group, category, scope) => {
+        if (scope === "mun" && isNacionalMode) {
+            source = nationalCondVida;
+        }
+        if (!source) return null;
+        // Parsed?
+        if (source[group]?.categorias?.[category]?.pct !== undefined) {
+            return source[group].categorias[category].pct;
+        }
+        // Raw?
+        const root = source.servicios || source;
+        const map = {
+            sanitarios: "servicios_sanitarios",
+            agua_domestico: "agua_uso_domestico",
+            basura: "eliminacion_basura",
+        };
+        const key = map[group] || group;
+        const grp = root[key];
+        if (!grp) return null;
+
+        const total = grp.total;
+        const catVal = grp.categorias?.[category];
+        if (typeof catVal === "number" && total > 0) {
+            return (catVal / total) * 100;
+        }
+        return null;
+    };
+
+    // -- TIC --
+    const getTicPct = (obj, scope) => {
+        if (scope === "mun" && isNacionalMode) obj = nationalTic;
+        return obj?.rate_used != null
+            ? obj.rate_used * 100
+            : obj?.internet?.rate_used != null
+                ? obj.internet.rate_used * 100
+                : null;
+    };
+
+    // -- EDUCACION: Abandono Secundaria --
+    const getAbandono = (scope) => {
+        if (scope === "mun") {
+            if (isNacionalMode) return getAbandono("nac");
+            if (isProvinciaMode) {
+                if (educ && educ.length > 0) {
+                    let sum = 0; let count = 0;
+                    educ.forEach(p => {
+                        const ab = p.anuario?.eficiencia?.secundario?.abandono;
+                        if (typeof ab === 'number') { sum += ab; count++; }
+                    });
+                    if (count > 0) return sum / count;
+                }
+            }
+            return educMun?.anuario?.eficiencia?.secundario?.abandono;
+        }
+        if (scope === "prov") {
+            return educProv?.anuario?.eficiencia?.secundario?.abandono;
+        }
+        if (scope === "nac") {
+            if (educacionData && educacionOfertaMunicipalData) {
+                let totalMatricula = 0;
+                let sumaPonderada = 0;
+
+                const matriculaMap = new Map();
+                educacionOfertaMunicipalData.forEach((m) => {
+                    const mat = m.niveles?.secundario?.matricula || 0;
+                    if (mat > 0)
+                        matriculaMap.set(String(m.adm2_code).padStart(5, "0"), mat);
+                });
+
+                educacionData.forEach((m) => {
+                    const adm2 = String(m.adm2_code).padStart(5, "0");
+                    const abandono = m.anuario?.eficiencia?.secundario?.abandono;
+                    const matricula = matriculaMap.get(adm2);
+
+                    if (abandono != null && matricula) {
+                        totalMatricula += matricula;
+                        sumaPonderada += abandono * matricula;
+                    }
+                });
+
+                if (totalMatricula > 0) {
+                    return sumaPonderada / totalMatricula;
+                }
+            }
+            return (
+                nationalEducOferta?.eficiencia?.secundario?.abandono ??
+                nationalEducOferta?.anuario?.eficiencia?.secundario?.abandono
+            );
+        }
+        return null;
+    };
+
+    // -- EDUCACION: Nivel --
+    const getEducPct = (dataObj, type, scope) => {
+        if (scope === "mun" && isNacionalMode) dataObj = nationalEducNivel;
+        let nivelSource = null;
+        if (Array.isArray(dataObj) && dataObj[0]?.nivel) {
+            nivelSource = dataObj[0].nivel;
+        } else if (dataObj?.niveles) {
+            nivelSource = dataObj.niveles;
+        } else if (dataObj?.nivel) {
+            nivelSource = dataObj.nivel;
+        } else if (dataObj?.provincia) {
+            nivelSource = dataObj.nivel;
+        }
+
+        const computed = computeNivelPct(nivelSource);
+        if (!computed) return null;
+        return type === "ninguno"
+            ? computed.ninguno
+            : computed.secundaria_superior;
+    };
+
+    // -- ECONOMIA: Empleos / 1000 hab --
+    const getEmpleosMil = (scope) => {
+        let employees = 0;
+        let pop = 0;
+
+        if (scope === "mun") {
+            if (isNacionalMode) return getEmpleosMil("nac");
+            employees = econ?.dee_2024?.total_employees || 0;
+            pop = indicadores?.poblacion_total || 0;
+        } else if (scope === "prov") {
+            employees = econProv?.dee_2024?.total_employees || 0;
+            pop = demogProv?.poblacion_total || 0;
+        } else if (scope === "nac") {
+            employees = nationalEcon?.dee_2024?.total_employees || 0;
+            pop = nationalBasic?.poblacion_total || 0;
+        }
+
+        if (employees > 0 && pop > 0) {
+            return (employees / pop) * 1000;
+        }
+        return null;
+    };
+
+    // -- ECONOMIA: Micro --
+    const getMicroPct = (dataObj, scope) => {
+        if (scope === "mun" && isNacionalMode) dataObj = nationalEcon;
+        const root = dataObj?.dee_2024 || dataObj;
+        if (!root?.employment_size_bands) return null;
+        const band = root.employment_size_bands.find(
+            (b) => b.size_band === "micro_1_10"
+        );
+        if (band && root.total_establishments > 0)
+            return (band.establishments / root.total_establishments) * 100;
+        return null;
+    };
+
+    // -- SALUD: Centros / 10k --
+    const getSalud10k = (scope) => {
+        let centros = 0;
+        let pop = 0;
+
+        if (scope === "mun") {
+            if (isNacionalMode) return getSalud10k("nac");
+            centros = saludMun?.centros?.length || 0;
+            pop = indicadores?.poblacion_total || 0;
+        } else if (scope === "prov") {
+            centros = saludProv?.centros?.length || 0;
+            pop = demogProv?.poblacion_total || 0;
+        } else if (scope === "nac") {
+            centros = nationalSalud?.total_centros || 0;
+            pop = nationalBasic?.poblacion_total || 0;
+        }
+
+        if (centros > 0 && pop > 0) {
+            return (centros / pop) * 10000;
+        }
+        return null;
+    };
+
+    // --- 3. BUILD ROWS ---
+    // Formatters
+    const fmtNum = (v) => (v ? v.toLocaleString("es-DO") : "s/i");
+    const fmtPct = (v) => (v != null ? `${v.toFixed(1)}%` : "s/i");
+    const fmtDec = (v) => (v != null ? `${v.toFixed(1)}` : "s/i");
+    const fmtDec2 = (v) => (v != null ? v.toFixed(2) : "s/i");
+
+    const rows = [
+        {
+            group: "Demografía / Hogares",
+            rows: [
+                {
+                    id: "poblacion_total",
+                    label: "Población total (2022)",
+                    unidad: "personas",
+                    municipio: indicadores?.poblacion_total,
+                    provincia: demogProv?.poblacion_total,
+                    nacional: nationalBasic?.poblacion_total,
+                    fmt: fmtNum,
+                },
+                {
+                    id: "personas_por_hogar",
+                    label: "Personas por hogar (promedio)",
+                    unidad: "personas/hogar",
+                    municipio: getPersonasPorHogar("mun"),
+                    provincia: getPersonasPorHogar("prov"),
+                    nacional: getPersonasPorHogar("nac"),
+                    fmt: fmtDec,
+                },
+                {
+                    id: "poblacion_urbana",
+                    label: "% Población urbana",
+                    unidad: "porcentaje",
+                    municipio: getPoblacionUrbanaPct("mun"),
+                    provincia: getPoblacionUrbanaPct("prov"),
+                    nacional: getPoblacionUrbanaPct("nac"),
+                    fmt: fmtPct,
+                },
+            ],
+        },
+        {
+            group: "Servicios Básicos (Hogares)",
+            rows: [
+                {
+                    id: "agua_acueducto",
+                    label: "% Acueducto dentro vivienda",
+                    unidad: "porcentaje",
+                    municipio: getCondVidaPct(
+                        condVida,
+                        "agua_domestico",
+                        "del_acueducto_dentro_de_la_vivienda",
+                        "mun"
+                    ),
+                    provincia: getCondVidaPct(
+                        condVidaProv,
+                        "agua_domestico",
+                        "del_acueducto_dentro_de_la_vivienda",
+                        "prov"
+                    ),
+                    nacional: getCondVidaPct(
+                        nationalCondVida,
+                        "agua_domestico",
+                        "del_acueducto_dentro_de_la_vivienda",
+                        "nac"
+                    ),
+                    fmt: fmtPct,
+                },
+                {
+                    id: "inodoro_privado",
+                    label: "% Inodoro privado",
+                    unidad: "porcentaje",
+                    municipio: getCondVidaPct(condVida, "sanitarios", "inodoro", "mun"),
+                    provincia: getCondVidaPct(condVidaProv, "sanitarios", "inodoro", "prov"),
+                    nacional: getCondVidaPct(nationalCondVida, "sanitarios", "inodoro", "nac"),
+                    fmt: fmtPct,
+                },
+                {
+                    id: "basura_ayuntamiento",
+                    label: "% Recogida basura ayuntamiento",
+                    unidad: "porcentaje",
+                    municipio: getCondVidaPct(
+                        condVida,
+                        "basura",
+                        "la_recoge_el_ayuntamiento",
+                        "mun"
+                    ),
+                    provincia: getCondVidaPct(
+                        condVidaProv,
+                        "basura",
+                        "la_recoge_el_ayuntamiento",
+                        "prov"
+                    ),
+                    nacional: getCondVidaPct(
+                        nationalCondVida,
+                        "basura",
+                        "la_recoge_el_ayuntamiento",
+                        "nac"
+                    ),
+                    fmt: fmtPct,
+                },
+            ],
+        },
+        {
+            group: "TIC",
+            rows: [
+                {
+                    id: "internet_hogares",
+                    label: "% Hogares con Internet",
+                    unidad: "porcentaje",
+                    municipio: getTicPct(tic, "mun"),
+                    provincia: getTicPct(ticProv, "prov"),
+                    nacional: getTicPct(nationalTic, "nac"),
+                    fmt: fmtPct,
+                },
+            ],
+        },
+        {
+            group: "Educación (Población 3+ años)",
+            rows: [
+                {
+                    id: "educ_ninguno",
+                    label: "% Sin ningún nivel educativo",
+                    unidad: "porcentaje",
+                    municipio: getEducPct(educNivel, "ninguno", "mun"),
+                    provincia: getEducPct(educNivelProv, "ninguno", "prov"),
+                    nacional: getEducPct(nationalEducNivel, "ninguno", "nac"),
+                    fmt: fmtPct,
+                },
+                {
+                    id: "educ_secundaria_plus",
+                    label: "% Secundaria o superior",
+                    unidad: "porcentaje",
+                    municipio: getEducPct(educNivel, "secundaria_plus", "mun"),
+                    provincia: getEducPct(educNivelProv, "secundaria_plus", "prov"),
+                    nacional: getEducPct(nationalEducNivel, "secundaria_plus", "nac"),
+                    fmt: fmtPct,
+                },
+                {
+                    id: "abandono_secundaria",
+                    label: "% Abandono en secundaria",
+                    unidad: "porcentaje",
+                    municipio: getAbandono("mun"),
+                    provincia: getAbandono("prov"),
+                    nacional: getAbandono("nac"),
+                    fmt: fmtPct,
+                },
+            ],
+        },
+        {
+            group: "Economía",
+            rows: [
+                {
+                    id: "microempresas",
+                    label: "% Microempresas (del total)",
+                    unidad: "porcentaje",
+                    municipio: getMicroPct(econ, "mun"),
+                    provincia: getMicroPct(econProv, "prov"),
+                    nacional: getMicroPct(nationalEcon, "nac"),
+                    fmt: fmtPct,
+                },
+                {
+                    id: "empleos_mil_hab",
+                    label: "Empleos por cada 1,000 hab.",
+                    unidad: "empleos/1000hab",
+                    municipio: getEmpleosMil("mun"),
+                    provincia: getEmpleosMil("prov"),
+                    nacional: getEmpleosMil("nac"),
+                    fmt: fmtDec,
+                },
+            ],
+        },
+        {
+            group: "Salud (Estimado)",
+            rows: [
+                {
+                    id: "centros_salud_10k",
+                    label: "Centros de salud por cada 10k hab.",
+                    unidad: "centros/10khab",
+                    municipio: getSalud10k("mun"),
+                    provincia: getSalud10k("prov"),
+                    nacional: getSalud10k("nac"),
+                    fmt: fmtDec2,
+                },
+            ],
+        },
+    ];
+
+    return rows;
+}
+
+const DashboardContext = reactExports.createContext(null);
+const useDashboard = () => {
+  const ctx = reactExports.useContext(DashboardContext);
+  if (!ctx) throw new Error("useDashboard must be used within DashboardProvider");
+  return ctx;
+};
+function DashboardProvider({ children }) {
+  const [selectedRegion, setSelectedRegion] = reactExports.useState(null);
+  const [selectedProvince, setSelectedProvince] = reactExports.useState(null);
+  const [selectionKey, setSelectionKey] = reactExports.useState(null);
+  const data = useMunicipioData(selectedRegion, selectedProvince, selectionKey);
+  const {
+    municipiosIndex,
+    regionsIndexData
+  } = data;
+  reactExports.useEffect(() => {
+    if (!selectedRegion && regionsIndexData.length) {
+      const firstReg = regionsIndexData[0];
+      setSelectedRegion(firstReg.id);
+      const firstProv = firstReg.provincias[0];
+      setSelectedProvince(firstProv);
+      const firstMuni = municipiosIndex.find((m) => m.provincia === firstProv);
+      if (firstMuni) setSelectionKey(firstMuni.adm2_code);
+    }
+  }, [regionsIndexData, municipiosIndex, selectedRegion]);
+  const handleMapSelect = (adm2, provFromMap) => {
+    setSelectionKey(adm2);
+    if (provFromMap) {
+      setSelectedProvince(provFromMap);
+      const reg = regionsIndexData.find((r) => r.provincias.includes(provFromMap));
+      if (reg) setSelectedRegion(reg.id);
+    }
+  };
+  const handlePrint = () => {
+    window.print();
+  };
+  const resumenComparacionRows = buildResumenComparacion({
+    selectedMunicipio: data.selectedMunicipio,
+    indicadores: data.indicadores,
+    condVida: data.condicionVida,
+    econ: data.econ,
+    educ: data.educacionRecords,
+    educNivel: data.educacionNivel,
+    tic: data.tic,
+    hogaresResumenData: data.hogaresResumenData,
+    poblacionUrbanaRuralData: data.poblacionUrbanaRuralData,
+    educacionData: data.educacionData,
+    saludEstablecimientosData: data.saludEstablecimientosData,
+    hogaresResumenLocal: data.hogaresResumen,
+    poblacionUrbanaRuralLocal: data.poblacionUrbanaRural,
+    saludLocal: data.saludEstablecimientos,
+    condicionVidaProvinciaData: data.condicionVidaProvinciaData,
+    ticProvinciaData: data.ticProvinciaData,
+    educacionNivelProvinciaData: data.educacionNivelProvinciaData,
+    economiaEmpleoProvinciaData: data.economiaEmpleoProvinciaData,
+    indicadoresBasicosData: data.indicadoresBasicosData,
+    hogaresResumenProvinciaData: data.hogaresResumenProvinciaData,
+    poblacionUrbanaRuralProvinciaData: data.poblacionUrbanaRuralProvinciaData,
+    educacionProvinciaData: data.educacionProvinciaData,
+    saludEstablecimientosProvinciaData: data.saludEstablecimientosProvinciaData,
+    nationalBasic: data.nationalBasic,
+    nationalCondVida: data.nationalCondicionVida,
+    nationalEcon: data.nationalEcon,
+    nationalTic: data.nationalTic,
+    nationalEducNivel: data.nationalEducNivel,
+    nationalHogares: data.nationalHogares,
+    nationalSalud: data.nationalSalud,
+    nationalEducOferta: data.nationalEducOferta,
+    educacionOfertaMunicipalData: data.educacionOfertaMunicipalData
+  });
+  const value = {
+    // Selection state
+    selectedRegion,
+    setSelectedRegion,
+    selectedProvince,
+    setSelectedProvince,
+    selectionKey,
+    setSelectionKey,
+    // Handlers
+    handleMapSelect,
+    handlePrint,
+    // All data from useMunicipioData
+    ...data,
+    // Pre-built comparison rows
+    resumenComparacionRows
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(DashboardContext.Provider, { value, children });
 }
 
 function Card({ className = "", children, ...props }) {
@@ -16575,7 +17350,7 @@ function PrintMapSVG({
     const boundsHeight = maxY - minY;
     const scale = (svgWidth - padding * 2) / boundsWidth;
     const svgHeight = boundsHeight * scale + padding * 2;
-    const paths = projected.map(({ feature, projectedPolygons }) => {
+    const paths = projected.map(({ feature, projectedPolygons }, mapIdx) => {
       const prov = feature.properties.provincia;
       const adm2 = feature.properties.adm2_code;
       let isSelected = false;
@@ -16606,7 +17381,7 @@ function PrintMapSVG({
       return {
         d,
         isSelected,
-        key: adm2 || feature.properties.shapeName
+        key: `${adm2 || feature.properties.shapeName}-${mapIdx}`
       };
     });
     return { paths, svgWidth, svgHeight };
@@ -42604,14 +43379,6 @@ const Users = createLucideIcon("users", __iconNode);
 const BLUE = "#1d4ed8";
 const RED = "#dc2626";
 const COLORS = ["#0ea5e9", "#22c55e", "#f97316", "#6366f1", "#e11d48"];
-const ECON_BAR = "#fb7185";
-const CustomBarLabel = ({ x, y, width, height, value }) => {
-  if (value == null) return null;
-  if (height < 22) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: x + width / 2, y: y - 5, textAnchor: "middle", fill: ECON_BAR, fontSize: 11, fontWeight: 600, children: value.toLocaleString("es-DO") });
-  }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: x + width / 2, y: y + 14, textAnchor: "middle", fill: "#ffffff", fontSize: 11, fontWeight: 700, children: value.toLocaleString("es-DO") });
-};
 function BasicIndicators({ indicators, national }) {
   if (!indicators) return null;
   const { poblacion_total, poblacion_2010, poblacion_hombres, poblacion_mujeres, municipio, provincia } = indicators;
@@ -42678,7 +43445,7 @@ function BasicIndicators({ indicators, national }) {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-[10px] text-slate-400", children: "Fuente: ONE, Censo Nacional de Población y Vivienda 2022." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-[10px] text-slate-400", children: "Fuente: Censo Nacional de Población y Vivienda 2022." })
     ] })
   ] });
 }
@@ -42699,7 +43466,7 @@ function PopulationPyramid({ pyramid }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "male", stackId: "stack", fill: BLUE, name: "Hombres" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "female", stackId: "stack", fill: RED, name: "Mujeres" })
       ] }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-slate-400 mt-0 pt-1 leading-tight mb-0", children: "Fuente: ONE, Censo 2022 (Cuadro 2, Vol III)." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-slate-400 mt-0 pt-1 leading-tight mb-0", children: "Fuente: Censo 2022 (Cuadro 2, Vol III)." })
     ] })
   ] });
 }
@@ -42720,7 +43487,7 @@ function PopulationPyramid2010({ pyramid }) {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "male", stackId: "stack", fill: "#4b5563", name: "Hombres" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "female", stackId: "stack", fill: "#9ca3af", name: "Mujeres" })
       ] }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-slate-400 mt-0 pt-1 leading-tight mb-0", children: "Fuente: ONE, Censo 2010." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-slate-400 mt-0 pt-1 leading-tight mb-0", children: "Fuente: Censo 2010." })
     ] })
   ] });
 }
@@ -42771,10 +43538,11 @@ function GenderRatio({ indicators, national }) {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-slate-400 mt-0 pt-1 leading-tight mb-0", children: "Fuente: ONE, Censo 2022." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-slate-400 mt-0 pt-1 leading-tight mb-0", children: "Fuente: Censo 2022." })
     ] })
   ] });
 }
+
 function HouseholdSizeChart({ records }) {
   if (!records || !records.length) return null;
   const hasTotalZone = records.some((r) => String(r.zona || "").toLowerCase().includes("total"));
@@ -42805,6 +43573,15 @@ function HouseholdSizeChart({ records }) {
     ] }) }) }) })
   ] });
 }
+
+const ECON_BAR = "#fb7185";
+const CustomBarLabel = ({ x, y, width, height, value }) => {
+  if (value == null) return null;
+  if (height < 22) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: x + width / 2, y: y - 5, textAnchor: "middle", fill: ECON_BAR, fontSize: 11, fontWeight: 600, children: value.toLocaleString("es-DO") });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: x + width / 2, y: y + 14, textAnchor: "middle", fill: "#ffffff", fontSize: 11, fontWeight: 700, children: value.toLocaleString("es-DO") });
+};
 function EconomyEmployment({
   econ,
   nationalEcon,
@@ -42819,7 +43596,7 @@ function EconomyEmployment({
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(CardContent, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-rose-800", children: "No hay datos de economía y empleo cargados para este municipio todavía." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-[10px] text-rose-700", children: "Fuente: ONE, DEE 2024 y Censo 2022." })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-[10px] text-rose-700", children: "Fuente: DEE 2024 y Censo 2022." })
       ] })
     ] });
   }
@@ -43009,7 +43786,7 @@ function EconomyEmployment({
           ] })
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-rose-800", children: "Aún no hay datos de estructura sectorial por secciones CIIU." })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-[10px] text-rose-700", children: "Fuente: ONE, DEE 2024 y Censo Nacional de Población y Vivienda 2022." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-[10px] text-rose-700", children: "Fuente: DEE 2024 y Censo Nacional de Población y Vivienda 2022." })
     ] })
   ] });
 }
@@ -43122,7 +43899,7 @@ function TopSelectionAndMap({
               selectedRegion: isRegionSelection ? selectedRegionScope : null
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-[10px] text-slate-400 md:text-xs", children: "Fuente: ONE, división político-administrativa y cartografía oficial." })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-[10px] text-slate-400 md:text-xs", children: "Fuente: División político-administrativa y cartografía oficial." })
         ] })
       ] }) })
     ] })
@@ -100037,23 +100814,10 @@ function ResumenNarrativoSection({
       )
     };
     setLoading(true);
-    if (window.location.hostname.includes("github.io")) {
-      setResumen(`
-**⚠️ Función no disponible en la versión estática (GitHub Pages).**
-
-La generación de narrativa utiliza inteligencia artificial (OpenAI) y requiere un servidor backend (PHP) para funcionar de manera segura.
-Esta versión del dashboard es estática y no tiene capacidad de procesamiento de backend.
-
-Para ver esta funcionalidad:
-1. Clone el repositorio y ejecute localmente con un servidor PHP/Apache.
-2. O despliegue en un servicio que soporte PHP.
-      `.trim());
-      setLoading(false);
-      return;
-    }
     try {
+      const apiUrl = undefined                             || `${"/dashboard/"}api/generateNarrative.php`;
       const res = await fetch(
-        "https://prodecare.net/dashboard/api/generateNarrative.php",
+        apiUrl,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -100442,7 +101206,7 @@ EXTENSIÓN:
     setLoading(false);
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card p-4 my-6", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-bold mb-2", children: "📝 Resumen de Diagnóstico Automático (ChatGPT)" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "hide-on-print text-lg font-bold mb-2", children: "📝 Resumen de Diagnóstico Automático (ChatGPT)" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "button",
       {
@@ -100452,599 +101216,25 @@ EXTENSIÓN:
         children: loading ? "Generando..." : "Crear Diagnóstico Narrativo"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md mt-4 font-bold", children: "Resumen Narrativo" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg mt-4 font-bold print:mt-0", children: "Resumen Narrativo" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-2 text-sm leading-relaxed", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "prose prose-sm max-w-none", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Markdown, { remarkPlugins: [remarkGfm], children: resumen || "_Aún no se ha generado el resumen._" }) }) })
   ] });
 }
 
-// src/utils/educationHelpers.js
-
-/**
- * Calculates education level percentages from a level object containing counts.
- * 
- * @param {Object} nivel - Object with keys: ninguno, preprimaria, primaria, secundaria, superior
- *                         Each key should be an object with a 'total' property (or be the count itself if structure varies, 
- *                         but based on JSONs it's usually { total: number }).
- * @returns {Object|null} - { ninguno: number, secundaria_superior: number } (percentages) or null if invalid.
- */
-function computeNivelPct(nivel) {
-    if (!nivel) return null;
-
-    // Helper to safely get total from a level node (handle { total: X } or null)
-    const getVal = (node) => node?.total ?? 0;
-
-    const n = getVal(nivel.ninguno);
-    const pre = getVal(nivel.preprimaria);
-    const pri = getVal(nivel.primaria) || getVal(nivel.primaria_basica);
-    const sec = getVal(nivel.secundaria) || getVal(nivel.secundaria_media);
-    const sup = getVal(nivel.superior) || getVal(nivel.universitaria_superior);
-    const post = getVal(nivel.postgrado);
-
-    const total = n + pre + pri + sec + sup + post;
-
-    if (total === 0) return null;
-
-    const toPct = (val) => (val * 100) / total;
-
-    return {
-        ninguno: toPct(n),
-        secundaria_superior: toPct(sec + sup + post),
-    };
-}
-
-// src/utils/resumenComparacionHelpers.js
-
-// --------------------------------------------------------------------------
-// Helpers (Internal)
-// --------------------------------------------------------------------------
-
-function getProvinciaRow(dataset, actualProvName) {
-    if (!dataset || !actualProvName) return null;
-    return dataset.find((r) => r.provincia === actualProvName) || null;
-}
-
-function getMunicipioRow(dataset, adm2) {
-    if (!dataset || !adm2) return null;
-    return (
-        dataset.find(
-            (r) => String(r.adm2_code).padStart(5, "0") === String(adm2).padStart(5, "0")
-        ) || null
-    );
-}
-
-function getProvinciaDemografia(indicadoresBasicosData, actualProvName) {
-    if (!indicadoresBasicosData || !actualProvName) return null;
-    const rows = indicadoresBasicosData.filter(
-        (r) => r.provincia === actualProvName
-    );
-    if (!rows.length) return null;
-
-    return {
-        poblacion_total: rows.reduce((acc, r) => acc + (r.poblacion_total || 0), 0),
-    };
-}
-
-// --------------------------------------------------------------------------
-// Main Builder Function
-// --------------------------------------------------------------------------
-function buildResumenComparacion({
-    selectedMunicipio,
-    indicadores, // Local Demog
-    condVida, // Local CondVida (Parsed)
-    econ, // Local Econ
-    educ, // Local Educ (Records array)
-    educNivel, // Local Educ Nivel (Map entry)
-    tic, // Local Tic
-
-    // Data Sources
-    hogaresResumenData,
-    poblacionUrbanaRuralData,
-    educacionData,
-    saludEstablecimientosData,
-
-    // Province Data
-    condicionVidaProvinciaData,
-    ticProvinciaData,
-    educacionNivelProvinciaData,
-    economiaEmpleoProvinciaData,
-    indicadoresBasicosData,
-    hogaresResumenProvinciaData,
-    poblacionUrbanaRuralProvinciaData,
-    educacionProvinciaData,
-    saludEstablecimientosProvinciaData,
-
-    // Locally Aggregated (for Prov/Reg mode)
-    hogaresResumenLocal,
-    poblacionUrbanaRuralLocal,
-    saludLocal,
-
-    // National Data
-    nationalBasic,
-    nationalCondVida,
-    nationalEcon,
-    nationalTic,
-    nationalEducNivel,
-    nationalHogares,
-    nationalSalud,
-    nationalEducOferta,
-    educacionOfertaMunicipalData,
-}) {
-    if (!selectedMunicipio) return [];
-
-    const actualProvName = selectedMunicipio.provincia;
-    const isProvinciaMode = !selectedMunicipio.adm2_code;
-    const isNacionalMode = selectedMunicipio.region === "Nacional" || selectedMunicipio.municipio === "República Dominicana";
-    const adm2 = selectedMunicipio.adm2_code;
-
-    // --- 1. PREPARE ROBUST DATA SOURCES ---
-
-    // Demographics (Province)
-    const demogProv = getProvinciaDemografia(
-        indicadoresBasicosData,
-        actualProvName
-    );
-
-    // Province Rows
-    const condVidaProv = getProvinciaRow(
-        condicionVidaProvinciaData,
-        actualProvName
-    );
-    const ticProv = getProvinciaRow(ticProvinciaData, actualProvName);
-    const educNivelProv = getProvinciaRow(
-        educacionNivelProvinciaData,
-        actualProvName
-    );
-    const econProv = getProvinciaRow(economiaEmpleoProvinciaData, actualProvName);
-
-    const hogaresProv = getProvinciaRow(
-        hogaresResumenProvinciaData,
-        actualProvName
-    );
-    const pobUrbProv = getProvinciaRow(
-        poblacionUrbanaRuralProvinciaData,
-        actualProvName
-    );
-    const educProv = getProvinciaRow(educacionProvinciaData, actualProvName);
-    const saludProv = getProvinciaRow(
-        saludEstablecimientosProvinciaData,
-        actualProvName
-    );
-
-    // Municipal Rows
-    const hogaresMun = hogaresResumenLocal || (isProvinciaMode
-        ? null
-        : getMunicipioRow(hogaresResumenData, adm2));
-    const pobUrbMun = poblacionUrbanaRuralLocal || (isProvinciaMode
-        ? null
-        : getMunicipioRow(poblacionUrbanaRuralData, adm2));
-    const educMun = isProvinciaMode
-        ? null
-        : getMunicipioRow(educacionData, adm2);
-
-    const saludMun = saludLocal || (() => {
-        if (isProvinciaMode) return null;
-        if (!saludEstablecimientosData) return null;
-        // saludEstablecimientosData is an object keyed by ADM2 code (string)
-        // or loaded as such in useMunicipioData.
-        // Let's assume it's the object passed from useMunicipioData.
-        return saludEstablecimientosData[adm2] || null;
-    })();
-
-    // --- 2. GETTER FUNCTIONS ---
-
-    // -- DEMOGRAFIA: Personas por hogar --
-    const getPersonasPorHogar = (scope) => {
-        if (scope === "mun") {
-            if (isNacionalMode) return nationalHogares?.personas_por_hogar;
-            return hogaresMun?.personas_por_hogar;
-        }
-        if (scope === "prov") return hogaresProv?.personas_por_hogar;
-        if (scope === "nac") return nationalHogares?.personas_por_hogar;
-        return null;
-    };
-
-    // -- DEMOGRAFIA: % Población Urbana --
-    const getPoblacionUrbanaPct = (scope) => {
-        if (scope === "mun") {
-            if (isNacionalMode) return getPoblacionUrbanaPct("nac");
-            if (!pobUrbMun || !pobUrbMun.poblacion_total) return null;
-            const urb = pobUrbMun.urbana ?? pobUrbMun.poblacion_urbana ?? 0;
-            return (urb / pobUrbMun.poblacion_total) * 100;
-        }
-        if (scope === "prov") {
-            if (!pobUrbProv || !pobUrbProv.poblacion_total) return null;
-            const urb = pobUrbProv.urbana ?? pobUrbProv.poblacion_urbana ?? 0;
-            return (urb / pobUrbProv.poblacion_total) * 100;
-        }
-        if (scope === "nac") {
-            if (
-                poblacionUrbanaRuralProvinciaData &&
-                poblacionUrbanaRuralProvinciaData.length
-            ) {
-                const total = poblacionUrbanaRuralProvinciaData.reduce(
-                    (a, b) => a + (b.poblacion_total || 0),
-                    0
-                );
-                const urb = poblacionUrbanaRuralProvinciaData.reduce(
-                    (a, b) => a + (b.urbana || b.poblacion_urbana || 0),
-                    0
-                );
-                if (total > 0) return (urb / total) * 100;
-            }
-            return null;
-        }
-        return null;
-    };
-
-    // -- CONDICION VIDA --
-    const getCondVidaPct = (source, group, category, scope) => {
-        if (scope === "mun" && isNacionalMode) {
-            source = nationalCondVida;
-        }
-        if (!source) return null;
-        // Parsed?
-        if (source[group]?.categorias?.[category]?.pct !== undefined) {
-            return source[group].categorias[category].pct;
-        }
-        // Raw?
-        const root = source.servicios || source;
-        const map = {
-            sanitarios: "servicios_sanitarios",
-            agua_domestico: "agua_uso_domestico",
-            basura: "eliminacion_basura",
-        };
-        const key = map[group] || group;
-        const grp = root[key];
-        if (!grp) return null;
-
-        const total = grp.total;
-        const catVal = grp.categorias?.[category];
-        if (typeof catVal === "number" && total > 0) {
-            return (catVal / total) * 100;
-        }
-        return null;
-    };
-
-    // -- TIC --
-    const getTicPct = (obj, scope) => {
-        if (scope === "mun" && isNacionalMode) obj = nationalTic;
-        return obj?.rate_used != null
-            ? obj.rate_used * 100
-            : obj?.internet?.rate_used != null
-                ? obj.internet.rate_used * 100
-                : null;
-    };
-
-    // -- EDUCACION: Abandono Secundaria --
-    const getAbandono = (scope) => {
-        if (scope === "mun") {
-            if (isNacionalMode) return getAbandono("nac");
-            if (isProvinciaMode) {
-                if (educ && educ.length > 0) {
-                    let sum = 0; let count = 0;
-                    educ.forEach(p => {
-                        const ab = p.anuario?.eficiencia?.secundario?.abandono;
-                        if (typeof ab === 'number') { sum += ab; count++; }
-                    });
-                    if (count > 0) return sum / count;
-                }
-            }
-            return educMun?.anuario?.eficiencia?.secundario?.abandono;
-        }
-        if (scope === "prov") {
-            return educProv?.anuario?.eficiencia?.secundario?.abandono;
-        }
-        if (scope === "nac") {
-            if (educacionData && educacionOfertaMunicipalData) {
-                let totalMatricula = 0;
-                let sumaPonderada = 0;
-
-                const matriculaMap = new Map();
-                educacionOfertaMunicipalData.forEach((m) => {
-                    const mat = m.niveles?.secundario?.matricula || 0;
-                    if (mat > 0)
-                        matriculaMap.set(String(m.adm2_code).padStart(5, "0"), mat);
-                });
-
-                educacionData.forEach((m) => {
-                    const adm2 = String(m.adm2_code).padStart(5, "0");
-                    const abandono = m.anuario?.eficiencia?.secundario?.abandono;
-                    const matricula = matriculaMap.get(adm2);
-
-                    if (abandono != null && matricula) {
-                        totalMatricula += matricula;
-                        sumaPonderada += abandono * matricula;
-                    }
-                });
-
-                if (totalMatricula > 0) {
-                    return sumaPonderada / totalMatricula;
-                }
-            }
-            return (
-                nationalEducOferta?.eficiencia?.secundario?.abandono ??
-                nationalEducOferta?.anuario?.eficiencia?.secundario?.abandono
-            );
-        }
-        return null;
-    };
-
-    // -- EDUCACION: Nivel --
-    const getEducPct = (dataObj, type, scope) => {
-        if (scope === "mun" && isNacionalMode) dataObj = nationalEducNivel;
-        let nivelSource = null;
-        if (Array.isArray(dataObj) && dataObj[0]?.nivel) {
-            nivelSource = dataObj[0].nivel;
-        } else if (dataObj?.niveles) {
-            nivelSource = dataObj.niveles;
-        } else if (dataObj?.nivel) {
-            nivelSource = dataObj.nivel;
-        } else if (dataObj?.provincia) {
-            nivelSource = dataObj.nivel;
-        }
-
-        const computed = computeNivelPct(nivelSource);
-        if (!computed) return null;
-        return type === "ninguno"
-            ? computed.ninguno
-            : computed.secundaria_superior;
-    };
-
-    // -- ECONOMIA: Empleos / 1000 hab --
-    const getEmpleosMil = (scope) => {
-        let employees = 0;
-        let pop = 0;
-
-        if (scope === "mun") {
-            if (isNacionalMode) return getEmpleosMil("nac");
-            employees = econ?.dee_2024?.total_employees || 0;
-            pop = indicadores?.poblacion_total || 0;
-        } else if (scope === "prov") {
-            employees = econProv?.dee_2024?.total_employees || 0;
-            pop = demogProv?.poblacion_total || 0;
-        } else if (scope === "nac") {
-            employees = nationalEcon?.dee_2024?.total_employees || 0;
-            pop = nationalBasic?.poblacion_total || 0;
-        }
-
-        if (employees > 0 && pop > 0) {
-            return (employees / pop) * 1000;
-        }
-        return null;
-    };
-
-    // -- ECONOMIA: Micro --
-    const getMicroPct = (dataObj, scope) => {
-        if (scope === "mun" && isNacionalMode) dataObj = nationalEcon;
-        const root = dataObj?.dee_2024 || dataObj;
-        if (!root?.employment_size_bands) return null;
-        const band = root.employment_size_bands.find(
-            (b) => b.size_band === "micro_1_10"
-        );
-        if (band && root.total_establishments > 0)
-            return (band.establishments / root.total_establishments) * 100;
-        return null;
-    };
-
-    // -- SALUD: Centros / 10k --
-    const getSalud10k = (scope) => {
-        let centros = 0;
-        let pop = 0;
-
-        if (scope === "mun") {
-            if (isNacionalMode) return getSalud10k("nac");
-            centros = saludMun?.centros?.length || 0;
-            pop = indicadores?.poblacion_total || 0;
-        } else if (scope === "prov") {
-            centros = saludProv?.centros?.length || 0;
-            pop = demogProv?.poblacion_total || 0;
-        } else if (scope === "nac") {
-            centros = nationalSalud?.total_centros || 0;
-            pop = nationalBasic?.poblacion_total || 0;
-        }
-
-        if (centros > 0 && pop > 0) {
-            return (centros / pop) * 10000;
-        }
-        return null;
-    };
-
-    // --- 3. BUILD ROWS ---
-    // Formatters
-    const fmtNum = (v) => (v ? v.toLocaleString("es-DO") : "s/i");
-    const fmtPct = (v) => (v != null ? `${v.toFixed(1)}%` : "s/i");
-    const fmtDec = (v) => (v != null ? `${v.toFixed(1)}` : "s/i");
-    const fmtDec2 = (v) => (v != null ? v.toFixed(2) : "s/i");
-
-    const rows = [
-        {
-            group: "Demografía / Hogares",
-            rows: [
-                {
-                    id: "poblacion_total",
-                    label: "Población total (2022)",
-                    unidad: "personas",
-                    municipio: indicadores?.poblacion_total,
-                    provincia: demogProv?.poblacion_total,
-                    nacional: nationalBasic?.poblacion_total,
-                    fmt: fmtNum,
-                },
-                {
-                    id: "personas_por_hogar",
-                    label: "Personas por hogar (promedio)",
-                    unidad: "personas/hogar",
-                    municipio: getPersonasPorHogar("mun"),
-                    provincia: getPersonasPorHogar("prov"),
-                    nacional: getPersonasPorHogar("nac"),
-                    fmt: fmtDec,
-                },
-                {
-                    id: "poblacion_urbana",
-                    label: "% Población urbana",
-                    unidad: "porcentaje",
-                    municipio: getPoblacionUrbanaPct("mun"),
-                    provincia: getPoblacionUrbanaPct("prov"),
-                    nacional: getPoblacionUrbanaPct("nac"),
-                    fmt: fmtPct,
-                },
-            ],
-        },
-        {
-            group: "Servicios Básicos (Hogares)",
-            rows: [
-                {
-                    id: "agua_acueducto",
-                    label: "% Acueducto dentro vivienda",
-                    unidad: "porcentaje",
-                    municipio: getCondVidaPct(
-                        condVida,
-                        "agua_domestico",
-                        "del_acueducto_dentro_de_la_vivienda",
-                        "mun"
-                    ),
-                    provincia: getCondVidaPct(
-                        condVidaProv,
-                        "agua_domestico",
-                        "del_acueducto_dentro_de_la_vivienda",
-                        "prov"
-                    ),
-                    nacional: getCondVidaPct(
-                        nationalCondVida,
-                        "agua_domestico",
-                        "del_acueducto_dentro_de_la_vivienda",
-                        "nac"
-                    ),
-                    fmt: fmtPct,
-                },
-                {
-                    id: "inodoro_privado",
-                    label: "% Inodoro privado",
-                    unidad: "porcentaje",
-                    municipio: getCondVidaPct(condVida, "sanitarios", "inodoro", "mun"),
-                    provincia: getCondVidaPct(condVidaProv, "sanitarios", "inodoro", "prov"),
-                    nacional: getCondVidaPct(nationalCondVida, "sanitarios", "inodoro", "nac"),
-                    fmt: fmtPct,
-                },
-                {
-                    id: "basura_ayuntamiento",
-                    label: "% Recogida basura ayuntamiento",
-                    unidad: "porcentaje",
-                    municipio: getCondVidaPct(
-                        condVida,
-                        "basura",
-                        "la_recoge_el_ayuntamiento",
-                        "mun"
-                    ),
-                    provincia: getCondVidaPct(
-                        condVidaProv,
-                        "basura",
-                        "la_recoge_el_ayuntamiento",
-                        "prov"
-                    ),
-                    nacional: getCondVidaPct(
-                        nationalCondVida,
-                        "basura",
-                        "la_recoge_el_ayuntamiento",
-                        "nac"
-                    ),
-                    fmt: fmtPct,
-                },
-            ],
-        },
-        {
-            group: "TIC",
-            rows: [
-                {
-                    id: "internet_hogares",
-                    label: "% Hogares con Internet",
-                    unidad: "porcentaje",
-                    municipio: getTicPct(tic, "mun"),
-                    provincia: getTicPct(ticProv, "prov"),
-                    nacional: getTicPct(nationalTic, "nac"),
-                    fmt: fmtPct,
-                },
-            ],
-        },
-        {
-            group: "Educación (Población 3+ años)",
-            rows: [
-                {
-                    id: "educ_ninguno",
-                    label: "% Sin ningún nivel educativo",
-                    unidad: "porcentaje",
-                    municipio: getEducPct(educNivel, "ninguno", "mun"),
-                    provincia: getEducPct(educNivelProv, "ninguno", "prov"),
-                    nacional: getEducPct(nationalEducNivel, "ninguno", "nac"),
-                    fmt: fmtPct,
-                },
-                {
-                    id: "educ_secundaria_plus",
-                    label: "% Secundaria o superior",
-                    unidad: "porcentaje",
-                    municipio: getEducPct(educNivel, "secundaria_plus", "mun"),
-                    provincia: getEducPct(educNivelProv, "secundaria_plus", "prov"),
-                    nacional: getEducPct(nationalEducNivel, "secundaria_plus", "nac"),
-                    fmt: fmtPct,
-                },
-                {
-                    id: "abandono_secundaria",
-                    label: "% Abandono en secundaria",
-                    unidad: "porcentaje",
-                    municipio: getAbandono("mun"),
-                    provincia: getAbandono("prov"),
-                    nacional: getAbandono("nac"),
-                    fmt: fmtPct,
-                },
-            ],
-        },
-        {
-            group: "Economía",
-            rows: [
-                {
-                    id: "microempresas",
-                    label: "% Microempresas (del total)",
-                    unidad: "porcentaje",
-                    municipio: getMicroPct(econ, "mun"),
-                    provincia: getMicroPct(econProv, "prov"),
-                    nacional: getMicroPct(nationalEcon, "nac"),
-                    fmt: fmtPct,
-                },
-                {
-                    id: "empleos_mil_hab",
-                    label: "Empleos por cada 1,000 hab.",
-                    unidad: "empleos/1000hab",
-                    municipio: getEmpleosMil("mun"),
-                    provincia: getEmpleosMil("prov"),
-                    nacional: getEmpleosMil("nac"),
-                    fmt: fmtDec,
-                },
-            ],
-        },
-        {
-            group: "Salud (Estimado)",
-            rows: [
-                {
-                    id: "centros_salud_10k",
-                    label: "Centros de salud por cada 10k hab.",
-                    unidad: "centros/10khab",
-                    municipio: getSalud10k("mun"),
-                    provincia: getSalud10k("prov"),
-                    nacional: getSalud10k("nac"),
-                    fmt: fmtDec2,
-                },
-            ],
-        },
-    ];
-
-    return rows;
-}
-
 function App() {
-  const [selectedRegion, setSelectedRegion] = reactExports.useState(null);
-  const [selectedProvince, setSelectedProvince] = reactExports.useState(null);
-  const [selectionKey, setSelectionKey] = reactExports.useState(null);
-  const data = useMunicipioData(selectedRegion, selectedProvince, selectionKey);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(DashboardProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(DashboardContent, {}) });
+}
+function DashboardContent() {
+  const ctx = useDashboard();
   const {
+    selectedRegion,
+    setSelectedRegion,
+    selectedProvince,
+    setSelectedProvince,
+    selectionKey,
+    setSelectionKey,
+    handleMapSelect,
+    handlePrint,
     municipiosIndex,
     regionsIndexData,
     municipioOptions,
@@ -101072,50 +101262,13 @@ function App() {
     saludEstablecimientos,
     educacionRecords,
     educacionNivel,
-    // Datos nacionales para comparación
     nationalTic,
     nationalEducNivel,
     nationalEducOferta,
     nationalHogares,
     nationalSalud,
-    // Comparison datasets
-    hogaresResumenData,
-    hogaresResumenProvinciaData,
-    poblacionUrbanaRuralData,
-    poblacionUrbanaRuralProvinciaData,
-    educacionData,
-    educacionProvinciaData,
-    saludEstablecimientosData,
-    saludEstablecimientosProvinciaData,
-    // Add exposed province data for simple retrieval
-    condicionVidaProvinciaData,
-    ticProvinciaData,
-    educacionNivelProvinciaData,
-    economiaEmpleoProvinciaData,
-    indicadoresBasicosData,
-    educacionOfertaMunicipalData
-  } = data;
-  reactExports.useEffect(() => {
-    if (!selectedRegion && regionsIndexData.length) {
-      const firstReg = regionsIndexData[0];
-      setSelectedRegion(firstReg.id);
-      const firstProv = firstReg.provincias[0];
-      setSelectedProvince(firstProv);
-      const firstMuni = municipiosIndex.find((m) => m.provincia === firstProv);
-      if (firstMuni) setSelectionKey(firstMuni.adm2_code);
-    }
-  }, [regionsIndexData, municipiosIndex, selectedRegion]);
-  const handleMapSelect = (adm2, provFromMap) => {
-    setSelectionKey(adm2);
-    if (provFromMap) {
-      setSelectedProvince(provFromMap);
-      const reg = regionsIndexData.find((r) => r.provincias.includes(provFromMap));
-      if (reg) setSelectedRegion(reg.id);
-    }
-  };
-  const handlePrint = () => {
-    window.print();
-  };
+    resumenComparacionRows
+  } = ctx;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-slate-50", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "border-b border-slate-200 bg-white/80 backdrop-blur", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mx-auto w-full max-w-6xl px-4 py-3 flex flex-col md:flex-row gap-3 md:gap-6 items-start md:items-center justify-between", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center md:text-left flex-1", children: [
@@ -101126,7 +101279,7 @@ function App() {
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 md:text-sm", children: "Panel de diagnóstico territorial – población, salud, economía y empleo, educación" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-end gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-slate-400 md:text-xs text-right", children: "Fuente: ONE, Censo 2022, DEE 2024, Anuario Estadístico 2024." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-slate-400 md:text-xs text-right", children: "Fuente: Censo 2022, DEE 2024, Anuario Estadístico 2024." }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
@@ -101218,84 +101371,46 @@ function App() {
             }
           ),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "page-break" }),
-          (() => {
-            const resumenComparacionRows = buildResumenComparacion({
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            SaludSection,
+            {
+              selectedAdm2,
               selectedMunicipio,
-              indicadores,
+              saludEstablecimientos,
+              isProvinceSelection,
+              isRegionSelection
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ResumenComparacionSection,
+            {
+              selectedMunicipio,
+              rows: resumenComparacionRows
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "page-break" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ResumenNarrativoSection,
+            {
+              municipio: selectedMunicipio?.municipio,
+              indicators: indicadores,
               condVida: condicionVida,
               econ,
               educ: educacionRecords,
-              educNivel: educacionNivel,
               tic,
-              hogaresResumenData,
-              poblacionUrbanaRuralData,
-              educacionData,
-              saludEstablecimientosData,
-              hogaresResumenLocal: hogaresResumen,
-              poblacionUrbanaRuralLocal: poblacionUrbanaRural,
-              saludLocal: saludEstablecimientos,
-              condicionVidaProvinciaData,
-              ticProvinciaData,
-              educacionNivelProvinciaData,
-              economiaEmpleoProvinciaData,
-              indicadoresBasicosData,
-              hogaresResumenProvinciaData,
-              poblacionUrbanaRuralProvinciaData,
-              educacionProvinciaData,
-              saludEstablecimientosProvinciaData,
+              salud: saludEstablecimientos,
               nationalBasic,
               nationalCondVida: nationalCondicionVida,
               nationalEcon,
               nationalTic,
               nationalEducNivel,
+              nationalEducOferta,
               nationalHogares,
               nationalSalud,
-              nationalEducOferta,
-              educacionOfertaMunicipalData
-            });
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                SaludSection,
-                {
-                  selectedAdm2,
-                  selectedMunicipio,
-                  saludEstablecimientos,
-                  isProvinceSelection,
-                  isRegionSelection
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                ResumenComparacionSection,
-                {
-                  selectedMunicipio,
-                  rows: resumenComparacionRows
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "page-break" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                ResumenNarrativoSection,
-                {
-                  municipio: selectedMunicipio?.municipio,
-                  indicators: indicadores,
-                  condVida: condicionVida,
-                  econ,
-                  educ: educacionRecords,
-                  tic,
-                  salud: saludEstablecimientos,
-                  nationalBasic,
-                  nationalCondVida: nationalCondicionVida,
-                  nationalEcon,
-                  nationalTic,
-                  nationalEducNivel,
-                  nationalEducOferta,
-                  nationalHogares,
-                  nationalSalud,
-                  educNivel: educacionNivel,
-                  resumenComparacion: resumenComparacionRows
-                }
-              )
-            ] });
-          })()
+              educNivel: educacionNivel,
+              resumenComparacion: resumenComparacionRows
+            }
+          )
         ]
       }
     )

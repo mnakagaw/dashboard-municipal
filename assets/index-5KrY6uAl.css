@@ -2056,6 +2056,12 @@ body {
   .lg\:flex-row {
     flex-direction: row;
   }
+}
+@media print {
+
+  .print\:mt-0 {
+    margin-top: 0px;
+  }
 }/* ===============================================================
    PRINT SPECIFIC STYLES (NO GAPS / COMPACT HEIGHT)
    =============================================================== */
