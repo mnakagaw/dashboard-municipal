@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-
+// Feature flag: set VITE_ENABLE_AI=false in .env to disable AI narrative
+const AI_ENABLED = import.meta.env.VITE_ENABLE_AI !== 'false';
 // Helper for comparisons
 function buildComparison(local, national) {
   if (
@@ -65,6 +66,9 @@ export default function ResumenNarrativoSection({
   nationalSalud,
   resumenComparacion, // Added
 }) {
+  // Si AI está deshabilitada, no renderizar nada
+  if (!AI_ENABLED) return null;
+
   const [resumen, setResumen] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -200,33 +204,19 @@ export default function ResumenNarrativoSection({
 
     setLoading(true);
 
-    // Check if running on GitHub Pages
-    if (window.location.hostname.includes("github.io")) {
-      setResumen(`
-**⚠️ Función no disponible en la versión estática (GitHub Pages).**
-
-La generación de narrativa utiliza inteligencia artificial (OpenAI) y requiere un servidor backend (PHP) para funcionar de manera segura.
-Esta versión del dashboard es estática y no tiene capacidad de procesamiento de backend.
-
-Para ver esta funcionalidad:
-1. Clone el repositorio y ejecute localmente con un servidor PHP/Apache.
-2. O despliegue en un servicio que soporte PHP.
-      `.trim());
-      setLoading(false);
-      return;
-    }
+    // Note: AI availability is now controlled by VITE_ENABLE_AI flag.
+    // If AI is disabled, this component returns null above.
 
     try {
-      const res = await fetch(
-        "https://prodecare.net/dashboard/api/generateNarrative.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt: `
+      const apiUrl = import.meta.env.VITE_API_URL || `${import.meta.env.BASE_URL}api/generateNarrative.php`;
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: `
 Eres experto en planificación municipal en República Dominicana (dominio de la Ley 345-22 de Regiones Únicas de Planificación).
 A partir de los datos siguientes, redacta un **"Resumen Narrativo de Diagnóstico ${tipoTerritorio === "región" ? "Regional" : (tipoTerritorio === "provincia" ? "Provincial" : "Municipal")
-              }: ${nombreTerritorio}"**.
+            }: ${nombreTerritorio}"**.
 
 No copies textos de ejemplo anteriores; solo úsalo como referencia de estilo.
 Tu redacción debe ser sobria, realista y basada exclusivamente en los datos numéricos y reglas que siguen.
@@ -596,8 +586,8 @@ EXTENSIÓN:
 - Longitud total aproximada: entre **1000 y 1,500 palabras**.
 `,
 
-          }),
-        }
+        }),
+      }
       );
 
       const json = await res.json();
@@ -613,7 +603,7 @@ EXTENSIÓN:
 
   return (
     <div className="card p-4 my-6">
-      <h2 className="text-lg font-bold mb-2">
+      <h2 className="hide-on-print text-lg font-bold mb-2">
         📝 Resumen de Diagnóstico Automático (ChatGPT)
       </h2>
 
@@ -625,7 +615,7 @@ EXTENSIÓN:
         {loading ? "Generando..." : "Crear Diagnóstico Narrativo"}
       </button>
 
-      <h3 className="text-md mt-4 font-bold">Resumen Narrativo</h3>
+      <h2 className="text-lg mt-4 font-bold print:mt-0">Resumen Narrativo</h2>
       <div className="mt-2 text-sm leading-relaxed">
         <div className="prose prose-sm max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>

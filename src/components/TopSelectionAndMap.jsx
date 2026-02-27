@@ -149,7 +149,7 @@ export default function TopSelectionAndMap({
               selectedRegion={isRegionSelection ? selectedRegionScope : null}
             />
             <p className="mt-2 text-[10px] text-slate-400 md:text-xs">
-              Fuente: ONE, división político-administrativa y cartografía oficial.
+              Fuente: División político-administrativa y cartografía oficial.
             </p>
           </CardContent>
         </Card>

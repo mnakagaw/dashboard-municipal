@@ -1,9 +1,9 @@
 /**
  * App.jsx - Componente Principal de la Aplicación
- * 
+ *
  * Este es el componente raíz del Tablero de Diagnóstico Territorial.
- * Coordina todos los demás componentes y maneja el estado global.
- * 
+ * Utiliza DashboardContext para compartir estado con todos los componentes hijos.
+ *
  * Estructura del Dashboard:
  * ┌─────────────────────────────────────────────┐
  * │  Header (título, botón imprimir)            │
@@ -26,17 +26,10 @@
  * ├─────────────────────────────────────────────┤
  * │  ResumenNarrativoSection (IA opcional)      │
  * └─────────────────────────────────────────────┘
- * 
- * Estados principales:
- * - selectedProvince: Provincia seleccionada actualmente
- * - selectionKey: Código ADM2 del municipio/provincia seleccionado
- * 
- * Hook personalizado:
- * - useMunicipioData: Carga todos los datos del municipio seleccionado
  */
 
-import React, { useEffect, useState } from "react";
-import useMunicipioData from "./hooks/useMunicipioData";
+import React from "react";
+import { DashboardProvider, useDashboard } from "./context/DashboardContext";
 
 // Componentes de sección del dashboard
 import TopSelectionAndMap from "./components/TopSelectionAndMap";
@@ -48,18 +41,29 @@ import SaludSection from "./components/SaludSection";
 import ResumenComparacionSection from "./components/ResumenComparacionSection";
 import ResumenNarrativoSection from "./components/ResumenNarrativoSection";
 import { EconomyEmployment } from "./components/charts";
-import { buildResumenComparacion } from "./utils/resumenComparacionHelpers";
 
 export default function App() {
-  const [selectedRegion, setSelectedRegion] = useState(null);
-  const [selectedProvince, setSelectedProvince] = useState(null);
-  const [selectionKey, setSelectionKey] = useState(null);
+  return (
+    <DashboardProvider>
+      <DashboardContent />
+    </DashboardProvider>
+  );
+}
 
-  const data = useMunicipioData(selectedRegion, selectedProvince, selectionKey);
+function DashboardContent() {
+  const ctx = useDashboard();
 
   const {
+    selectedRegion,
+    setSelectedRegion,
+    selectedProvince,
+    setSelectedProvince,
+    selectionKey,
+    setSelectionKey,
+    handleMapSelect,
+    handlePrint,
+
     municipiosIndex,
-    provincias,
     regionsIndexData,
     municipioOptions,
     provinciaOptions,
@@ -91,58 +95,14 @@ export default function App() {
     educacionRecords,
     educacionNivel,
 
-    // Datos nacionales para comparación
     nationalTic,
     nationalEducNivel,
     nationalEducOferta,
     nationalHogares,
     nationalSalud,
 
-    // Comparison datasets
-    hogaresResumenData,
-    hogaresResumenProvinciaData,
-    poblacionUrbanaRuralData,
-    poblacionUrbanaRuralProvinciaData,
-    educacionData,
-    educacionProvinciaData,
-    saludEstablecimientosData,
-    saludEstablecimientosProvinciaData,
-
-    // Add exposed province data for simple retrieval
-    condicionVidaProvinciaData,
-    ticProvinciaData,
-    educacionNivelProvinciaData,
-    economiaEmpleoProvinciaData,
-    indicadoresBasicosData,
-    educacionOfertaMunicipalData,
-  } = data;
-
-  useEffect(() => {
-    if (!selectedRegion && regionsIndexData.length) {
-      const firstReg = regionsIndexData[0];
-      setSelectedRegion(firstReg.id);
-
-      const firstProv = firstReg.provincias[0];
-      setSelectedProvince(firstProv);
-
-      const firstMuni = municipiosIndex.find(m => m.provincia === firstProv);
-      if (firstMuni) setSelectionKey(firstMuni.adm2_code);
-    }
-  }, [regionsIndexData, municipiosIndex, selectedRegion]);
-
-  const handleMapSelect = (adm2, provFromMap) => {
-    setSelectionKey(adm2);
-    if (provFromMap) {
-      setSelectedProvince(provFromMap);
-      // Find region for this province
-      const reg = regionsIndexData.find(r => r.provincias.includes(provFromMap));
-      if (reg) setSelectedRegion(reg.id);
-    }
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
+    resumenComparacionRows,
+  } = ctx;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -165,7 +125,7 @@ export default function App() {
           {/* Imprimir */}
           <div className="flex flex-col items-end gap-2">
             <div className="text-[10px] text-slate-400 md:text-xs text-right">
-              Fuente: ONE, Censo 2022, DEE 2024, Anuario Estadístico 2024.
+              Fuente: Censo 2022, DEE 2024, Anuario Estadístico 2024.
             </div>
             <button
               onClick={handlePrint}
@@ -248,91 +208,40 @@ export default function App() {
 
         <div className="page-break"></div>
 
-        {/* <div className="page-break"></div> */}
+        <SaludSection
+          selectedAdm2={selectedAdm2}
+          selectedMunicipio={selectedMunicipio}
+          saludEstablecimientos={saludEstablecimientos}
+          isProvinceSelection={isProvinceSelection}
+          isRegionSelection={isRegionSelection}
+        />
 
-        {/* <div className="page-break"></div> */}
+        <ResumenComparacionSection
+          selectedMunicipio={selectedMunicipio}
+          rows={resumenComparacionRows}
+        />
 
-        {/* Generate Comparison Rows */}
-        {(() => {
-          const resumenComparacionRows = buildResumenComparacion({
-            selectedMunicipio,
-            indicadores,
-            condVida: condicionVida,
-            econ,
-            educ: educacionRecords,
-            educNivel: educacionNivel,
-            tic,
+        <div className="page-break"></div>
 
-            hogaresResumenData,
-            poblacionUrbanaRuralData,
-            educacionData,
-            saludEstablecimientosData,
-            hogaresResumenLocal: hogaresResumen,
-            poblacionUrbanaRuralLocal: poblacionUrbanaRural,
-            saludLocal: saludEstablecimientos,
-
-            condicionVidaProvinciaData,
-            ticProvinciaData,
-            educacionNivelProvinciaData,
-            economiaEmpleoProvinciaData,
-            indicadoresBasicosData,
-            hogaresResumenProvinciaData,
-            poblacionUrbanaRuralProvinciaData,
-            educacionProvinciaData,
-            saludEstablecimientosProvinciaData,
-
-            nationalBasic,
-            nationalCondVida: nationalCondicionVida,
-            nationalEcon,
-            nationalTic,
-            nationalEducNivel,
-            nationalHogares,
-            nationalSalud,
-            nationalEducOferta,
-            educacionOfertaMunicipalData,
-          });
-
-          return (
-            <>
-              <SaludSection
-                selectedAdm2={selectedAdm2}
-                selectedMunicipio={selectedMunicipio}
-                saludEstablecimientos={saludEstablecimientos}
-                isProvinceSelection={isProvinceSelection}
-                isRegionSelection={isRegionSelection}
-              />
-
-              {/*<div className="page-break"></div>*/}
-
-              <ResumenComparacionSection
-                selectedMunicipio={selectedMunicipio}
-                rows={resumenComparacionRows}
-              />
-
-              <div className="page-break"></div>
-
-              <ResumenNarrativoSection
-                municipio={selectedMunicipio?.municipio}
-                indicators={indicadores}
-                condVida={condicionVida}
-                econ={econ}
-                educ={educacionRecords}
-                tic={tic}
-                salud={saludEstablecimientos}
-                nationalBasic={nationalBasic}
-                nationalCondVida={nationalCondicionVida}
-                nationalEcon={nationalEcon}
-                nationalTic={nationalTic}
-                nationalEducNivel={nationalEducNivel}
-                nationalEducOferta={nationalEducOferta}
-                nationalHogares={nationalHogares}
-                nationalSalud={nationalSalud}
-                educNivel={educacionNivel}
-                resumenComparacion={resumenComparacionRows}
-              />
-            </>
-          );
-        })()}
+        <ResumenNarrativoSection
+          municipio={selectedMunicipio?.municipio}
+          indicators={indicadores}
+          condVida={condicionVida}
+          econ={econ}
+          educ={educacionRecords}
+          tic={tic}
+          salud={saludEstablecimientos}
+          nationalBasic={nationalBasic}
+          nationalCondVida={nationalCondicionVida}
+          nationalEcon={nationalEcon}
+          nationalTic={nationalTic}
+          nationalEducNivel={nationalEducNivel}
+          nationalEducOferta={nationalEducOferta}
+          nationalHogares={nationalHogares}
+          nationalSalud={nationalSalud}
+          educNivel={educacionNivel}
+          resumenComparacion={resumenComparacionRows}
+        />
       </main>
     </div>
   );

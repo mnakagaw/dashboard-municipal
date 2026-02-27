@@ -145,8 +145,8 @@ El archivo `vite.config.mjs` contiene la configuración `base: "/dashboard/"`. E
 
 Los datos provienen de las siguientes fuentes:
 
-- **Censo Nacional de Población y Vivienda 2022** (ONE)
-- **Directorio de Empresas y Establecimientos (DEE) 2024** (ONE)
+- **Censo Nacional de Población y Vivienda 2022** (Fuentes Oficiales)
+- **Directorio de Empresas y Establecimientos (DEE) 2024** (Fuentes Oficiales)
 - **Anuario Estadístico Educativo** (MINERD)
 - **Establecimientos de Salud 1878–2025** (SNS)
 

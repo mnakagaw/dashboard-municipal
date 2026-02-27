@@ -1,5 +1,5 @@
 # Documento de Requisitos
-## Tu Municipio en Cifras - República Dominicana
+## Dashboard para Diagnóstico Territorial - República Dominicana
 
 **Versión:** 1.0  
 **Fecha:** Febrero 2026
@@ -118,7 +118,7 @@
 ### RD-01: Fuentes de Datos
 | Fuente | Frecuencia de Actualización |
 |--------|----------------------------|
-| Censo ONE 2022 | Cada 10 años (próximo: 2032) |
+| Censo 2022 | Cada 10 años (próximo: 2032) |
 | DEE 2024 | Anual |
 | MINERD Anuario | Anual |
 | SNS Establecimientos | Continua |
@@ -186,7 +186,7 @@
 | DEE | Directorio de Establecimientos Económicos |
 | CIIU | Clasificación Industrial Internacional Uniforme |
 | LQ | Location Quotient (índice de especialización) |
-| ONE | Oficina Nacional de Estadística |
+| OFICIAL | Fuentes Oficiales de la República Dominicana |
 | MINERD | Ministerio de Educación de la República Dominicana |
 | SNS | Servicio Nacional de Salud |
 | TIC | Tecnologías de Información y Comunicación |

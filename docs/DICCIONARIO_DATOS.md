@@ -1,5 +1,5 @@
 # Diccionario de Datos
-## Tu Municipio en Cifras - República Dominicana
+## Dashboard para Diagnóstico Territorial - República Dominicana
 
 **Versión:** 1.0  
 **Fecha:** Febrero 2026
@@ -115,7 +115,7 @@ El directorio `public/data/` contiene **36 archivos JSON** organizados en tres c
 ### condicion_vida.json
 **Descripción:** Acceso a servicios básicos por municipio  
 **Tipo:** Array de objetos  
-**Fuente:** Censo 2022 (ONE)
+**Fuente:** Censo 2022
 
 **Estructura por municipio:**
 ```json
@@ -155,7 +155,7 @@ El directorio `public/data/` contiene **36 archivos JSON** organizados en tres c
 ### economia_empleo.json
 **Descripción:** Estadísticas económicas del DEE 2024  
 **Tipo:** Array de objetos  
-**Fuente:** Directorio de Establecimientos Económicos (ONE)
+**Fuente:** Directorio de Establecimientos Económicos
 
 **Estructura:**
 ```json

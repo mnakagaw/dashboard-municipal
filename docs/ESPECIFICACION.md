@@ -1,5 +1,5 @@
 # Especificación del Sistema
-## Tu Municipio en Cifras - República Dominicana
+## Dashboard para Diagnóstico Territorial - República Dominicana
 
 **Versión:** 1.0  
 **Fecha:** Febrero 2026  
@@ -13,7 +13,7 @@ Dashboard interactivo para visualizar estadísticas municipales de la República
 
 ### 1.2 Alcance
 - Cobertura de **158 municipios** de la República Dominicana
-- Datos del **Censo 2022** (ONE) y **Encuesta DEE 2024**
+- Datos del **Censo 2022** y **Encuesta DEE 2024**
 - Visualización web responsiva con exportación a PDF
 
 ### 1.3 URLs de Producción
@@ -131,8 +131,8 @@ Dashboard interactivo para visualizar estadísticas municipales de la República
 
 | Fuente | Archivos | Descripción |
 |--------|----------|-------------|
-| Censo 2022 (ONE) | `indicadores_basicos.json`, `pyramids.json`, `condicion_vida.json`, etc. | Datos demográficos y sociales |
-| DEE 2024 (ONE) | `economia_empleo.json` | Estadísticas empresariales |
+| Censo 2022 | `indicadores_basicos.json`, `pyramids.json`, `condicion_vida.json`, etc. | Datos demográficos y sociales |
+| DEE 2024 | `economia_empleo.json` | Estadísticas empresariales |
 | MINERD | `educacion.json`, `educacion_nivel.json` | Indicadores educativos |
 | SNS | `salud_establecimientos.json` | Establecimientos de salud |
 

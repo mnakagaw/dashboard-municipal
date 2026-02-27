@@ -87,7 +87,7 @@ export function PrintMapSVG({
         const svgHeight = boundsHeight * scale + padding * 2;
 
         // Generate SVG path data for each feature
-        const paths = projected.map(({ feature, projectedPolygons }) => {
+        const paths = projected.map(({ feature, projectedPolygons }, mapIdx) => {
             const prov = feature.properties.provincia;
             const adm2 = feature.properties.adm2_code;
 
@@ -126,7 +126,7 @@ export function PrintMapSVG({
             return {
                 d,
                 isSelected,
-                key: adm2 || feature.properties.shapeName,
+                key: `${adm2 || feature.properties.shapeName}-${mapIdx}`,
             };
         });
 

@@ -1,39 +1,44 @@
 {
-  "name": "tu-municipio-dashboard-final",
+  "name": "dashboard-diagnostico-territorial",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/postbuild.mjs",
     "preview": "vite preview",
-    "deploy": "node scripts/deploy.mjs"
+    "deploy": "node scripts/deploy.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.554.0",
-    "pdf-parse": "^2.4.5",
-    "pdfjs-dist": "^5.4.624",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^4.2.1",
     "react-markdown": "^10.1.0",
-    "react-to-print": "^2.14.13",
     "recharts": "^2.6.2",
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.5",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@vitejs/plugin-react": "^5.1.3",
     "autoprefixer": "^10.4.0",
     "basic-ftp": "^5.2.0",
     "dotenv": "^17.3.1",
     "esbuild": "^0.27.3",
     "esbuild-wasm": "^0.27.3",
+    "jsdom": "^28.1.0",
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^5.4.624",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "vitest": "^4.0.18"
   }
 }
