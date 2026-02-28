@@ -1,6 +1,6 @@
 # Mapeo de Archivos del Censo 2022
 
-Esta tabla describe la relación entre los archivos de datos brutos del Censo 2022 descargados originalmente y sus versiones renombradas (limpias) que se encuentran en la carpeta `Censo2022/Archivos_Clasificados` para facilitar su uso y la legibilidad en sistemas Windows.
+Esta tabla describe la relación entre los archivos de datos brutos del Censo 2022 descargados originalmente y sus versiones renombradas (limpias) que se encuentran en la carpeta `data_sources/Archivos_Clasificados_Censo2022` para facilitar su uso y la legibilidad en sistemas Windows.
 
 | ID | Título del Cuadro | Archivo Original | Archivo Clasificado (Limpio) |
 |:--:|---|---|---|

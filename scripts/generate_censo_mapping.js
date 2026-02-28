@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const txtPath = path.join(__dirname, '../Censo2022/Contenido Censo2022.txt');
-const classifiedDir = path.join(__dirname, '../Censo2022/Archivos_Clasificados');
+const txtPath = path.join(__dirname, '../data_sources/Contenido Censo2022.txt');
+const classifiedDir = path.join(__dirname, '../data_sources/Archivos_Clasificados_Censo2022');
 const outPath = path.join(__dirname, '../docs/CENSO_ARCHIVOS_MAPPING.md');
 
 const content = fs.readFileSync(txtPath, 'utf8').split('\n');
@@ -10,7 +10,7 @@ let classified = [];
 try {
     classified = fs.readdirSync(classifiedDir);
 } catch (e) {
-    console.warn("Directorio Archivos_Clasificados no encontrado.");
+    console.warn("Directorio Archivos_Clasificados_Censo2022 no encontrado.");
 }
 
 const map = {};
@@ -20,7 +20,7 @@ classified.forEach(f => {
 });
 
 let md = '# Mapeo de Archivos del Censo 2022\n\n';
-md += 'Esta tabla describe la relación entre los archivos de datos brutos del Censo 2022 descargados originalmente y sus versiones renombradas (limpias) que se encuentran en la carpeta `Censo2022/Archivos_Clasificados` para facilitar su uso y la legibilidad en sistemas Windows.\n\n';
+md += 'Esta tabla describe la relación entre los archivos de datos brutos del Censo 2022 descargados originalmente y sus versiones renombradas (limpias) que se encuentran en la carpeta `data_sources/Archivos_Clasificados_Censo2022` para facilitar su uso y la legibilidad en sistemas Windows.\n\n';
 md += '| ID | Título del Cuadro | Archivo Original | Archivo Clasificado (Limpio) |\n';
 md += '|:--:|---|---|---|\n';
 

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-
-const targetDir = path.join(__dirname, '../Censo2022/Archivos_Clasificados');
+// 対象ディレクトリ
+const targetDir = path.join(__dirname, '../data_sources/Archivos_Clasificados_Censo2022');
 
 if (!fs.existsSync(targetDir)) {
     console.error("Directorio no encontrado.");

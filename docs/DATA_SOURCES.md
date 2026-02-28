@@ -71,4 +71,4 @@ Los valores se calculan como suma (poblaciones, hogares) o promedio ponderado (t
 5. Reconstruir: `npm run build`
 
 > **Nota**: Los scripts de parseo (`scripts/parse_*.js`) requieren los archivos fuente
-> originales en la carpeta `Censo2022/` que no se incluye en el repositorio.
+> originales en la carpeta `data_sources/` que no se incluye en el repositorio.

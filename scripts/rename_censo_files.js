@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const txtPath = path.join(__dirname, '../Censo2022/Contenido Censo2022.txt');
-const sourceDir = path.join(__dirname, '../Censo2022');
-const targetDir = path.join(__dirname, '../Censo2022/Archivos_Clasificados');
+const txtPath = path.join(__dirname, '../data_sources/Contenido Censo2022.txt');
+const CENSO_DIR = path.join(__dirname, '../data_sources');
+const OUTPUT_DIR = path.join(CENSO_DIR, 'Archivos_Clasificados_Censo2022');
 
-if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir);
+if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR);
 }
 
 const content = fs.readFileSync(txtPath, 'utf8');
@@ -34,8 +34,8 @@ for (const line of lines) {
             // フォーマット: "ID_内容_元のファイル名"
             const newFilename = `${id}_${sanitizedTitle}_${filename}`;
 
-            const sourcePath = path.join(sourceDir, filename);
-            const targetPath = path.join(targetDir, newFilename);
+            const sourcePath = path.join(CENSO_DIR, filename);
+            const targetPath = path.join(OUTPUT_DIR, newFilename);
 
             if (fs.existsSync(sourcePath)) {
                 fs.copyFileSync(sourcePath, targetPath);
@@ -48,4 +48,4 @@ for (const line of lines) {
     }
 }
 
-console.log(`\n🎉 Terminado! Se han copiado y renombrado ${count} archivos a la carpeta 'Archivos_Clasificados'.`);
+console.log(`\n🎉 Terminado! Se han copiado y renombrado ${count} archivos a la carpeta 'Archivos_Clasificados_Censo2022'.`);
