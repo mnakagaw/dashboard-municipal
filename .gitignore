@@ -124,3 +124,6 @@ dist-ssr/
 
 # Backup folder for cleanup
 bkup/
+
+# Original data sources (Excel, CSV, GeoJSON)
+data_sources/
