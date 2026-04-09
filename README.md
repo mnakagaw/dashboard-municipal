@@ -116,6 +116,7 @@ El archivo `vite.config.mjs` contiene la configuración `base: "/dashboard/"`. E
 │       ├── formatters.js             # Formateo de números/texto
 │       └── calculations.js           # Cálculos estadísticos
 │
+├── data_sources/                     # Fuentes de datos originales (Excel, CSV, GeoJSON)
 ├── public/                           # Archivos estáticos
 │   └── data/                         # Datos JSON estáticos cargados vía fetch
 │       ├── municipios_index.json     # Índice de 158 municipios
@@ -180,6 +181,15 @@ Los datos provienen de las siguientes fuentes:
 | `educacion_oferta_municipal.json` | Oferta educativa (escuelas, universidades) |
 | `salud_establecimientos.json` | Establecimientos de salud por tipo |
 | `tic.json` | Acceso a tecnología (internet, computadora, celular) |
+
+### Fuentes de Datos Originales (`data_sources/`)
+
+Esta carpeta contiene los archivos originales sin procesar utilizados para generar los JSON del tablero:
+
+- **Censo 2022**: Archivos Excel y CSV del Censo Nacional de Población y Vivienda.
+- **Educación**: Anuarios estadísticos de indicadores educativos (PDF/Excel).
+- **Salud**: Listado cronológico de establecimientos de salud (CSV).
+- **Cartografía**: Archivos GeoJSON de límites administrativos (ADM1, ADM2).
 
 ### Datos agregados por provincia (`*_provincia.json`)
 
