@@ -1,60 +1,57 @@
 -- =====================================================================
 -- Dashboard Territorial - Phase 2: Canonical Schema
 -- Motor: SQL Server (Transact-SQL)
+-- Versión: 2.0 — Canonical Completion Package
 -- =====================================================================
 
--- ---------------------------------------------------------------------
 -- 1. RAW / STAGING LAYER
--- ---------------------------------------------------------------------
-IF OBJECT_ID('raw_import_batch', 'U') IS NOT NULL DROP TABLE raw_import_batch;
+IF OBJECT_ID('raw_import_batch', 'U') IS NULL
 CREATE TABLE raw_import_batch (
     batch_id INT IDENTITY(1,1) PRIMARY KEY,
-    batch_name NVARCHAR(255) NOT NULL,          -- Ej: 'Carga Censo 2022 - Demografia'
-    source_filename NVARCHAR(255) NOT NULL,     -- Ej: 'censo_2022_final.xlsx'
+    batch_name NVARCHAR(255) NOT NULL,
+    source_filename NVARCHAR(255) NOT NULL,
     import_date DATETIME2 DEFAULT GETDATE(),
-    status NVARCHAR(50) DEFAULT 'PROCESSING',   -- 'PROCESSING', 'SUCCESS', 'FAILED'
+    status NVARCHAR(50) DEFAULT 'PROCESSING',
+    records_total INT DEFAULT 0,
     records_processed INT DEFAULT 0,
+    records_skipped INT DEFAULT 0,
+    records_errors INT DEFAULT 0,
     notes NVARCHAR(MAX)
 );
 
--- ---------------------------------------------------------------------
--- 2. CANONICAL LAYER (Tablas Dimensionales)
--- ---------------------------------------------------------------------
-
-IF OBJECT_ID('fact_statistic', 'U') IS NOT NULL DROP TABLE fact_statistic;
-IF OBJECT_ID('dim_source', 'U') IS NOT NULL DROP TABLE dim_source;
-IF OBJECT_ID('dim_indicator', 'U') IS NOT NULL DROP TABLE dim_indicator;
-IF OBJECT_ID('dim_domain', 'U') IS NOT NULL DROP TABLE dim_domain;
-IF OBJECT_ID('dim_territory', 'U') IS NOT NULL DROP TABLE dim_territory;
-
+-- 2. DIMENSION TABLES
+IF OBJECT_ID('dim_territory', 'U') IS NULL
 CREATE TABLE dim_territory (
     territory_id INT IDENTITY(1,1) PRIMARY KEY,
-    territory_code NVARCHAR(50) NOT NULL UNIQUE, 
+    territory_code NVARCHAR(50) NOT NULL UNIQUE,
     territory_name NVARCHAR(100) NOT NULL,
-    territory_type NVARCHAR(50) NOT NULL,        -- 'municipio', 'provincia', 'region', 'nacional'
+    territory_type NVARCHAR(50) NOT NULL,
     parent_territory_id INT NULL,
     region_oficial_ley345 NVARCHAR(100) NULL,
     FOREIGN KEY (parent_territory_id) REFERENCES dim_territory(territory_id)
 );
 
+IF OBJECT_ID('dim_domain', 'U') IS NULL
 CREATE TABLE dim_domain (
     domain_id INT IDENTITY(1,1) PRIMARY KEY,
     domain_code NVARCHAR(50) NOT NULL UNIQUE,
     domain_name NVARCHAR(100) NOT NULL
 );
 
+IF OBJECT_ID('dim_indicator', 'U') IS NULL
 CREATE TABLE dim_indicator (
     indicator_id INT IDENTITY(1,1) PRIMARY KEY,
-    indicator_code NVARCHAR(100) NOT NULL UNIQUE, 
+    indicator_code NVARCHAR(100) NOT NULL UNIQUE,
     indicator_name NVARCHAR(255) NOT NULL,
     domain_id INT NOT NULL,
-    unit NVARCHAR(50) NULL,                       -- 'absoluto', 'porcentaje', 'tasa_por_10k'
-    data_type NVARCHAR(50) NULL,                  -- 'numeric', 'text'
-    aggregation_method NVARCHAR(50) NULL,         -- 'sum', 'avg', 'weighted_avg'
+    unit NVARCHAR(50) NULL,
+    data_type NVARCHAR(50) DEFAULT 'numeric',
+    aggregation_method NVARCHAR(50) NULL,
     display_hints NVARCHAR(255) NULL,
     FOREIGN KEY (domain_id) REFERENCES dim_domain(domain_id)
 );
 
+IF OBJECT_ID('dim_source', 'U') IS NULL
 CREATE TABLE dim_source (
     source_id INT IDENTITY(1,1) PRIMARY KEY,
     source_name NVARCHAR(255) NOT NULL,
@@ -66,10 +63,8 @@ CREATE TABLE dim_source (
     notes NVARCHAR(MAX) NULL
 );
 
--- ---------------------------------------------------------------------
--- 3. CANONICAL LAYER (Tabla de Hechos Central)
--- ---------------------------------------------------------------------
-
+-- 3. FACT TABLE
+IF OBJECT_ID('fact_statistic', 'U') IS NULL
 CREATE TABLE fact_statistic (
     fact_id INT IDENTITY(1,1) PRIMARY KEY,
     territory_id INT NOT NULL,
@@ -79,15 +74,48 @@ CREATE TABLE fact_statistic (
     period_year INT NULL,
     numeric_value DECIMAL(18, 4) NULL,
     text_value NVARCHAR(255) NULL,
-    quality_flag NVARCHAR(50) NULL,
+    quality_flag NVARCHAR(50) DEFAULT 'oficial',
     updated_at DATETIME2 DEFAULT GETDATE(),
+    CONSTRAINT uq_fact UNIQUE (territory_id, indicator_id, source_id, period_year),
     FOREIGN KEY (territory_id) REFERENCES dim_territory(territory_id),
     FOREIGN KEY (indicator_id) REFERENCES dim_indicator(indicator_id),
     FOREIGN KEY (source_id) REFERENCES dim_source(source_id),
     FOREIGN KEY (batch_id) REFERENCES raw_import_batch(batch_id)
 );
 
--- Índices de rendimiento
 CREATE INDEX idx_fact_territory ON fact_statistic(territory_id);
 CREATE INDEX idx_fact_indicator ON fact_statistic(indicator_id);
 CREATE INDEX idx_fact_period ON fact_statistic(period_year);
+
+-- =====================================================================
+-- DELIVERY: Regenerar dataset_assets desde canonical
+-- =====================================================================
+-- Ejemplo: Regenerar 'indicadores_basicos' como JSON desde fact_statistic
+--
+-- UPDATE dataset_assets
+-- SET json_content = (
+--   SELECT t.territory_code AS adm2_code,
+--          t.territory_name AS municipio,
+--          p.territory_name AS provincia,
+--          t.region_oficial_ley345 AS region,
+--          MAX(CASE WHEN i.indicator_code='dem_pop_total' THEN f.numeric_value END) AS poblacion_total,
+--          MAX(CASE WHEN i.indicator_code='dem_pop_male_2022' THEN f.numeric_value END) AS poblacion_hombres,
+--          MAX(CASE WHEN i.indicator_code='dem_pop_female_2022' THEN f.numeric_value END) AS poblacion_mujeres,
+--          MAX(CASE WHEN i.indicator_code='dem_viv_total' THEN f.numeric_value END) AS viviendas_total,
+--          MAX(CASE WHEN i.indicator_code='dem_viv_ocup' THEN f.numeric_value END) AS viviendas_ocupadas,
+--          MAX(CASE WHEN i.indicator_code='dem_viv_desocup' THEN f.numeric_value END) AS viviendas_desocupadas,
+--          MAX(CASE WHEN i.indicator_code='dem_pop_total_2010' THEN f.numeric_value END) AS poblacion_2010,
+--          MAX(CASE WHEN i.indicator_code='dem_pop_var_abs' THEN f.numeric_value END) AS variacion_abs,
+--          MAX(CASE WHEN i.indicator_code='dem_pop_var_pct' THEN f.numeric_value END) AS variacion_pct
+--   FROM fact_statistic f
+--   JOIN dim_territory t ON f.territory_id = t.territory_id
+--   JOIN dim_territory p ON t.parent_territory_id = p.territory_id
+--   JOIN dim_indicator i ON f.indicator_id = i.indicator_id
+--   WHERE t.territory_type = 'municipio'
+--     AND i.domain_id = (SELECT domain_id FROM dim_domain WHERE domain_code='demography')
+--   GROUP BY t.territory_code, t.territory_name, p.territory_name, t.region_oficial_ley345
+--   FOR JSON PATH
+-- ),
+-- version_no = version_no + 1, updated_at = GETDATE()
+-- WHERE asset_key = 'indicadores_basicos';
+-- =====================================================================

@@ -1,59 +1,114 @@
-# Arquitectura Dimensional (Fase 2: Canonical Schema)
+# Arquitectura de Datos: Canonical Schema (Fase 2)
 
-Este documento detalla la estructura y propósito de la **Capa Canónica de Datos Estadísticos** para el Dashboard Territorial. El objetivo es evolucionar el modelo de almacenamiento inicial hacia una arquitectura robusta, trazable y estándar para una oficina nacional de estadística (ONE).
-
----
-
-## 1. Visión Arquitectónica y Capas de Datos
-
-Para alcanzar la máxima automatización e integridad, definimos un pipeline de datos compuesto por tres capas:
-
-1. **Original Source Layer (Capa Origen / Cruda)**
-   - Corresponde a los archivos de microdatos, censos, y registros administrativos originales administrados por la ONE.
-   - En el ecosistema del proyecto, se representa mediante una tabla de control o área de carga de ingesta (`raw_import_batch`), manteniendo la trazabilidad histórica de qué archivo alimentó la base de datos.
-   
-2. **Canonical Statistical Data Layer (Fase 2 - Modelo Actual)**
-   - Una base de datos relacional normalizada y estructurada mediante modelos dimensionales (Esquema en Estrella).
-   - Funciona como la **fuente de la verdad unificada (Single Source of Truth)**. La información deja de tener estructuras anidadas propietarias de la interfaz gráfica y pasa a organizarse bajo ejes analíticos formales.
-   
-3. **Delivery Layer / API Views (Fase 1 - Caché de Activos JSON)**
-   - La tabla preexistente `dataset_assets` con su columna `json_content`.
-   - **Nota crucial**: La Fase 1 **no se deprecia ni se elimina**. Esta capa actúa como un *cache de alto rendimiento* o *delivery artifact*. Las vistas o APIs (ASP.NET Core) consultan directamente esta capa para enviar JSON a la aplicación web SPA de forma instantánea.
-
-**El objetivo ideal (Ideal Target):**
-`Original Source → Canonical Data Layer → Delivery Views / APIs`
-
-Al actualizar un origen de datos en el sistema central, el modelo canónico procesa las transformaciones mediante reglas de negocio, y posteriormente inyecta automáticamente el paquete final actualizado estructurado en la capa `dataset_assets`.
+Este documento describe la arquitectura de datos del Dashboard Territorial, con énfasis en la transición desde un almacén de activos JSON (Fase 1) hacia un modelo relacional dimensional normalizado (Fase 2).
 
 ---
 
-## 2. Modelo Dimensional: Esquema en Estrella
+## Fases del Sistema
 
-El corazón del *Canonical Schema* está diseñado a través de un Modelo en Estrella con dimensiones jerárquicas adaptadas a agregaciones espaciales.
+| Fase | Nombre | Descripción | Estado |
+|------|--------|-------------|--------|
+| **Phase 1** | SQL-backed JSON Asset Store | Tabla `dataset_assets` con `json_content`. El dashboard React consume directamente estos JSON vía API. | ✅ Operativo |
+| **Phase 2** | Canonical Statistical Data Layer | Esquema en estrella normalizado: `dim_territory`, `dim_indicator`, `fact_statistic`. | ✅ Implementado (datasets planos) |
+| **Ideal** | Original Source → Canonical → Delivery | El dato nace en el sistema estadístico fuente, se normaliza en el canonical, y se entrega al dashboard vía vistas/API. | 📋 Objetivo |
 
-### Tablas de Soporte e Ingesta
-- **`raw_import_batch`**: Todo dato cargado al sistema genera un lote de trazabilidad. Esto le permite a los especialistas identificar fecha de subida, usuario, o nombres de archivo fuentes exactos.
+### Relación entre Fases
 
-### Dimensiones Principales (Dimensions)
-Las dimensiones proveen el contexto (el *qué*, *dónde*, y *el contexto de origen*) de las métricas.
-
-1. **`dim_territory`**: Consolida la compleja topología de la República Dominicana. Contiene la relación recursiva Padre-Hijo para realizar validaciones geográficas y "roll-ups" (Ej. agrupar datos de múltiples Municipios hacia su respectiva Provincia y Región).
-2. **`dim_domain` / `dim_indicator`**: Maestro de índices numéricos. Asocia reglas de agregación (suma, promedio) de las variables oficiales, asegurando que el análisis de datos inter-territorial sea matemáticamente lícito.
-3. **`dim_source`**: Amplía significativamente la capacidad de auditar la información. Requiere institución de origen, años de referencia exactos y soporte documental de URL o metodología, requerimiento crítico para los metadatos de las oficinas estadísticas nacionales.
-
-### Tabla de Hechos (Fact Table)
-- **`fact_statistic`**: Modelo que intercepta el entorno geográfico, el indicador analizado, la fuente original y la trazabilidad de ingesta contra un valor (`numeric_value` o `text_value`). Este modelo es excepcionalmente flexible frente al alta de nuevos indicadores simples.
+- La Fase 1 (`dataset_assets`) **no se elimina**. Es la capa de entrega (*delivery artifact*) que el frontend React consume.
+- La Fase 2 es la capa canónica: la fuente de verdad estructurada. Los datos se normalizan aquí y, desde aquí, se regeneran los JSON de `dataset_assets`.
+- En la operación ideal de producción (ONE / SQL Server), las actualizaciones ocurren en las tablas canónicas y las vistas de entrega se regeneran automáticamente.
 
 ---
 
-## 3. Escalabilidad de Datos: Estructuras Simples y Complejas
+## Capas de Datos
 
-En este punto es indispensable distinguir entre métricas planas y jerárquicas relacionales:
+### 1. Original Source Layer (Capa de Origen)
 
-- **Métricas Planas (Flat Indicators)**: Aquellos indicadores puntuales que arrojan un único valor por territorio para un año en particular. Por ejemplo: *Población Total*, *Hogares Ocupados*, *Tasa de Pobreza*. Se almacenan **directamente** en el `fact_statistic` propuesto en la presente Fase.
+Corresponde a los datos maestros administrados por la ONE: censos, encuestas, registros administrativos. En el proyecto, la tabla `raw_import_batch` registra cada lote de importación, proporcionando trazabilidad completa sobre qué archivos alimentaron la base de datos y cuándo.
 
-- **Datasets Anidados y Complejos (Nested Breakdowns)**: Ciertos campos exigen cortes multifactoriales. Por ejemplo:
-  - *Población categorizada por Rangos de Edad y Sexo a la vez.*
-  - *Entidades escolares por Tipo de Oferta y Sector.*
-  Este modelo en estrella reserva el espacio para extensiones futuras (Ej. crear tablas como `dim_demographic_slice` conectadas a `fact_statistic_breakdown`). Los datasets anidados no serán forzados artificialmente en `fact_statistic` estándar, postergándolos para una expansión de *Slice Dimensions*.
-  
+### 2. Canonical Layer (Capa Canónica — Fase 2)
+
+Un esquema en estrella (*star schema*) compuesto por:
+
+**Dimensiones:**
+- `dim_territory` — Jerarquía territorial recursiva (Nacional → Región → Provincia → Municipio). Contiene los 158 municipios, 32 provincias, 10 regiones y 1 registro nacional.
+- `dim_domain` — Ejes temáticos: Demografía, Hogares, TIC, Economía, Salud, Educación, Condición de Vida.
+- `dim_indicator` — Catálogo de indicadores con regla de agregación (`sum`, `avg`, `weighted_avg`) y unidad de medida.
+- `dim_source` — Fuentes documentales: nombre, institución, tipo (Censo/Encuesta/Registro), año de referencia, URL o referencia oficial.
+
+**Tabla de Hechos:**
+- `fact_statistic` — Intersección de territorio × indicador × fuente → valor numérico. Incluye `UNIQUE (territory_id, indicator_id, source_id, period_year)` para garantizar integridad y permitir operaciones UPSERT seguras.
+
+**Ingesta:**
+- `raw_import_batch` — Registro de cada operación de carga: origen, fecha, estado, conteo de registros procesados.
+
+### 3. Delivery Layer (Capa de Entrega — Fase 1)
+
+La tabla `dataset_assets` almacena JSON preformateados listos para consumo directo por la API PHP/ASP.NET y el frontend React. Los JSON de esta capa se regeneran desde el canonical mediante scripts o procedimientos almacenados.
+
+---
+
+## Indicadores Planos vs. Datos Complejos
+
+### Indicadores Planos (Flat Indicators)
+
+Indicadores que producen un único valor escalar por territorio. Se almacenan directamente en `fact_statistic`.
+
+Ejemplos: Población total, viviendas ocupadas, tasa de uso de internet, total de establecimientos.
+
+### Datos Complejos (Breakdowns)
+
+Datasets con distribuciones internas que requieren ejes adicionales (edad, sexo, tipo de establecimiento, sector económico CIIU).
+
+Estos datasets **no se fuerzan** en `fact_statistic`. Se mantienen temporalmente en `dataset_assets` (Fase 1) hasta que se implementen las dimensiones de desglose:
+
+- `dim_breakdown_type` — Define los ejes de corte (grupo etario, sexo, nivel educativo, categoría de servicio).
+- `fact_statistic_breakdown` — Extiende `fact_statistic` con el eje de desglose.
+
+Esta extensión se planifica como Fase 2b.
+
+**Datasets complejos mantenidos en Fase 1:**
+- `condicion_vida` — Servicios por categoría (agua, saneamiento, electricidad, basura).
+- `salud_establecimientos` — Listado de entidades individuales con coordenadas.
+- `educacion` / `educacion_nivel` — Distribución por rango etario y logro educativo.
+- `economia_empleo.sectors` / `employment_size_bands` — Distribución sectorial CIIU.
+- `pyramids` — Pirámides poblacionales por decil × sexo.
+
+---
+
+## Flujo de Actualización (Pipeline)
+
+```
+┌──────────────┐     ┌─────────────────┐     ┌──────────────────┐
+│  Datos       │     │   Canonical     │     │   Delivery       │
+│  Originales  │ ──► │   Schema        │ ──► │   (dataset_      │
+│  (ONE/Censo) │     │ (fact_statistic)│     │    assets)       │
+└──────────────┘     └─────────────────┘     └──────────────────┘
+       ↑                      ↑                       ↑
+  raw_import_batch      UPSERT idempotente     regenerate_delivery.js
+  (trazabilidad)        (seguro re-ejecutar)   (o FOR JSON en SQL Server)
+```
+
+### En SQL Server (Producción ONE):
+1. El equipo de datos actualiza las tablas canónicas mediante procedimientos almacenados o SSIS.
+2. Un procedimiento ejecuta `FOR JSON PATH` para pivotar `fact_statistic` al formato JSON esperado.
+3. El resultado se inserta/actualiza en `dataset_assets`.
+4. La API ASP.NET Core sirve el JSON actualizado al dashboard sin necesidad de redeploy.
+
+---
+
+## SQL Server: Consideraciones de Migración
+
+| Aspecto | MariaDB (actual) | SQL Server (producción) |
+|---------|-------------------|------------------------|
+| Auto-incremento | `AUTO_INCREMENT` | `IDENTITY(1,1)` |
+| Texto Unicode | `VARCHAR` + `utf8mb4` | `NVARCHAR` |
+| Fecha precisa | `DATETIME` | `DATETIME2` |
+| UPSERT | `ON DUPLICATE KEY UPDATE` | `MERGE ... WHEN MATCHED THEN UPDATE WHEN NOT MATCHED THEN INSERT` |
+| JSON nativo | `JSON_EXTRACT()` | `FOR JSON PATH` / `OPENJSON()` |
+| Índices | `CREATE INDEX` | Igual |
+| DDL idempotente | `IF NOT EXISTS` | `IF OBJECT_ID(...) IS NULL` |
+
+Ambos DDLs están disponibles en `scripts/`:
+- `create_canonical_tables.sql` — MariaDB
+- `create_canonical_tables_sqlserver.sql` — SQL Server
