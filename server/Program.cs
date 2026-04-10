@@ -39,6 +39,6 @@ app.UseStaticFiles();
 app.MapControllers();
 
 // SPA fallback: any unmatched route → index.html
-app.MapFallbackToFile("dashboard/index.html");
+app.MapFallbackToFile("dbt/index.html");
 
 app.Run();
