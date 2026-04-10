@@ -63,7 +63,17 @@ CREATE TABLE dim_source (
     notes NVARCHAR(MAX) NULL
 );
 
--- 3. FACT TABLE
+-- 3. BREAKDOWN DIMENSION
+IF OBJECT_ID('dim_breakdown', 'U') IS NULL
+CREATE TABLE dim_breakdown (
+    breakdown_id INT IDENTITY(1,1) PRIMARY KEY,
+    category NVARCHAR(50) NOT NULL,
+    code NVARCHAR(100) NOT NULL,
+    label NVARCHAR(255) NOT NULL,
+    CONSTRAINT uq_breakdown UNIQUE (category, code)
+);
+
+-- 4. FACT TABLE
 IF OBJECT_ID('fact_statistic', 'U') IS NULL
 CREATE TABLE fact_statistic (
     fact_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -72,20 +82,52 @@ CREATE TABLE fact_statistic (
     source_id INT NOT NULL,
     batch_id INT NULL,
     period_year INT NULL,
+    breakdown_id INT NULL,
     numeric_value DECIMAL(18, 4) NULL,
     text_value NVARCHAR(255) NULL,
     quality_flag NVARCHAR(50) DEFAULT 'oficial',
     updated_at DATETIME2 DEFAULT GETDATE(),
-    CONSTRAINT uq_fact UNIQUE (territory_id, indicator_id, source_id, period_year),
+    -- En SQL Server, para permitir multiples NULLs en un UNIQUE INDEX, 
+    -- se puede usar un índice filtrado en lugar de CONSTRAINT UNIQUE,
+    -- o asegurar que el valor por defecto de breakdown_id sea 0 en lugar de NULL.
+    -- Aquí usamos CONSTRAINT UNIQUE asumiendo que insertaremos un valor 0 (o "N/A" row) 
+    -- en dim_breakdown para los "totales".
+    CONSTRAINT uq_fact UNIQUE (territory_id, indicator_id, source_id, period_year, breakdown_id),
     FOREIGN KEY (territory_id) REFERENCES dim_territory(territory_id),
     FOREIGN KEY (indicator_id) REFERENCES dim_indicator(indicator_id),
     FOREIGN KEY (source_id) REFERENCES dim_source(source_id),
-    FOREIGN KEY (batch_id) REFERENCES raw_import_batch(batch_id)
+    FOREIGN KEY (batch_id) REFERENCES raw_import_batch(batch_id),
+    FOREIGN KEY (breakdown_id) REFERENCES dim_breakdown(breakdown_id)
 );
 
 CREATE INDEX idx_fact_territory ON fact_statistic(territory_id);
 CREATE INDEX idx_fact_indicator ON fact_statistic(indicator_id);
 CREATE INDEX idx_fact_period ON fact_statistic(period_year);
+CREATE INDEX idx_fact_breakdown ON fact_statistic(breakdown_id);
+
+-- 5. ENTITY MODEL (Instalaciones Físicas)
+IF OBJECT_ID('dim_facility_type', 'U') IS NULL
+CREATE TABLE dim_facility_type (
+    type_id INT IDENTITY(1,1) PRIMARY KEY,
+    type_name NVARCHAR(100) NOT NULL UNIQUE
+);
+
+IF OBJECT_ID('dim_facility', 'U') IS NULL
+CREATE TABLE dim_facility (
+    facility_id INT IDENTITY(1,1) PRIMARY KEY,
+    territory_id INT NOT NULL,
+    type_id INT NOT NULL,
+    external_id NVARCHAR(50) NULL,
+    name NVARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 7) NULL,
+    longitude DECIMAL(10, 7) NULL,
+    opening_year INT NULL,
+    admin_region NVARCHAR(100) NULL,
+    updated_at DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY (territory_id) REFERENCES dim_territory(territory_id),
+    FOREIGN KEY (type_id) REFERENCES dim_facility_type(type_id)
+);
+CREATE INDEX idx_facility_territory ON dim_facility(territory_id);
 
 -- =====================================================================
 -- DELIVERY: Regenerar dataset_assets desde canonical

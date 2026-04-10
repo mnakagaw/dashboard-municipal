@@ -68,7 +68,18 @@ CREATE TABLE IF NOT EXISTS dim_source (
 );
 
 -- ---------------------------------------------------------------------
--- 3. FACT TABLE (con UNIQUE CONSTRAINT para upsert seguro)
+-- 3. BREAKDOWN DIMENSION
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS dim_breakdown (
+    breakdown_id INT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(50) NOT NULL,
+    code VARCHAR(100) NOT NULL,
+    label VARCHAR(255) NOT NULL,
+    UNIQUE KEY uq_breakdown (category, code)
+);
+
+-- ---------------------------------------------------------------------
+-- 4. FACT TABLE (con UNIQUE CONSTRAINT para upsert seguro)
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS fact_statistic (
     fact_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,29 +88,51 @@ CREATE TABLE IF NOT EXISTS fact_statistic (
     source_id INT NOT NULL,
     batch_id INT NULL,
     period_year INT NULL,
+    breakdown_id INT NULL,
     numeric_value DECIMAL(18, 4) NULL,
     text_value VARCHAR(255) NULL,
     quality_flag VARCHAR(50) DEFAULT 'oficial',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY uq_fact (territory_id, indicator_id, source_id, period_year),
+    -- El IFNULL lógico no es nativo en UNIQUE KEYS de MariaDB de esta forma, usar COALESCE(breakdown_id, 0)
+    -- En versiones modernas de MariaDB/MySQL un NULL en UNIQUE index no colisiona con otro NULL, lo que permite duplicados si breakdown_id es null.
+    -- Solución: Definir breakdown_id = 0 como el valor por defecto para 'TOTAL' en dim_breakdown.
+    UNIQUE KEY uq_fact (territory_id, indicator_id, source_id, period_year, breakdown_id),
     FOREIGN KEY (territory_id) REFERENCES dim_territory(territory_id),
     FOREIGN KEY (indicator_id) REFERENCES dim_indicator(indicator_id),
     FOREIGN KEY (source_id) REFERENCES dim_source(source_id),
-    FOREIGN KEY (batch_id) REFERENCES raw_import_batch(batch_id)
+    FOREIGN KEY (batch_id) REFERENCES raw_import_batch(batch_id),
+    FOREIGN KEY (breakdown_id) REFERENCES dim_breakdown(breakdown_id)
 );
 
 CREATE INDEX idx_fact_territory ON fact_statistic(territory_id);
 CREATE INDEX idx_fact_indicator ON fact_statistic(indicator_id);
 CREATE INDEX idx_fact_period ON fact_statistic(period_year);
+CREATE INDEX idx_fact_breakdown ON fact_statistic(breakdown_id);
 
--- =====================================================================
--- EXTENSIBILIDAD: BREAKDOWN DIMENSIONS (futuro)
--- =====================================================================
--- Para datos anidados (educación por nivel, salud por tipo, economía
--- por sector CIIU), se añadirán:
---   dim_breakdown_type  (age_group, sex, facility_type, ciiu_section...)
---   fact_statistic_breakdown  (fact_id, breakdown_type_id, breakdown_value,
---                              numeric_value)
--- Esto NO se implementa ahora. Los datasets complejos se mantienen en
--- dataset_assets (Phase 1) hasta que se definan estas extensiones.
--- =====================================================================
+-- ---------------------------------------------------------------------
+-- 5. ENTITY MODEL (Instalaciones Físicas)
+-- ---------------------------------------------------------------------
+
+-- Tipos de Instalación
+CREATE TABLE IF NOT EXISTS dim_facility_type (
+    type_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Instalaciones (Entities)
+CREATE TABLE IF NOT EXISTS dim_facility (
+    facility_id INT AUTO_INCREMENT PRIMARY KEY,
+    territory_id INT NOT NULL,
+    type_id INT NOT NULL,
+    external_id VARCHAR(50) NULL,
+    name VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 7) NULL,
+    longitude DECIMAL(10, 7) NULL,
+    opening_year INT NULL,
+    admin_region VARCHAR(100) NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (territory_id) REFERENCES dim_territory(territory_id),
+    FOREIGN KEY (type_id) REFERENCES dim_facility_type(type_id)
+);
+
+CREATE INDEX idx_facility_territory ON dim_facility(territory_id);

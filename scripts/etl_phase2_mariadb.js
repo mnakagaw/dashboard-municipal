@@ -4,25 +4,23 @@
  * Comprehensive ETL: JSON (Phase 1) → Canonical Schema (Phase 2)
  *
  * Datasets handled:
- *   ✅ national_basic          (flat → fact_statistic)
- *   ✅ indicadores_basicos     (flat → fact_statistic)
- *   ✅ hogares_resumen         (flat → fact_statistic)
- *   ✅ tic                     (semi-flat → fact_statistic)
- *   ✅ economia_empleo         (flat subset: DEE totals + labor_market)
- *   ⏳ condicion_vida          (complex nested → Phase 1 bridge only)
- *   ⏳ salud_establecimientos  (entity-level → Phase 1 bridge only)
- *   ⏳ educacion               (complex nested → Phase 1 bridge only)
+ *   ✅ national_basic
+ *   ✅ indicadores_basicos
+ *   ✅ hogares_resumen
+ *   ✅ tic
+ *   ✅ economia_empleo (flat + breakdown)
+ *   ✅ condicion_vida (breakdown)
+ *   ✅ pyramids (breakdown)
+ *   ✅ educacion (breakdown)
+ *   ✅ educacion_nivel (breakdown)
+ *   ✅ salud_establecimientos (entity)
  *
  * Features:
  *   - UPSERT via INSERT ... ON DUPLICATE KEY UPDATE
  *   - Batch tracking in raw_import_batch
+ *   - Breakdown dimension dynamic insertion
+ *   - Entity dimension dynamic insertion
  *   - Idempotent: safe to re-run at any time
- *
- * Prerequisites:
- *   npm install mysql2 dotenv
- *
- * Usage:
- *   node scripts/etl_phase2_mariadb.js
  */
 
 import { readFile } from "node:fs/promises";
@@ -33,20 +31,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const DATA_DIR = join(__dirname, "..", "public", "data");
 
-// ---- Helpers ----
 function padCode(code) {
   if (code == null) return null;
   return String(code).padStart(5, '0');
 }
 
+// Convert snake_case or slug to Title Case
+function formatLabel(str) {
+  return str.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
 async function main() {
-  // ---- DB Connection ----
   let mysql;
   try {
     mysql = await import("mysql2/promise");
     if (mysql.default) mysql = mysql.default;
   } catch {
-    console.error("❌ mysql2 not found. Run: npm install mysql2 dotenv");
+    console.error("❌ mysql2 not found.");
     process.exit(1);
   }
   try { const d = await import("dotenv"); (d.default || d).config(); } catch {}
@@ -61,172 +62,152 @@ async function main() {
   });
   console.log("✅ Connected to MariaDB.\n");
 
-  // ---- Batch ----
   const [batchRes] = await conn.execute(
-    `INSERT INTO raw_import_batch (batch_name, source_filename, status)
-     VALUES (?, ?, 'PROCESSING')`,
-    ["Phase 2 Canonical ETL — Full Run", "indicadores_basicos.json + hogares_resumen.json + tic.json + economia_empleo.json + national_basic.json", ]
+    `INSERT INTO raw_import_batch (batch_name, source_filename, status) VALUES (?, ?, 'PROCESSING')`,
+    ["Phase 2 Canonical ETL — Full Run", "All Major Datasets"]
   );
   const batchId = batchRes.insertId;
 
   // =========================================================================
-  // STEP 1: Seed Dimensions
+  // STEP 1: Dimensions (Domains, Sources, Indicators)
   // =========================================================================
-  console.log("🛠️  Seeding dimensions...");
-
-  // Domains
+  console.log("🛠️  Seeding Domains, Sources and Indicators...");
   const domains = [
-    ['demography', 'Demografía'],
-    ['household', 'Hogares y Vivienda'],
-    ['tic', 'Tecnologías de Información y Comunicación'],
-    ['economy', 'Economía y Empleo'],
-    ['health', 'Salud'],
-    ['education', 'Educación'],
-    ['living_conditions', 'Condición de Vida'],
+    ['demography', 'Demografía'], ['household', 'Hogares y Vivienda'], 
+    ['tic', 'TIC'], ['economy', 'Economía y Empleo'], 
+    ['health', 'Salud'], ['education', 'Educación'], 
+    ['living_conditions', 'Condición de Vida']
   ];
-  for (const [code, name] of domains) {
-    await conn.execute(`INSERT IGNORE INTO dim_domain (domain_code, domain_name) VALUES (?, ?)`, [code, name]);
-  }
+  for (const [c, n] of domains) await conn.execute(`INSERT IGNORE INTO dim_domain (domain_code, domain_name) VALUES (?, ?)`, [c, n]);
   const [domRows] = await conn.execute(`SELECT domain_id, domain_code FROM dim_domain`);
-  const domMap = {};
-  domRows.forEach(r => domMap[r.domain_code] = r.domain_id);
+  const domMap = Object.fromEntries(domRows.map(r => [r.domain_code, r.domain_id]));
 
-  // Sources
   const sources = [
     ['X Censo Nacional de Población y Vivienda 2022', 'ONE', 'Censo', 2022],
     ['Directorio de Empresas y Establecimientos (DEE) 2024', 'ONE', 'Registro Administrativo', 2024],
+    ['Ministerio de Educación (MINERD)', 'MINERD', 'Registro Administrativo', 2022],
+    ['Servicio Nacional de Salud (SNS)', 'SNS', 'Registro Administrativo', 2022],
   ];
-  for (const [name, inst, type, year] of sources) {
-    await conn.execute(
-      `INSERT IGNORE INTO dim_source (source_name, institution, source_type, reference_year) VALUES (?, ?, ?, ?)`,
-      [name, inst, type, year]
-    );
-  }
-  const [srcRows] = await conn.execute(`SELECT source_id, reference_year FROM dim_source`);
-  const srcCenso = srcRows.find(r => r.reference_year === 2022)?.source_id;
-  const srcDEE = srcRows.find(r => r.reference_year === 2024)?.source_id;
+  for (const [n, i, t, y] of sources) await conn.execute(`INSERT IGNORE INTO dim_source (source_name, institution, source_type, reference_year) VALUES (?, ?, ?, ?)`, [n, i, t, y]);
+  const [srcRows] = await conn.execute(`SELECT source_id, reference_year, institution FROM dim_source`);
+  const srcCenso = srcRows.find(r => r.institution === 'ONE' && r.reference_year === 2022)?.source_id;
+  const srcDEE = srcRows.find(r => r.institution === 'ONE' && r.reference_year === 2024)?.source_id;
+  const srcMinerd = srcRows.find(r => r.institution === 'MINERD')?.source_id;
+  const srcSNS = srcRows.find(r => r.institution === 'SNS')?.source_id;
 
-  // Indicators (comprehensive catalog)
   const indicators = [
-    // Demography
-    { code: 'dem_pop_total', name: 'Población Total (2022)', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_pop_male_2022', name: 'Población Hombres (2022)', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_pop_female_2022', name: 'Población Mujeres (2022)', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_pop_total_2010', name: 'Población Total (2010)', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_viv_total', name: 'Viviendas Totales', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_viv_ocup', name: 'Viviendas Ocupadas', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_viv_desocup', name: 'Viviendas Desocupadas', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_pop_var_abs', name: 'Variación Poblacional Absoluta 2010-2022', domain: 'demography', unit: 'absoluto', agg: 'sum' },
-    { code: 'dem_pop_var_pct', name: 'Variación Poblacional Porcentual 2010-2022', domain: 'demography', unit: 'porcentaje', agg: 'weighted_avg' },
-    // Household
-    { code: 'hog_total', name: 'Hogares Totales', domain: 'household', unit: 'absoluto', agg: 'sum' },
-    { code: 'hog_pop', name: 'Población en Hogares Particulares', domain: 'household', unit: 'absoluto', agg: 'sum' },
-    { code: 'hog_size_avg', name: 'Personas por Hogar (Promedio)', domain: 'household', unit: 'ratio', agg: 'weighted_avg' },
-    // TIC
-    { code: 'tic_internet_total', name: 'Población Base TIC (Internet)', domain: 'tic', unit: 'absoluto', agg: 'sum' },
-    { code: 'tic_internet_used', name: 'Usuarios de Internet', domain: 'tic', unit: 'absoluto', agg: 'sum' },
-    { code: 'tic_internet_rate', name: 'Tasa de Uso de Internet', domain: 'tic', unit: 'porcentaje', agg: 'weighted_avg' },
-    { code: 'tic_cellular_total', name: 'Población Base TIC (Celular)', domain: 'tic', unit: 'absoluto', agg: 'sum' },
-    { code: 'tic_cellular_used', name: 'Usuarios de Celular', domain: 'tic', unit: 'absoluto', agg: 'sum' },
-    { code: 'tic_cellular_rate', name: 'Tasa de Uso de Celular', domain: 'tic', unit: 'porcentaje', agg: 'weighted_avg' },
-    { code: 'tic_computer_total', name: 'Población Base TIC (Computador)', domain: 'tic', unit: 'absoluto', agg: 'sum' },
-    { code: 'tic_computer_used', name: 'Usuarios de Computador', domain: 'tic', unit: 'absoluto', agg: 'sum' },
-    { code: 'tic_computer_rate', name: 'Tasa de Uso de Computador', domain: 'tic', unit: 'porcentaje', agg: 'weighted_avg' },
-    // Economy (flat subset from DEE)
-    { code: 'eco_establishments', name: 'Total Establecimientos (DEE)', domain: 'economy', unit: 'absoluto', agg: 'sum' },
-    { code: 'eco_employees', name: 'Total Empleados (DEE)', domain: 'economy', unit: 'absoluto', agg: 'sum' },
-    { code: 'eco_avg_employees', name: 'Promedio Empleados/Establecimiento (DEE)', domain: 'economy', unit: 'ratio', agg: 'weighted_avg' },
+    { code: 'dem_pop_total', name: 'Población Total (2022)', domain: 'demography', agg: 'sum' },
+    { code: 'dem_pop_male_2022', name: 'Población Hombres (2022)', domain: 'demography', agg: 'sum' },
+    { code: 'dem_pop_female_2022', name: 'Población Mujeres (2022)', domain: 'demography', agg: 'sum' },
+    { code: 'dem_pop_total_2010', name: 'Población Total (2010)', domain: 'demography', agg: 'sum' },
+    { code: 'dem_viv_total', name: 'Viviendas Totales', domain: 'demography', agg: 'sum' },
+    { code: 'dem_viv_ocup', name: 'Viviendas Ocupadas', domain: 'demography', agg: 'sum' },
+    { code: 'dem_viv_desocup', name: 'Viviendas Desocupadas', domain: 'demography', agg: 'sum' },
+    { code: 'dem_pop_var_abs', name: 'Variación Poblacional Absoluta 2010-2022', domain: 'demography', agg: 'sum' },
+    { code: 'dem_pop_var_pct', name: 'Variación Poblacional Porcentual 2010-2022', domain: 'demography', agg: 'weighted_avg' },
+    { code: 'hog_total', name: 'Hogares Totales', domain: 'household', agg: 'sum' },
+    { code: 'hog_pop', name: 'Población en Hogares Particulares', domain: 'household', agg: 'sum' },
+    { code: 'hog_size_avg', name: 'Personas por Hogar (Promedio)', domain: 'household', agg: 'weighted_avg' },
+    { code: 'tic_internet_total', name: 'Pob. Base TIC (Internet)', domain: 'tic', agg: 'sum' },
+    { code: 'tic_internet_used', name: 'Usuarios Internet', domain: 'tic', agg: 'sum' },
+    { code: 'tic_internet_rate', name: 'Tasa Internet', domain: 'tic', agg: 'weighted_avg' },
+    { code: 'tic_cellular_total', name: 'Pob. Base TIC (Celular)', domain: 'tic', agg: 'sum' },
+    { code: 'tic_cellular_used', name: 'Usuarios Celular', domain: 'tic', agg: 'sum' },
+    { code: 'tic_cellular_rate', name: 'Tasa Celular', domain: 'tic', agg: 'weighted_avg' },
+    { code: 'tic_computer_total', name: 'Pob. Base TIC (Comp)', domain: 'tic', agg: 'sum' },
+    { code: 'tic_computer_used', name: 'Usuarios Comp', domain: 'tic', agg: 'sum' },
+    { code: 'tic_computer_rate', name: 'Tasa Comp', domain: 'tic', agg: 'weighted_avg' },
+    { code: 'eco_establishments', name: 'Total Establecimientos', domain: 'economy', agg: 'sum' },
+    { code: 'eco_employees', name: 'Total Empleados', domain: 'economy', agg: 'sum' },
+    { code: 'eco_avg_employees', name: 'Promedio Emp/Est', domain: 'economy', agg: 'weighted_avg' },
+    // NUEVOS INDICADORES BREAKDOWN
+    { code: 'cv_cocina_vivienda', name: 'Cocina de Vivienda', domain: 'living_conditions', agg: 'sum' },
+    { code: 'cv_servicios_sanitarios', name: 'Servicios Sanitarios', domain: 'living_conditions', agg: 'sum' },
+    { code: 'cv_agua_uso_domestico', name: 'Agua de Uso Doméstico', domain: 'living_conditions', agg: 'sum' },
+    { code: 'cv_agua_para_beber', name: 'Agua para Beber', domain: 'living_conditions', agg: 'sum' },
+    { code: 'cv_combustible_cocinar', name: 'Combustible para Cocinar', domain: 'living_conditions', agg: 'sum' },
+    { code: 'cv_alumbrado', name: 'Alumbrado', domain: 'living_conditions', agg: 'sum' },
+    { code: 'cv_eliminacion_basura', name: 'Eliminación de Basura', domain: 'living_conditions', agg: 'sum' },
+    { code: 'dem_pyramid', name: 'Pirámide Poblacional', domain: 'demography', agg: 'sum' },
+    { code: 'edu_efficiency_dropout', name: 'Educación - Abandono', domain: 'education', agg: 'weighted_avg' },
+    { code: 'edu_efficiency_promotion', name: 'Educación - Promoción', domain: 'education', agg: 'weighted_avg' },
+    { code: 'edu_efficiency_reprobation', name: 'Educación - Reprobación', domain: 'education', agg: 'weighted_avg' },
+    { code: 'edu_pop_level', name: 'Población por Nivel Educativo', domain: 'education', agg: 'sum' }
   ];
   for (const ind of indicators) {
-    await conn.execute(
-      `INSERT IGNORE INTO dim_indicator (indicator_code, indicator_name, domain_id, unit, data_type, aggregation_method)
-       VALUES (?, ?, ?, ?, 'numeric', ?)`,
-      [ind.code, ind.name, domMap[ind.domain], ind.unit, ind.agg]
-    );
+    await conn.execute(`INSERT IGNORE INTO dim_indicator (indicator_code, indicator_name, domain_id, aggregation_method) VALUES (?, ?, ?, ?)`, 
+      [ind.code, ind.name, domMap[ind.domain], ind.agg]);
   }
   const [indRows] = await conn.execute(`SELECT indicator_id, indicator_code FROM dim_indicator`);
-  const indMap = {};
-  indRows.forEach(r => indMap[r.indicator_code] = r.indicator_id);
+  const indMap = Object.fromEntries(indRows.map(r => [r.indicator_code, r.indicator_id]));
 
   // =========================================================================
   // STEP 2: Territory Hierarchy
   // =========================================================================
   console.log("🌐 Building territory hierarchy...");
-
-  // Nacional
   await conn.execute(`INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type) VALUES ('00', 'República Dominicana', 'nacional')`);
   const [[{ territory_id: nacionalId }]] = await conn.execute(`SELECT territory_id FROM dim_territory WHERE territory_code='00'`);
-
-  // Regiones
+  
   const regionsRaw = JSON.parse(await readFile(join(DATA_DIR, "regions_index.json"), "utf8"));
-  for (const r of regionsRaw) {
-    await conn.execute(
-      `INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type, parent_territory_id) VALUES (?, ?, 'region', ?)`,
-      [r.id, r.name, nacionalId]
-    );
-  }
+  for (const r of regionsRaw) await conn.execute(`INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type, parent_territory_id) VALUES (?, ?, 'region', ?)`, [r.id, r.name, nacionalId]);
 
-  // Provincias (inferred from municipios)
   const munisRaw = JSON.parse(await readFile(join(DATA_DIR, "municipios_index.json"), "utf8"));
   const provMap = {};
   for (const m of munisRaw) {
     const provCode = m.adm2_code.substring(0, 2);
-    if (!provMap[provCode]) {
-      const regionMatch = regionsRaw.find(r => r.name === m.region);
-      provMap[provCode] = { name: m.provincia, regionCode: regionMatch?.id };
-    }
+    if (!provMap[provCode]) provMap[provCode] = { name: m.provincia, regionCode: regionsRaw.find(r => r.name === m.region)?.id };
   }
-  for (const [provCode, provData] of Object.entries(provMap)) {
+  for (const [pCode, pData] of Object.entries(provMap)) {
     let regionId = null;
-    if (provData.regionCode) {
-      const [rr] = await conn.execute(`SELECT territory_id FROM dim_territory WHERE territory_code=? AND territory_type='region'`, [provData.regionCode]);
+    if (pData.regionCode) {
+      const [rr] = await conn.execute(`SELECT territory_id FROM dim_territory WHERE territory_code=? AND territory_type='region'`, [pData.regionCode]);
       if (rr.length) regionId = rr[0].territory_id;
     }
-    await conn.execute(
-      `INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type, parent_territory_id) VALUES (?, ?, 'provincia', ?)`,
-      [provCode, provData.name, regionId || nacionalId]
-    );
+    await conn.execute(`INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type, parent_territory_id) VALUES (?, ?, 'provincia', ?)`, [pCode, pData.name, regionId || nacionalId]);
   }
-
-  // Municipios
   for (const m of munisRaw) {
     const provCode = m.adm2_code.substring(0, 2);
     const [pp] = await conn.execute(`SELECT territory_id FROM dim_territory WHERE territory_code=? AND territory_type='provincia'`, [provCode]);
-    const parentId = pp.length ? pp[0].territory_id : nacionalId;
-    await conn.execute(
-      `INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type, parent_territory_id, region_oficial_ley345)
-       VALUES (?, ?, 'municipio', ?, ?)`,
-      [m.adm2_code, m.municipio, parentId, m.region]
-    );
+    await conn.execute(`INSERT IGNORE INTO dim_territory (territory_code, territory_name, territory_type, parent_territory_id, region_oficial_ley345) VALUES (?, ?, 'municipio', ?, ?)`, [m.adm2_code, m.municipio, pp.length ? pp[0].territory_id : nacionalId, m.region]);
+  }
+  const [terrRows] = await conn.execute(`SELECT territory_id, territory_code FROM dim_territory`);
+  const terrMap = Object.fromEntries(terrRows.map(r => [r.territory_code, r.territory_id]));
+
+  // =========================================================================
+  // STEP 3: Breakdown Manager
+  // =========================================================================
+  console.log("🔖 Initializing Breakdown Manager...");
+  const breakMap = {};
+  async function getBreakdownId(category, code, label) {
+    if(!category || !code) return null;
+    const key = `${category}:${code}`;
+    if (breakMap[key]) return breakMap[key];
+    await conn.execute(`INSERT IGNORE INTO dim_breakdown (category, code, label) VALUES (?, ?, ?)`, [category, code, label]);
+    const [[row]] = await conn.execute(`SELECT breakdown_id FROM dim_breakdown WHERE category=? AND code=?`, [category, code]);
+    breakMap[key] = row.breakdown_id;
+    return breakMap[key];
   }
 
-  // Pre-load territory cache
-  const [terrRows] = await conn.execute(`SELECT territory_id, territory_code FROM dim_territory`);
-  const terrMap = {};
-  terrRows.forEach(r => terrMap[r.territory_code] = r.territory_id);
-
-  // =========================================================================
-  // STEP 3: UPSERT Facts
-  // =========================================================================
   let totalFacts = 0;
-
-  // Helper: upsert a single fact
-  async function upsertFact(tCode, iCode, sourceId, value, periodYear = null) {
+  async function upsertFact(tCode, iCode, sourceId, value, periodYear = null, breakdownId = null) {
     if (value == null || value === '' || Number.isNaN(value)) return;
     const tId = terrMap[tCode];
     const iId = indMap[iCode];
     if (!tId || !iId) return;
     await conn.execute(
-      `INSERT INTO fact_statistic (territory_id, indicator_id, source_id, batch_id, period_year, numeric_value, quality_flag)
-       VALUES (?, ?, ?, ?, ?, ?, 'oficial')
+      `INSERT INTO fact_statistic (territory_id, indicator_id, source_id, batch_id, period_year, breakdown_id, numeric_value, quality_flag)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'oficial')
        ON DUPLICATE KEY UPDATE numeric_value = VALUES(numeric_value), batch_id = VALUES(batch_id), updated_at = NOW()`,
-      [tId, iId, sourceId, batchId, periodYear, value]
+      [tId, iId, sourceId, batchId, periodYear, breakdownId, value]
     );
     totalFacts++;
   }
 
-  // ---- 3a. national_basic ----
-  console.log("📊 Loading national_basic...");
+  // =========================================================================
+  // STEP 4: UPSERT Facts (FLAT)
+  // =========================================================================
+  console.log("📊 Loading flat datasets (national, basicos, hogares, tic)...");
+  
   const natBasic = JSON.parse(await readFile(join(DATA_DIR, "national_basic.json"), "utf8"));
   await upsertFact('00', 'dem_pop_total', srcCenso, natBasic.poblacion_total);
   await upsertFact('00', 'dem_pop_male_2022', srcCenso, natBasic.poblacion_hombres);
@@ -236,8 +217,6 @@ async function main() {
   await upsertFact('00', 'hog_pop', srcCenso, natBasic.poblacion_en_hogares_particulares);
   await upsertFact('00', 'hog_size_avg', srcCenso, natBasic.personas_por_hogar_promedio);
 
-  // ---- 3b. indicadores_basicos ----
-  console.log("📊 Loading indicadores_basicos (158 municipios)...");
   const indBasicos = JSON.parse(await readFile(join(DATA_DIR, "indicadores_basicos.json"), "utf8"));
   for (const m of indBasicos) {
     const tc = m.adm2_code;
@@ -252,18 +231,13 @@ async function main() {
     await upsertFact(tc, 'dem_pop_var_pct', srcCenso, m.variacion_pct);
   }
 
-  // ---- 3c. hogares_resumen ----
-  console.log("📊 Loading hogares_resumen...");
   const hogares = JSON.parse(await readFile(join(DATA_DIR, "hogares_resumen.json"), "utf8"));
   for (const h of hogares) {
-    const tc = h.adm2_code;
-    await upsertFact(tc, 'hog_total', srcCenso, h.hogares_total);
-    await upsertFact(tc, 'hog_pop', srcCenso, h.poblacion_en_hogares);
-    await upsertFact(tc, 'hog_size_avg', srcCenso, h.personas_por_hogar);
+    await upsertFact(h.adm2_code, 'hog_total', srcCenso, h.hogares_total);
+    await upsertFact(h.adm2_code, 'hog_pop', srcCenso, h.poblacion_en_hogares);
+    await upsertFact(h.adm2_code, 'hog_size_avg', srcCenso, h.personas_por_hogar);
   }
 
-  // ---- 3d. tic ----
-  console.log("📊 Loading tic...");
   const ticData = JSON.parse(await readFile(join(DATA_DIR, "tic.json"), "utf8"));
   for (const t of ticData) {
     const tc = padCode(t.adm2_code);
@@ -285,27 +259,168 @@ async function main() {
     }
   }
 
-  // ---- 3e. economia_empleo (flat subset) ----
-  console.log("📊 Loading economia_empleo (flat DEE subset)...");
+  // =========================================================================
+  // STEP 5: UPSERT Facts (BREAKDOWNS)
+  // =========================================================================
+
+  // ---- 5a. condicion_vida ----
+  console.log("🧩 Loading condicion_vida (Breakdowns)...");
+  const cvData = JSON.parse(await readFile(join(DATA_DIR, "condicion_vida.json"), "utf8"));
+  for (const doc of cvData) {
+    const tc = padCode(doc.adm2_code);
+    if (!tc || !doc.servicios) continue;
+    // Map service keys to indicator codes
+    const srvMap = {
+      cocina_vivienda: 'cv_cocina_vivienda', servicios_sanitarios: 'cv_servicios_sanitarios',
+      agua_uso_domestico: 'cv_agua_uso_domestico', agua_para_beber: 'cv_agua_para_beber',
+      combustible_cocinar: 'cv_combustible_cocinar', alumbrado: 'cv_alumbrado', eliminacion_basura: 'cv_eliminacion_basura'
+    };
+    for (const [srvKey, srvData] of Object.entries(doc.servicios)) {
+      const ind = srvMap[srvKey];
+      if (!ind) continue;
+      // Flat total
+      await upsertFact(tc, ind, srcCenso, srvData.total);
+      // Breakdowns
+      for (const [catName, catVal] of Object.entries(srvData.categorias || {})) {
+        const bId = await getBreakdownId(`cv_${srvKey}`, catName, formatLabel(catName));
+        await upsertFact(tc, ind, srcCenso, catVal, null, bId);
+      }
+    }
+  }
+
+  // ---- 5b. pyramids (dem_pyramid) ----
+  console.log("🧩 Loading pyramids (Breakdowns)...");
+  const pyData = JSON.parse(await readFile(join(DATA_DIR, "pyramids.json"), "utf8"));
+  for (const [tcRaw, data] of Object.entries(pyData)) {
+    const tc = padCode(tcRaw);
+    if (!tc || !data.age_groups) continue;
+    for (const row of data.age_groups) {
+      if (!row.age_group) continue;
+      const ageCode = String(row.age_group).replace(/\s+/g, '_');
+      const bMaleId = await getBreakdownId('pyramid_sex_age', `male_${ageCode}`, `Hombre ${row.age_group}`);
+      const bFemaleId = await getBreakdownId('pyramid_sex_age', `female_${ageCode}`, `Mujer ${row.age_group}`);
+      await upsertFact(tc, 'dem_pyramid', srcCenso, row.male, null, bMaleId);
+      await upsertFact(tc, 'dem_pyramid', srcCenso, row.female, null, bFemaleId);
+    }
+  }
+
+  // ---- 5c. economia_empleo (Sectors & Sizes) ----
+  console.log("🧩 Loading economia_empleo (Flat totals + Breakdowns)...");
   const ecoData = JSON.parse(await readFile(join(DATA_DIR, "economia_empleo.json"), "utf8"));
   for (const e of ecoData) {
     const tc = padCode(e.adm2_code);
     if (!tc || !e.dee_2024) continue;
+    // Flat
     await upsertFact(tc, 'eco_establishments', srcDEE, e.dee_2024.total_establishments);
     await upsertFact(tc, 'eco_employees', srcDEE, e.dee_2024.total_employees);
     await upsertFact(tc, 'eco_avg_employees', srcDEE, e.dee_2024.avg_employees_per_establishment);
+    // Breakdowns: Size Bands
+    if (e.dee_2024.employment_size_bands) {
+      for (const sb of e.dee_2024.employment_size_bands) {
+        const bId = await getBreakdownId('eco_size_band', sb.size_band, sb.label);
+        await upsertFact(tc, 'eco_establishments', srcDEE, sb.establishments, null, bId);
+        await upsertFact(tc, 'eco_employees', srcDEE, sb.employees, null, bId);
+      }
+    }
+    // Breakdowns: Sectors
+    if (e.dee_2024.sectors) {
+      for (const sc of e.dee_2024.sectors) {
+        const bId = await getBreakdownId('eco_ciiu_section', sc.ciiu_section, sc.label);
+        await upsertFact(tc, 'eco_establishments', srcDEE, sc.establishments, null, bId);
+        await upsertFact(tc, 'eco_employees', srcDEE, sc.employees, null, bId);
+      }
+    }
+  }
+
+  // ---- 5d. educacion (Anuario Efficiency) ----
+  console.log("🧩 Loading educacion (Breakdowns)...");
+  const eduData = JSON.parse(await readFile(join(DATA_DIR, "educacion.json"), "utf8"));
+  for (const ed of eduData) {
+    const tc = padCode(ed.adm2_code);
+    if (!tc || !ed.anuario || !ed.anuario.eficiencia) continue;
+    for (const [level, mats] of Object.entries(ed.anuario.eficiencia)) {
+      const bId = await getBreakdownId('edu_level', level, formatLabel(level));
+      await upsertFact(tc, 'edu_efficiency_dropout', srcMinerd, mats.abandono, null, bId);
+      await upsertFact(tc, 'edu_efficiency_promotion', srcMinerd, mats.promocion, null, bId);
+      await upsertFact(tc, 'edu_efficiency_reprobation', srcMinerd, mats.reprobacion, null, bId);
+    }
+  }
+
+  // ---- 5e. educacion_nivel (Population by Level/Zone/Sex) ----
+  console.log("🧩 Loading educacion_nivel (Breakdowns)...");
+  const eduNivData = JSON.parse(await readFile(join(DATA_DIR, "educacion_nivel.json"), "utf8"));
+  for (const en of eduNivData) {
+    const tc = padCode(en.adm2_code);
+    if (!tc || !en.nivel) continue;
+    for (const [level, vals] of Object.entries(en.nivel)) {
+      const bIdTot = await getBreakdownId('edu_pop_level_zone_sex', `${level}_total`, `${formatLabel(level)} Total`);
+      const bIdH = await getBreakdownId('edu_pop_level_zone_sex', `${level}_h`, `${formatLabel(level)} Hombres`);
+      const bIdM = await getBreakdownId('edu_pop_level_zone_sex', `${level}_m`, `${formatLabel(level)} Mujeres`);
+      const bIdUrbT = await getBreakdownId('edu_pop_level_zone_sex', `${level}_urbano_total`, `${formatLabel(level)} Urbano Total`);
+      const bIdUrbH = await getBreakdownId('edu_pop_level_zone_sex', `${level}_urbano_h`, `${formatLabel(level)} Urbano Hombres`);
+      const bIdUrbM = await getBreakdownId('edu_pop_level_zone_sex', `${level}_urbano_m`, `${formatLabel(level)} Urbano Mujeres`);
+      const bIdRurT = await getBreakdownId('edu_pop_level_zone_sex', `${level}_rural_total`, `${formatLabel(level)} Rural Total`);
+      const bIdRurH = await getBreakdownId('edu_pop_level_zone_sex', `${level}_rural_h`, `${formatLabel(level)} Rural Hombres`);
+      const bIdRurM = await getBreakdownId('edu_pop_level_zone_sex', `${level}_rural_m`, `${formatLabel(level)} Rural Mujeres`);
+
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.total, null, bIdTot);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.h, null, bIdH);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.m, null, bIdM);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.urbano_total, null, bIdUrbT);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.urbano_h, null, bIdUrbH);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.urbano_m, null, bIdUrbM);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.rural_total, null, bIdRurT);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.rural_h, null, bIdRurH);
+      await upsertFact(tc, 'edu_pop_level', srcCenso, vals.rural_m, null, bIdRurM);
+    }
   }
 
   // =========================================================================
-  // STEP 4: Finalize Batch
+  // STEP 6: ENTITIES (salud_establecimientos)
+  // =========================================================================
+  console.log("🏥 Loading salud_establecimientos (Entities)...");
+  const facMap = {}; 
+  async function getFacilityTypeId(tName) {
+    if (!tName) return null;
+    if (facMap[tName]) return facMap[tName];
+    await conn.execute(`INSERT IGNORE INTO dim_facility_type (type_name) VALUES (?)`, [tName]);
+    const [[row]] = await conn.execute(`SELECT type_id FROM dim_facility_type WHERE type_name=?`, [tName]);
+    facMap[tName] = row.type_id;
+    return row.type_id;
+  }
+
+  const saludData = JSON.parse(await readFile(join(DATA_DIR, "salud_establecimientos.json"), "utf8"));
+  let facilityCount = 0;
+  for (const [tcRaw, sData] of Object.entries(saludData)) {
+    const tc = padCode(tcRaw);
+    const tId = terrMap[tc];
+    if (!tId || !sData.centros) continue;
+    
+    // We do delete-insert for facilities of this territory to avoid duplicate clutter if ids changed
+    await conn.execute(`DELETE FROM dim_facility WHERE territory_id=?`, [tId]);
+
+    for (const c of sData.centros) {
+        const typeId = await getFacilityTypeId(c.tipo_centro);
+        await conn.execute(
+            `INSERT INTO dim_facility (territory_id, type_id, external_id, name, latitude, longitude, admin_region)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [tId, typeId, c.id_centro, c.nombre, c.latitud, c.longitud, c.regional_salud]
+        );
+        facilityCount++;
+    }
+  }
+
+  // =========================================================================
+  // STEP 7: Finalize Batch
   // =========================================================================
   await conn.execute(
-    `UPDATE raw_import_batch SET status='SUCCESS', records_processed=? WHERE batch_id=?`,
-    [totalFacts, batchId]
+    `UPDATE raw_import_batch SET status='SUCCESS', records_processed=?, notes=? WHERE batch_id=?`,
+    [totalFacts, `Entities processed: ${facilityCount}`, batchId]
   );
 
   console.log(`\n🏁 ETL Phase 2 Complete.`);
   console.log(`   Facts upserted: ${totalFacts}`);
+  console.log(`   Facilities added: ${facilityCount}`);
   console.log(`   Batch ID: ${batchId}`);
 
   await conn.end();
