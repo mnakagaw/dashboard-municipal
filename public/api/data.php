@@ -1,22 +1,19 @@
 <?php
 /**
- * data.php — PHP API for CoreServer (SQL Server backend)
+ * data.php — PHP API for CoreServer (MariaDB backend)
  *
- * Endpoint: /api/data.php?key={assetKey}
- *   or with URL rewrite: /api/data/{assetKey}
+ * Endpoint:
+ *   /api/data.php?key={assetKey}    — returns JSON for the specified dataset
+ *   /api/data.php                   — returns list of all active datasets
  *
  * Returns the raw JSON content from dataset_assets table,
  * fully compatible with the original static JSON files.
  *
- * Prerequisites:
- *   - PHP sqlsrv or pdo_sqlsrv extension enabled
- *   - SQL Server connection configured in .env.local (same directory)
- *
- * .env.local format:
- *   SQL_SERVER=localhost\SQLEXPRESS
- *   SQL_DATABASE=DashboardTerritorial
- *   SQL_USER=
- *   SQL_PASSWORD=
+ * DB config is read from .env.local in the same directory:
+ *   DB_HOST=localhost
+ *   DB_NAME=carapicha_dbt
+ *   DB_USER=carapicha_dbt
+ *   DB_PASS=xxxxx
  */
 
 // ---- Load config from .env.local ----
@@ -24,7 +21,8 @@ $envFile = __DIR__ . '/.env.local';
 $config = [];
 if (file_exists($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        if (str_starts_with(trim($line), '#')) continue;
+        $trimmed = trim($line);
+        if ($trimmed === '' || $trimmed[0] === '#') continue;
         $parts = explode('=', $line, 2);
         if (count($parts) === 2) {
             $config[trim($parts[0])] = trim($parts[1]);
@@ -32,13 +30,12 @@ if (file_exists($envFile)) {
     }
 }
 
-$server   = $config['SQL_SERVER']   ?? 'localhost\\SQLEXPRESS';
-$database = $config['SQL_DATABASE'] ?? 'DashboardTerritorial';
-$user     = $config['SQL_USER']     ?? '';
-$password = $config['SQL_PASSWORD'] ?? '';
+$dbHost = isset($config['DB_HOST']) ? $config['DB_HOST'] : 'localhost';
+$dbName = isset($config['DB_NAME']) ? $config['DB_NAME'] : 'carapicha_dbt';
+$dbUser = isset($config['DB_USER']) ? $config['DB_USER'] : '';
+$dbPass = isset($config['DB_PASS']) ? $config['DB_PASS'] : '';
 
 // ---- Parse request ----
-// Support both: ?key=indicadores_basicos  and  PATH_INFO /indicadores_basicos
 $assetKey = '';
 if (isset($_GET['key'])) {
     $assetKey = trim($_GET['key']);
@@ -46,13 +43,21 @@ if (isset($_GET['key'])) {
     $assetKey = trim($_SERVER['PATH_INFO'], '/');
 }
 
-// ---- List mode (no key specified) ----
+// ---- CORS headers ----
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+// ---- List mode (no key) ----
 if ($assetKey === '') {
     header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
-
     try {
-        $pdo = buildConnection($server, $database, $user, $password);
+        $pdo = buildConnection($dbHost, $dbName, $dbUser, $dbPass);
         $stmt = $pdo->query("
             SELECT asset_key, version_no, content_hash, source_name, updated_at, notes
             FROM dataset_assets
@@ -60,52 +65,41 @@ if ($assetKey === '') {
             ORDER BY asset_key
         ");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($rows, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        echo json_encode($rows, JSON_UNESCAPED_UNICODE);
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+        echo json_encode(array('error' => 'Database error: ' . $e->getMessage()));
     }
     exit;
 }
 
-// ---- Validate key (prevent SQL injection via whitelist chars) ----
+// ---- Validate key ----
 if (!preg_match('/^[a-z0-9_]+$/', $assetKey)) {
     http_response_code(400);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'Invalid asset key format.']);
+    echo json_encode(array('error' => 'Invalid asset key format.'));
     exit;
 }
 
 // ---- Fetch dataset ----
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-// Handle CORS preflight
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
-
 try {
-    $pdo = buildConnection($server, $database, $user, $password);
+    $pdo = buildConnection($dbHost, $dbName, $dbUser, $dbPass);
 
     $stmt = $pdo->prepare("
         SELECT json_content
         FROM dataset_assets
         WHERE asset_key = :key AND is_active = 1
     ");
-    $stmt->execute([':key' => $assetKey]);
+    $stmt->execute(array(':key' => $assetKey));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$row) {
         http_response_code(404);
         header('Content-Type: application/json');
-        echo json_encode(['error' => "Dataset '$assetKey' not found or inactive."]);
+        echo json_encode(array('error' => "Dataset '$assetKey' not found or inactive."));
         exit;
     }
 
-    // Return raw JSON exactly as stored — no re-encoding
     header('Content-Type: application/json; charset=utf-8');
     header('Cache-Control: public, max-age=3600');
     echo $row['json_content'];
@@ -113,30 +107,16 @@ try {
 } catch (Exception $e) {
     http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    echo json_encode(array('error' => 'Database error: ' . $e->getMessage()));
 }
 
 // =============================================================================
-// Helper: build PDO connection
-// =============================================================================
-function buildConnection(string $server, string $database, string $user, string $password): PDO
-{
-    // Try pdo_sqlsrv first (Windows), fall back to dblib (Linux/FreeBSD)
-    if (extension_loaded('pdo_sqlsrv')) {
-        $dsn = "sqlsrv:Server=$server;Database=$database;TrustServerCertificate=1";
-        if ($user) {
-            return new PDO($dsn, $user, $password);
-        }
-        // Windows auth (trusted connection)
-        return new PDO($dsn);
-    }
-
-    if (extension_loaded('pdo_dblib')) {
-        $dsn = "dblib:host=$server;dbname=$database;charset=UTF-8";
-        return new PDO($dsn, $user, $password);
-    }
-
-    throw new RuntimeException(
-        'No SQL Server PDO driver found. Install pdo_sqlsrv or pdo_dblib extension.'
-    );
+function buildConnection($host, $dbName, $user, $password) {
+    $dsn = "mysql:host=$host;dbname=$dbName;charset=utf8mb4";
+    $pdo = new PDO($dsn, $user, $password, array(
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ));
+    return $pdo;
 }

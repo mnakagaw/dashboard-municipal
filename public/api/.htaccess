@@ -1,0 +1,9 @@
+# Protect sensitive files
+<Files ".env.local">
+    Require all denied
+</Files>
+
+<Files "import_data.php">
+    # Uncomment below to restrict import script access after use:
+    # Require all denied
+</Files>

@@ -1,261 +1,257 @@
-# Tablero de Diagnóstico Territorial - República Dominicana
+# Dashboard Territorial (SQL) — República Dominicana
 
-Tablero interactivo que presenta estadísticas territoriales de la República Dominicana a tres niveles: **municipio** (158), **provincia** (32) y **región** (10 regiones únicas de planificación).
+Tablero interactivo de diagnóstico territorial de la República Dominicana, con datos almacenados en **base de datos SQL** (MariaDB / SQL Server).
+
+🌐 **Demo**: [https://prodecare.net/dbt/](https://prodecare.net/dbt/)
 
 ## Descripción
 
-Este tablero permite visualizar y comparar indicadores demográficos, económicos, educativos, de salud y de condición de vida, con las siguientes funcionalidades:
+Visualización y comparación de indicadores territoriales a tres niveles: **municipio** (158), **provincia** (32) y **región** (10).
 
-- **Selector territorial de tres niveles**:
-  - **Municipio**: Selección en dos pasos (provincia → municipio)
-  - **Provincia**: Vista agregada de todos los municipios de una provincia
-  - **Región**: Vista agregada de todas las provincias de una región de planificación (Ley 345-22)
-- **Indicadores demográficos**: Población total, distribución por sexo, pirámides de población (2010 y 2022)
-- **Hogares y patrón urbano–rural**: Tamaño de hogar, distribución urbana/rural
-- **Condición de vida**: Agua, saneamiento, electricidad, combustible, residuos sólidos, TIC
+### Funcionalidades principales
+
+- **Selector territorial de tres niveles** (Región → Provincia → Municipio)
+- **Indicadores demográficos**: Población, pirámides de población (2010 y 2022)
+- **Hogares**: Tamaño de hogar, distribución urbana/rural
+- **Condición de vida**: Agua, saneamiento, electricidad, combustible, residuos, TIC
 - **Educación**: Oferta educativa, eficiencia del sistema, niveles de instrucción
-- **Economía y empleo**: Estructura productiva (DEE 2024), empresas por tamaño, sectores CIIU
+- **Economía y empleo**: Estructura productiva (DEE 2024), sectores CIIU
 - **Salud**: Establecimientos de salud por tipo y cobertura
-- **Mapa interactivo**: Visualización geográfica con Leaflet + GeoJSON (pantalla), SVG estático (impresión)
-- **Comparaciones nacionales**: Cada indicador se compara con el promedio nacional y provincial
-- **Resumen narrativo (IA)**: Generación automática de diagnóstico territorial mediante ChatGPT
-- **Tabla resumen de comparación**: Comparación municipio vs. provincia vs. nacional
-- **Exportación PDF**: Generación de informes tipo "Diagnóstico Territorial" mediante impresión del navegador
+- **Mapa interactivo**: Leaflet + GeoJSON
+- **Comparación territorial**: Municipio vs. provincia vs. nacional
+- **Resumen narrativo (IA)**: Diagnóstico automático vía ChatGPT
+- **Exportación PDF**: Impresión tipo informe
 
-## Niveles territoriales
+## Arquitectura
 
-| Nivel | Cantidad | Selector | Ejemplo |
-|-------|----------|----------|---------|
-| Municipio | 158 | Provincia → Municipio | Santo Domingo de Guzmán |
-| Provincia | 32 | Dropdown directo | Provincia de Santiago |
-| Región | 10 | Dropdown directo | Región Cibao Norte |
+```
+┌─────────────────┐     ┌──────────────┐     ┌──────────────┐
+│  React SPA      │────▶│  PHP API     │────▶│  MariaDB     │
+│  (Vite + React) │     │  (data.php)  │     │  (SQL)       │
+└─────────────────┘     └──────────────┘     └──────────────┘
+        │                                          │
+        │  GeoJSON (estáticos)                     │  dataset_assets
+        └──── /data/adm2.geojson                   └── 36 datasets JSON
+```
 
-### Regiones Únicas de Planificación (Ley 345-22)
+### Almacenamiento de datos: `dataset_assets`
 
-| Región | Provincias incluidas |
-|--------|---------------------|
-| Cibao Norte | Santiago, Puerto Plata, Espaillat |
-| Cibao Sur | La Vega, Monseñor Nouel, Sánchez Ramírez |
-| Cibao Nordeste | Duarte, Samaná, María Trinidad Sánchez, Hermanas Mirabal |
-| Cibao Noroeste | Santiago Rodríguez, Valverde, Montecristi, Dajabón |
-| Valdesia | San Cristóbal, Peravia, San José de Ocoa |
-| Enriquillo | Barahona, Bahoruco, Pedernales, Independencia |
-| El Valle | San Juan, Elías Piña, Azua |
-| Yuma | La Altagracia, La Romana, El Seibo, Hato Mayor |
-| Higuamo | San Pedro de Macorís, Monte Plata |
-| Ozama o Metropolitana | Distrito Nacional, Santo Domingo |
+Los datos se almacenan en una tabla SQL con columnas de gestión:
 
-Cuando se selecciona una provincia o región, los datos se agregan automáticamente a partir de los municipios que la componen. El resumen narrativo generado por IA adapta automáticamente su terminología al nivel territorial (Plan Municipal / Provincial / Regional de Desarrollo).
+| Columna | Descripción |
+|---------|-------------|
+| `asset_key` | Clave única del dataset (ej: `indicadores_basicos`) |
+| `version_no` | Número de versión (incrementado en cada actualización) |
+| `json_content` | Contenido JSON completo (LONGTEXT) |
+| `content_hash` | SHA-256 del contenido (detección de cambios) |
+| `source_name` | Nombre del archivo fuente |
+| `is_active` | Flag activo/inactivo (soft-delete) |
+| `created_at` / `updated_at` | Timestamps de auditoría |
 
-## Instalación (desarrollo)
+> **Nota**: Los archivos GeoJSON (>15 MB) se sirven como archivos estáticos. Solo sus metadatos se almacenan en SQL.
+
+### APIs duales
+
+| Entorno | Backend | Base de datos | Estado |
+|---------|---------|---------------|--------|
+| **CoreServer (pruebas)** | PHP (`data.php`) | MariaDB | ✅ Operativo |
+| **ONE (producción)** | ASP.NET Core (`server/`) | SQL Server | 📋 Planificado |
+
+## Instalación (desarrollo local)
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abra `http://localhost:5173` en su navegador.
+El tablero funciona **sin base de datos** en modo local — carga datos directamente desde los archivos JSON estáticos (`public/data/`).
 
-### Variables de Entorno (`.env`)
-
-Para utilizar la funcionalidad del "Resumen Narrativo (IA)", es necesario configurar un archivo `.env` en la raíz del proyecto.
+Para conectar a la API SQL, configure `VITE_API_BASE` en `.env.development`:
 
 ```env
-# Habilitar el botón de generar narrativo
-VITE_ENABLE_AI=true
-
-# URL absoluta del backend PHP para la generación (para desarrollo local)
-# Si no se define, se usará la ruta relativa '/api/generateNarrative.php'
-VITE_API_URL=https://prodecare.net/dashboard/api/generateNarrative.php
+VITE_API_BASE=https://prodecare.net/dbt
 ```
-
-### Nota sobre el `base` path
-
-El archivo `vite.config.mjs` contiene la configuración `base: "/dashboard/"`. Este valor determina la ruta base de todos los assets (CSS, JS, imágenes) en el build de producción.
-
-- **Para el servidor de producción** (prodecare.net/dashboard/): usar `base: "/dashboard/"`
-- **Para uso offline o local**: cambiar a `base: "./"` antes de ejecutar `npm run build`
-- **Para desarrollo** (`npm run dev`): el valor de `base` no afecta, ya que Vite usa la raíz del proyecto
 
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
-| `npm run dev` | Servidor de desarrollo |
-| `npm run build` | Build de producción |
-| `npm run build:node18` | Build de producción usando Node 18 vía `npx` |
-| `npm run preview` | Vista previa del build |
+| `npm run dev` | Servidor de desarrollo (datos estáticos) |
+| `npm run build:node18` | Build de producción (requiere Node 18 vía npx) |
+| `npm run deploy` | Despliegue al servidor FTP |
+
+> ⚠️ En entornos con Node 24, use `npm run build:node18` en lugar de `npm run build`.
 
 ## Estructura del Proyecto
 
 ```
-├── src/                              # Código fuente principal
-│   ├── App.jsx                       # Componente principal de la aplicación
-│   ├── main.jsx                      # Punto de entrada de React
-│   ├── index.css                     # Estilos globales
-│   ├── print.css                     # Estilos para impresión / exportación PDF
+├── src/
+│   ├── App.jsx                          # Componente principal
+│   ├── main.jsx                         # Punto de entrada React
+│   ├── index.css / print.css            # Estilos globales e impresión
 │   │
-│   ├── components/                   # Componentes React
-│   │   ├── TopSelectionAndMap.jsx    # Selector territorial + mapa
-│   │   ├── RDMap.jsx                 # Mapa interactivo (Leaflet)
-│   │   ├── PrintMapSVG.jsx          # Mapa estático SVG para impresión
-│   │   ├── charts.jsx                # Gráficos (población, economía, etc.)
-│   │   ├── PyramidsRow.jsx           # Pirámides de población (2010 y 2022)
-│   │   ├── EducacionDashboard.jsx    # Sección de educación
-│   │   ├── SaludSection.jsx          # Sección de salud
-│   │   ├── CondicionVidaSection.jsx  # Condiciones de vida
-│   │   ├── DemografiaHogaresSection.jsx  # Demografía y hogares
-│   │   ├── ResumenNarrativoSection.jsx   # Resumen narrativo (IA / ChatGPT)
-│   │   ├── ResumenComparacionSection.jsx # Tabla de comparación territorial
-│   │   └── ui/                       # Componentes UI reutilizables
+│   ├── components/                      # Componentes React
+│   │   ├── TopSelectionAndMap.jsx       # Selector territorial + mapa
+│   │   ├── RDMap.jsx                    # Mapa interactivo (Leaflet)
+│   │   ├── PrintMapSVG.jsx             # Mapa SVG para impresión
+│   │   ├── charts.jsx                   # Gráficos (población, economía)
+│   │   ├── PyramidsRow.jsx              # Pirámides de población
+│   │   ├── EducacionDashboard.jsx       # Sección de educación
+│   │   ├── SaludSection.jsx             # Sección de salud
+│   │   ├── CondicionVidaSection.jsx     # Condiciones de vida
+│   │   ├── DemografiaHogaresSection.jsx # Demografía y hogares
+│   │   ├── ResumenNarrativoSection.jsx  # Resumen narrativo (IA)
+│   │   └── ResumenComparacionSection.jsx # Tabla comparativa
 │   │
-│   ├── hooks/                        # React hooks personalizados
-│   │   └── useMunicipioData.js       # Hook para cargar y agregar datos territoriales
+│   ├── hooks/
+│   │   ├── useDataLoader.js             # Carga de datos (JSON estático o API)
+│   │   └── useMunicipioData.js          # Filtrado y agregación de datos
 │   │
-│   └── utils/                        # Funciones utilitarias
-│       ├── formatters.js             # Formateo de números/texto
-│       └── calculations.js           # Cálculos estadísticos
+│   └── utils/                           # Funciones utilitarias
 │
-├── data_sources/                     # Fuentes de datos originales (Excel, CSV, GeoJSON)
-├── public/                           # Archivos estáticos
-│   └── data/                         # Datos JSON estáticos cargados vía fetch
-│       ├── municipios_index.json     # Índice de 158 municipios
-│       ├── regions_index.json        # Índice de regiones y sus provincias
-│       ├── indicadores_basicos.json  # Población total, hombres, mujeres, crecimiento
-│       ├── pyramids.json             # Pirámide de población por edad y sexo (2022)
-│       ├── edad_sexo_2010.json       # Pirámide de población histórica (2010)
-│       ├── economia_empleo.json      # Economía y empleo (DEE 2024)
-│       ├── educacion.json            # Indicadores educativos
-│       ├── educacion_nivel.json      # Nivel educativo por edad
-│       ├── salud_establecimientos.json   # Establecimientos de salud
-│       ├── condicion_vida.json       # Condiciones de vivienda
-│       ├── hogares_resumen.json      # Resumen de hogares
-│       ├── tic.json                  # Acceso a TIC
-│       ├── national_*.json           # Promedios nacionales (8 archivos)
-│       └── *_provincia.json          # Datos agregados por provincia
+├── public/
+│   ├── data/                            # Datos JSON estáticos (36 archivos)
+│   │   ├── indicadores_basicos.json
+│   │   ├── pyramids.json
+│   │   ├── adm2.json                    # GeoJSON (estático, no en SQL)
+│   │   ├── adm2.geojson
+│   │   └── ...
+│   │
+│   └── api/                             # Backend PHP (CoreServer)
+│       ├── data.php                     # API: GET ?key={asset_key}
+│       ├── generateNarrative.php        # API: Resumen narrativo (ChatGPT)
+│       ├── import_data.php              # Importador JSON → MariaDB
+│       ├── .env.local                   # Credenciales DB (no en Git)
+│       └── .htaccess                    # Protección de archivos sensibles
 │
-├── scripts/                          # Scripts de utilidad
-│   ├── postbuild.mjs                 # Post-procesamiento del build
-│   └── deploy.mjs                    # Despliegue a servidor FTP
+├── server/                              # Backend ASP.NET Core (ONE producción)
+│   ├── Program.cs
+│   ├── server.csproj
+│   ├── Controllers/DataController.cs
+│   └── Services/DataService.cs
 │
-├── index.html                        # HTML principal
-├── vite.config.mjs                   # Configuración de Vite
-├── tailwind.config.js                # Configuración de Tailwind CSS
-├── postcss.config.cjs                # Configuración de PostCSS
-└── package.json                      # Dependencias y scripts
+├── scripts/
+│   ├── create_table.sql                 # DDL — SQL Server
+│   ├── create_table_mariadb.sql         # DDL — MariaDB
+│   ├── import_json_to_sql.js            # Importador (SQL Server, local)
+│   ├── import_json_to_mariadb.js        # Importador (MariaDB, local)
+│   ├── postbuild.mjs                    # Post-procesamiento del build
+│   └── deploy.mjs                       # Despliegue FTP
+│
+├── vite.config.mjs                      # Configuración Vite (base: /dbt/)
+└── package.json
+```
+
+## Datos
+
+### Fuentes
+
+- **Censo Nacional de Población y Vivienda 2022** (ONE)
+- **Directorio de Empresas y Establecimientos (DEE) 2024** (ONE)
+- **Anuario Estadístico Educativo** (MINERD)
+- **Establecimientos de Salud 1878–2025** (SNS)
+
+### Datasets en SQL (36 archivos)
+
+| Categoría | Datasets |
+|-----------|----------|
+| **Índices** | `municipios_index`, `regions_index` |
+| **Demografía** | `indicadores_basicos`, `pyramids`, `edad_sexo_2010`, `poblacion_urbana_rural` |
+| **Hogares** | `hogares_resumen`, `tamano_hogar` |
+| **Condición de vida** | `condicion_vida`, `tic` |
+| **Educación** | `educacion`, `educacion_nivel`, `educacion_oferta_municipal` |
+| **Economía** | `economia_empleo` |
+| **Salud** | `salud_establecimientos` |
+| **Nacionales** | `national_basic`, `national_condicion_vida`, `national_economia_empleo`, ... |
+| **Provinciales** | `*_provincia` (11 archivos agregados por provincia) |
+
+## Deployment
+
+### CoreServer (pruebas)
+
+```bash
+npm run build:node18
+npm run deploy
+```
+
+Luego importar datos a MariaDB:
+```
+https://prodecare.net/dbt/api/import_data.php
+```
+
+> ⚠️ **Eliminar `import_data.php` del servidor después de la importación.**
+
+### ONE (producción futura)
+
+```bash
+cd server
+dotnet run
 ```
 
 ## Tecnologías
 
-- **React 18** + Vite
-- **Leaflet** (mapas interactivos)
-- **Recharts** (gráficos)
-- **Tailwind CSS** (estilos)
-- **OpenAI API** (resumen narrativo automático a través de un backend PHP)
-
-## Datos
-
-Los datos provienen de las siguientes fuentes:
-
-- **Censo Nacional de Población y Vivienda 2022** (Fuentes Oficiales)
-- **Directorio de Empresas y Establecimientos (DEE) 2024** (Fuentes Oficiales)
-- **Anuario Estadístico Educativo** (MINERD)
-- **Establecimientos de Salud 1878–2025** (SNS)
-
-### Archivos de datos (`public/data/`)
-
-| Archivo | Descripción |
-|---------|-------------|
-| `municipios_index.json` | Índice de 158 municipios (adm2_code, provincia, región) |
-| `regions_index.json` | Índice de 10 regiones con sus provincias |
-| `indicadores_basicos.json` | Población total, hombres, mujeres, crecimiento |
-| `pyramids.json` | Pirámide de población por edad y sexo (2022) |
-| `edad_sexo_2010.json` | Pirámide de población histórica (2010) |
-| `hogares_resumen.json` | Total de hogares, personas por hogar |
-| `tamano_hogar.json` | Distribución de tamaño de hogar (1-10+) |
-| `poblacion_urbana_rural.json` | Población urbana vs rural |
-| `condicion_vida.json` | Condiciones de vivienda (agua, electricidad, saneamiento) |
-| `economia_empleo.json` | Economía y empleo (DEE 2024) |
-| `educacion.json` | Indicadores educativos generales |
-| `educacion_nivel.json` | Nivel educativo por grupo de edad |
-| `educacion_oferta_municipal.json` | Oferta educativa (escuelas, universidades) |
-| `salud_establecimientos.json` | Establecimientos de salud por tipo |
-| `tic.json` | Acceso a tecnología (internet, computadora, celular) |
-
-### Fuentes de Datos Originales (`data_sources/`)
-
-Esta carpeta contiene los archivos originales sin procesar utilizados para generar los JSON del tablero:
-
-- **Censo 2022**: Archivos Excel y CSV del Censo Nacional de Población y Vivienda.
-- **Educación**: Anuarios estadísticos de indicadores educativos (PDF/Excel).
-- **Salud**: Listado cronológico de establecimientos de salud (CSV).
-- **Cartografía**: Archivos GeoJSON de límites administrativos (ADM1, ADM2).
-
-### Datos agregados por provincia (`*_provincia.json`)
-
-Cada archivo de municipio tiene su equivalente agregado a nivel provincial.
-
-### Promedios nacionales (`national_*.json`)
-
-| Archivo | Descripción |
-|---------|-------------|
-| `national_basic.json` | Indicadores demográficos nacionales |
-| `national_condicion_vida.json` | Condiciones de vida promedio nacional |
-| `national_economia_empleo.json` | Economía y empleo nacional |
-| `national_educacion_nivel.json` | Nivel educativo nacional |
-| `national_educacion_oferta.json` | Oferta educativa nacional |
-| `national_hogares.json` | Hogares promedio nacional |
-| `national_salud_establecimientos.json` | Salud nacional |
-| `national_tic.json` | Acceso TIC nacional |
-
-### GeoJSON
-
-| Archivo | Descripción |
-|---------|-------------|
-| `adm2.geojson` | Fronteras administrativas de municipios |
-| `src/data/adm2.json` | GeoJSON bundled para el mapa interactivo |
-
-## Deployment
-
-- **Producción**: https://prodecare.net/dashboard/
-
-Para desplegar al servidor FTP:
-```bash
-npm run build:node18
-node scripts/deploy.mjs
-```
-
-> Nota: en algunos entornos con Node 24, `npm run build` puede fallar durante el build de Vite. En ese caso use `npm run build:node18`.
-
-## Versión Offline (sin conexión a Internet)
-
-La carpeta `dist-offline/` contiene una versión pre-compilada del tablero que se puede usar sin conexión a Internet.
-
-### Cómo usar
-
-1. Descargue la carpeta `dist-offline/` desde este repositorio (o cópiela a una USB).
-2. Haga doble clic en `iniciar_servidor.bat` (requiere [Python](https://www.python.org/downloads/) o [Node.js](https://nodejs.org/)).
-3. Abra su navegador en `http://localhost:8000`.
-
-> ⚠️ **Nota**: Chrome y Edge **no permiten** abrir esta aplicación directamente desde el explorador de archivos (`file://`) debido a restricciones de seguridad (CORS). Debe usar el script de inicio o el navegador Firefox.
-
-### Limitaciones del modo offline
-
-| Función | Disponible offline | Razón |
-|---------|-------------------|-------|
-| Datos y gráficos | ✅ Sí | Todos los datos están incluidos |
-| Impresión / PDF | ✅ Sí | Usa funciones del navegador |
-| Mapa de fondo | ❌ No | Requiere conexión a OpenStreetMap |
-| Resumen narrativo (IA) | ❌ No | Requiere conexión al servidor API |
-
-### Cómo regenerar la versión offline
-
-1. Cambie `base` en `vite.config.mjs` de `"/dashboard/"` a `"./"`
-2. Ejecute `npm run build`
-3. Copie la carpeta `dist/` como `dist-offline/`
-4. Elimine `dist-offline/api/` si existe
-5. Restaure `base` a `"/dashboard/"` en `vite.config.mjs`
+| Capa | Tecnología |
+|------|-----------|
+| Frontend | React 18, Vite, Recharts, Leaflet |
+| Estilos | Tailwind CSS |
+| API (pruebas) | PHP + PDO (MariaDB) |
+| API (producción) | ASP.NET Core 8 + ADO.NET |
+| Base de datos | MariaDB (CoreServer) / SQL Server (ONE) |
+| IA | OpenAI API (ChatGPT) vía backend PHP |
 
 ## Licencia
 
 MIT
+
+---
+
+<details>
+<summary>🇯🇵 日本語ドキュメント</summary>
+
+## 概要
+
+ドミニカ共和国の自治体別診断ダッシュボード（SQL版）。人口、経済、教育、医療、生活条件のデータを3段階（市区町村・県・地域）で可視化・比較できます。
+
+## アーキテクチャ
+
+- **フロントエンド**: React 18 + Vite SPA
+- **データ格納**: MariaDB `dataset_assets` テーブル（JSONカラム方式）
+- **API**: PHP（CoreServer試験環境）/ ASP.NET Core（ONE本番環境）
+- **GeoJSON**: 静的ファイルとして配信（15MB超のためSQLに格納しない）
+
+## データ切り替え
+
+`useDataLoader.js` の `buildDataUrl()` が環境変数 `VITE_API_BASE` に基づいてデータソースを自動切替：
+
+- **未設定**: 静的JSONファイル（`public/data/`）から直接読み込み
+- **設定済**: SQL API（`/api/data.php?key=xxx`）経由で取得
+
+UIコンポーネントは一切変更不要（完全後方互換）。
+
+## テーブル設計
+
+`dataset_assets` テーブルには以下の管理列を持つ：
+
+| 列名 | 用途 |
+|------|------|
+| `asset_key` | データセット識別キー（将来の正規化アンカー） |
+| `version_no` | バージョン番号 |
+| `json_content` | JSONデータ本体 |
+| `content_hash` | SHA-256ハッシュ（変更検知） |
+| `is_active` | 有効/無効フラグ |
+
+## ローカル開発
+
+```bash
+npm install
+npm run dev          # 静的JSONで動作（DB不要）
+npm run build:node18 # Node 24環境ではこちらを使用
+npm run deploy       # FTPデプロイ
+```
+
+## デプロイURL
+
+- **試験環境**: https://prodecare.net/dbt/
+- **GitHubリポジトリ**: https://github.com/mnakagaw/Dashboard-Territorial-SQL
+
+</details>
