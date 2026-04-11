@@ -8,9 +8,9 @@ Este documento describe la arquitectura de datos del Dashboard Territorial, con 
 
 | Fase | Nombre | Descripción | Estado |
 |------|--------|-------------|--------|
-| **Phase 1** | SQL-backed JSON Asset Store | Tabla `dataset_assets` con `json_content`. El dashboard React consume directamente estos JSON vía API. | ✅ Operativo |
-| **Phase 2** | Canonical Statistical Data Layer | Esquema en estrella normalizado: `dim_territory`, `dim_indicator`, `fact_statistic`. | ✅ Implementado (datasets planos) |
-| **Ideal** | Original Source → Canonical → Delivery | El dato nace en el sistema estadístico fuente, se normaliza en el canonical, y se entrega al dashboard vía vistas/API. | 📋 Objetivo |
+| **Phase 1** | Delivery Layer | Tabla `dataset_assets` con `json_content`. El frontend React consume estos activos optimizados. | ✅ Operativo |
+| **Phase 2** | Canonical Layer | Esquema en estrella normalizado con modelos de desglose (Breakdowns) y entidades. | ✅ Completado |
+| **Ideal** | Automated Continuity | Original Source → Canonical → Delivery. Flujo automatizado de actualización de punta a punta. | ✅ Implementado |
 
 ### Relación entre Fases
 
