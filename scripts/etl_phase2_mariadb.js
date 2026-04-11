@@ -189,8 +189,9 @@ async function main() {
   }
 
   let totalFacts = 0;
-  async function upsertFact(tCode, iCode, sourceId, value, periodYear = null, breakdownId = null) {
+  async function upsertFact(tCode, iCode, sourceId, value, periodYear = 0, breakdownId = -1) {
     if (value == null || value === '' || Number.isNaN(value)) return;
+    const pYear = periodYear || 0;
     const tId = terrMap[tCode];
     const iId = indMap[iCode];
     if (!tId || !iId) return;
@@ -198,7 +199,7 @@ async function main() {
       `INSERT INTO fact_statistic (territory_id, indicator_id, source_id, batch_id, period_year, breakdown_id, numeric_value, quality_flag)
        VALUES (?, ?, ?, ?, ?, ?, ?, 'oficial')
        ON DUPLICATE KEY UPDATE numeric_value = VALUES(numeric_value), batch_id = VALUES(batch_id), updated_at = NOW()`,
-      [tId, iId, sourceId, batchId, periodYear, breakdownId, value]
+      [tId, iId, sourceId, batchId, pYear, breakdownId, value]
     );
     totalFacts++;
   }

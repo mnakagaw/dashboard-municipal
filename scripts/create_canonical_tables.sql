@@ -78,6 +78,9 @@ CREATE TABLE IF NOT EXISTS dim_breakdown (
     UNIQUE KEY uq_breakdown (category, code)
 );
 
+-- Insert DEFAULT breakdown for flat indicators to solve NULL unique constraint issue
+INSERT IGNORE INTO dim_breakdown (breakdown_id, category, code, label) VALUES (-1, 'none', 'total', 'Total / Flat');
+
 -- ---------------------------------------------------------------------
 -- 4. FACT TABLE (con UNIQUE CONSTRAINT para upsert seguro)
 -- ---------------------------------------------------------------------
@@ -87,15 +90,12 @@ CREATE TABLE IF NOT EXISTS fact_statistic (
     indicator_id INT NOT NULL,
     source_id INT NOT NULL,
     batch_id INT NULL,
-    period_year INT NULL,
-    breakdown_id INT NULL,
+    period_year INT NOT NULL DEFAULT 0,
+    breakdown_id INT NOT NULL DEFAULT -1,
     numeric_value DECIMAL(18, 4) NULL,
     text_value VARCHAR(255) NULL,
     quality_flag VARCHAR(50) DEFAULT 'oficial',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    -- El IFNULL lógico no es nativo en UNIQUE KEYS de MariaDB de esta forma, usar COALESCE(breakdown_id, 0)
-    -- En versiones modernas de MariaDB/MySQL un NULL en UNIQUE index no colisiona con otro NULL, lo que permite duplicados si breakdown_id es null.
-    -- Solución: Definir breakdown_id = 0 como el valor por defecto para 'TOTAL' en dim_breakdown.
     UNIQUE KEY uq_fact (territory_id, indicator_id, source_id, period_year, breakdown_id),
     FOREIGN KEY (territory_id) REFERENCES dim_territory(territory_id),
     FOREIGN KEY (indicator_id) REFERENCES dim_indicator(indicator_id),
@@ -136,3 +136,23 @@ CREATE TABLE IF NOT EXISTS dim_facility (
 );
 
 CREATE INDEX idx_facility_territory ON dim_facility(territory_id);
+
+-- ---------------------------------------------------------------------
+-- 6. DELIVERY LAYER (dataset_assets)
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS dataset_assets (
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    asset_key     VARCHAR(100)   NOT NULL,
+    version_no    INT            NOT NULL DEFAULT 1,
+    json_content  LONGTEXT       NOT NULL,
+    content_hash  VARCHAR(64)    NOT NULL,
+    content_type  VARCHAR(50)    NOT NULL DEFAULT 'application/json',
+    source_name   VARCHAR(200)   DEFAULT NULL,
+    is_active     TINYINT(1)     NOT NULL DEFAULT 1,
+    created_at    DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    notes         TEXT           DEFAULT NULL,
+    UNIQUE KEY uq_asset_version (asset_key, version_no)
+);
+CREATE INDEX idx_asset_active ON dataset_assets (asset_key, is_active);
+CREATE INDEX idx_content_hash ON dataset_assets (content_hash);

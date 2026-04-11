@@ -85,7 +85,7 @@ async function main() {
     JOIN dim_territory p ON t.parent_territory_id = p.territory_id
     JOIN dim_indicator i ON f.indicator_id = i.indicator_id
     JOIN dim_domain d ON i.domain_id = d.domain_id
-    WHERE t.territory_type = 'municipio' AND d.domain_code = 'demography' AND f.breakdown_id IS NULL
+    WHERE t.territory_type = 'municipio' AND d.domain_code = 'demography' AND f.breakdown_id = -1
   `);
   const indMap = {};
   for (const row of indRows) {
@@ -112,7 +112,7 @@ async function main() {
     JOIN dim_territory p ON t.parent_territory_id = p.territory_id
     JOIN dim_indicator i ON f.indicator_id = i.indicator_id
     JOIN dim_domain d ON i.domain_id = d.domain_id
-    WHERE t.territory_type = 'municipio' AND d.domain_code = 'household' AND f.breakdown_id IS NULL
+    WHERE t.territory_type = 'municipio' AND d.domain_code = 'household' AND f.breakdown_id = -1
   `);
   const hogMap = {};
   for (const row of hogRows) {
@@ -133,7 +133,7 @@ async function main() {
     JOIN dim_territory t ON f.territory_id = t.territory_id
     JOIN dim_indicator i ON f.indicator_id = i.indicator_id
     JOIN dim_domain d ON i.domain_id = d.domain_id
-    WHERE t.territory_type = 'municipio' AND d.domain_code = 'tic' AND f.breakdown_id IS NULL
+    WHERE t.territory_type = 'municipio' AND d.domain_code = 'tic' AND f.breakdown_id = -1
   `);
   const ticMap = {};
   for (const row of ticRows) {

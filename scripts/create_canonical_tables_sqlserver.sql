@@ -81,8 +81,8 @@ CREATE TABLE fact_statistic (
     indicator_id INT NOT NULL,
     source_id INT NOT NULL,
     batch_id INT NULL,
-    period_year INT NULL,
-    breakdown_id INT NULL,
+    period_year INT NOT NULL DEFAULT 0,
+    breakdown_id INT NOT NULL DEFAULT -1,
     numeric_value DECIMAL(18, 4) NULL,
     text_value NVARCHAR(255) NULL,
     quality_flag NVARCHAR(50) DEFAULT 'oficial',
@@ -128,6 +128,31 @@ CREATE TABLE dim_facility (
     FOREIGN KEY (type_id) REFERENCES dim_facility_type(type_id)
 );
 CREATE INDEX idx_facility_territory ON dim_facility(territory_id);
+GO
+
+-- ---------------------------------------------------------------------
+-- 6. DELIVERY LAYER (dataset_assets)
+-- ---------------------------------------------------------------------
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'dataset_assets')
+BEGIN
+    CREATE TABLE dataset_assets (
+        id            BIGINT IDENTITY(1,1) PRIMARY KEY,
+        asset_key     NVARCHAR(100)   NOT NULL,
+        version_no    INT            NOT NULL DEFAULT 1,
+        json_content  NVARCHAR(MAX)  NOT NULL,
+        content_hash  NVARCHAR(64)   NOT NULL,
+        content_type  NVARCHAR(50)   NOT NULL DEFAULT 'application/json',
+        source_name   NVARCHAR(200)  NULL,
+        is_active     BIT            NOT NULL DEFAULT 1,
+        created_at    DATETIME2      NOT NULL DEFAULT SYSDATETIME(),
+        updated_at    DATETIME2      NOT NULL DEFAULT SYSDATETIME(),
+        notes         NVARCHAR(MAX)  NULL,
+        CONSTRAINT uq_asset_version UNIQUE (asset_key, version_no)
+    );
+    CREATE INDEX idx_asset_active ON dataset_assets (asset_key, is_active);
+    CREATE INDEX idx_content_hash ON dataset_assets (content_hash);
+END;
+GO
 
 -- =====================================================================
 -- DELIVERY: Regenerar dataset_assets desde canonical

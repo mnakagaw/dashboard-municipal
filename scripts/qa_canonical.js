@@ -50,8 +50,8 @@ async function main() {
 
   // 2. Fact Distribution
   console.log("\n═══ 2. Fact Distribution ═══");
-  const [[{ flatCnt }]] = await conn.execute(`SELECT COUNT(*) as flatCnt FROM fact_statistic WHERE breakdown_id IS NULL`);
-  const [[{ breakCnt }]] = await conn.execute(`SELECT COUNT(*) as breakCnt FROM fact_statistic WHERE breakdown_id IS NOT NULL`);
+  const [[{ flatCnt }]] = await conn.execute(`SELECT COUNT(*) as flatCnt FROM fact_statistic WHERE breakdown_id = -1`);
+  const [[{ breakCnt }]] = await conn.execute(`SELECT COUNT(*) as breakCnt FROM fact_statistic WHERE breakdown_id != -1`);
   console.log(`  📋 Flat Facts (breakdown=NULL): ${flatCnt}`);
   console.log(`  📋 Breakdown Facts (breakdown!=NULL): ${breakCnt}`);
 
@@ -59,8 +59,8 @@ async function main() {
   console.log("\n═══ 3. Duplicate Check ═══");
   const [[{ dupes }]] = await conn.execute(`
     SELECT COUNT(*) as dupes FROM (
-       SELECT territory_id, indicator_id, source_id, period_year, IFNULL(breakdown_id, 0), COUNT(*) as c
-       FROM fact_statistic GROUP BY territory_id, indicator_id, source_id, period_year, IFNULL(breakdown_id, 0) HAVING c > 1
+       SELECT territory_id, indicator_id, source_id, period_year, IFNULL(breakdown_id, -1), COUNT(*) as c
+       FROM fact_statistic GROUP BY territory_id, indicator_id, source_id, period_year, IFNULL(breakdown_id, -1) HAVING c > 1
     ) dup
   `);
   check('No duplicates in fact_statistic', dupes === 0, `${dupes} duplicate groups`);
@@ -79,7 +79,7 @@ async function main() {
   // 6. Breakdowns Checks
   console.log("\n═══ 6. Breakdown Integrity ═══");
   // Ensure that no breakdown fact refers to missing breakdown
-  const [[{ orphBreak }]] = await conn.execute(`SELECT COUNT(*) as orphBreak FROM fact_statistic WHERE breakdown_id IS NOT NULL AND breakdown_id NOT IN (SELECT breakdown_id FROM dim_breakdown)`);
+  const [[{ orphBreak }]] = await conn.execute(`SELECT COUNT(*) as orphBreak FROM fact_statistic WHERE breakdown_id != -1 AND breakdown_id NOT IN (SELECT breakdown_id FROM dim_breakdown)`);
   check('No orphan breakdown refs', orphBreak === 0, `${orphBreak} orphan refs`);
 
   // 7. Territory Coverage

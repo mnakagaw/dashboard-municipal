@@ -91,5 +91,7 @@ foreach ($scripts as $label => $script) {
 echo "\n==============================================================\n";
 echo "🎉 Despliegue de Capa de Datos Canónica Completado.\n";
 echo "Nota: Eliminar este archivo (deploy_canonical.php) del servidor por razones de seguridad.\n";
+echo "\n🚨 Por seguridad, este script ha sido eliminado automáticamente del servidor.\n";
 echo "</pre>";
+@unlink(__FILE__);
 ?>
