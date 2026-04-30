@@ -44,7 +44,7 @@ Dashboard interactivo para visualizar estadísticas municipales de la República
 │   ├── hooks/              # Hooks personalizados
 │   ├── utils/              # Funciones utilitarias
 │   └── data/               # GeoJSON bundled
-├── public/data/            # Archivos JSON de datos (36 archivos)
+├── src/data/               # Archivos JSON de datos versionados
 ├── scripts/                # Scripts de build y deploy
 └── dist/                   # Build de producción
 ```
@@ -54,7 +54,7 @@ Dashboard interactivo para visualizar estadísticas municipales de la República
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌───────────────────┐
 │  JSON Files     │ ──▶ │ useMunicipioData │ ──▶ │  React Components │
-│  (public/data/) │     │  (hook principal)│     │  (visualización)  │
+│  (src/data/)    │     │  (hook principal)│     │  (visualización)  │
 └─────────────────┘     └──────────────────┘     └───────────────────┘
 ```
 

@@ -37,7 +37,7 @@ Aplicación web de una sola página (SPA) construida con React 18 + Vite.
 │  │  │ utils/       │  └───────────────────────────┘   │  │
 │  │  │ dataHelpers  │                                   │  │
 │  │  │ formatters   │  ┌───────────────────────────┐   │  │
-│  │  │ calculations │  │ public/data/ (36 JSON)    │   │  │
+│  │  │ calculations │  │ src/data/ (JSON)          │   │  │
 │  │  │ educHelpers  │  │ + public/api/ (PHP)       │   │  │
 │  │  │ resumenComp  │  └───────────────────────────┘   │  │
 │  │  └──────────────┘                                   │  │
@@ -51,7 +51,7 @@ Aplicación web de una sola página (SPA) construida con React 18 + Vite.
 graph TD
     A[Usuario selecciona territorio] --> B[DashboardContext actualiza estado]
     B --> C[useMunicipioData hook]
-    C --> D[useDataLoader: Carga JSON desde public/data/]
+    C --> D[useDataLoader: Carga JSON desde src/data y assets del build]
     C --> E[Filtra por municipio/provincia/región]
     C --> F[Agrega datos si necesario]
     F --> G[Componentes reciben datos via Context/props]
@@ -96,11 +96,17 @@ graph TD
 | `components/ui/` | Componentes UI reutilizables (Card, etc.) |
 | `data/adm2.json` | GeoJSON de municipios (bundled) |
 
+## Directorio `src/data/`
+
+| Directorio | Contenido |
+|------------|-----------|
+| `src/data/` | Archivos JSON versionados con datos territoriales (ver DATA_SOURCES.md) |
+
 ## Directorio `public/`
 
 | Directorio | Contenido |
 |------------|-----------| 
-| `public/data/` | 36 archivos JSON con datos territoriales (ver DATA_SOURCES.md) |
+| `public/data/` | Copia auxiliar local ignorada por Git; no usar como fuente canonica |
 | `public/api/` | `generateNarrative.php` — Backend para generación de narrativa IA |
 
 ## Directorio `scripts/`

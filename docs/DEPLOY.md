@@ -2,7 +2,7 @@
 
 ## Requisitos previos
 
-- Node.js >= 18
+- Node.js 18.x o 20.x. Node 24 no está soportado actualmente para el build de Vite de este proyecto.
 - Servidor web con soporte PHP (para función de IA, opcional)
 - Acceso al directorio de destino en el servidor
 
@@ -23,7 +23,7 @@ Crear un archivo `.env` en la raíz del proyecto:
 
 ```env
 # Desactivar la función de IA para el despliegue
-VITE_ENABLE_AI=true
+VITE_ENABLE_AI=false
 
 # URL para la generación narrativa (API PHP)
 # - Dejar en blanco o usar ruta relativa (ej. "./api/generateNarrative.php") si el API y el frontend están en el mismo servidor/dominio.
@@ -41,6 +41,8 @@ VITE_API_URL=
 npm ci              # Instalar dependencias (reproducible)
 npm run build       # Generar archivos de producción en dist/
 ```
+
+Si el entorno local usa Node 24, ejecutar `npm run build:node18` o instalar Node 18/20 antes de construir.
 
 ## Paso 4: Desplegar
 
@@ -80,4 +82,4 @@ OPENAI_API_KEY=sk-...tu-clave-aquí...
 
 - **Sin conexión externa**: Con `VITE_ENABLE_AI=false`, la aplicación no realiza ninguna solicitud a servidores externos. Todos los datos están incluidos en el build.
 - **Mapa base**: El mapa interactivo utiliza tiles de OpenStreetMap. Si el servidor no tiene acceso a internet, el mapa se mostrará sin fondo pero los polígonos de municipios seguirán visibles.
-- **Datos estáticos**: Todos los datos estadísticos están embebidos como JSON en el build. No se requiere base de datos.
+- **Datos estáticos**: Todos los datos estadísticos se versionan en `src/data/` y quedan incluidos en el build. No se requiere base de datos.

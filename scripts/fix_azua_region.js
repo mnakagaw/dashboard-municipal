@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const targetDirs = ['public/data', 'src/data'];
+const targetDirs = ['src/data', 'public/data'];
 
 let totalModifications = 0;
 let modifiedFiles = [];
@@ -95,7 +95,14 @@ let azuaElValleCount = 0;
 let totalMunicipios = 0;
 
 try {
-    const munIndex = JSON.parse(fs.readFileSync(path.join(__dirname, '../public/data/municipios_index.json')));
+    const indexCandidates = [
+        path.join(__dirname, '../src/data/municipios_index.json'),
+        path.join(__dirname, '../public/data/municipios_index.json'),
+    ];
+    const indexPath = indexCandidates.find((candidate) => fs.existsSync(candidate));
+    if (!indexPath) throw new Error('municipios_index.json not found');
+
+    const munIndex = JSON.parse(fs.readFileSync(indexPath));
     totalMunicipios = munIndex.length;
     munIndex.forEach(m => {
         if (m.provincia === 'Azua') {

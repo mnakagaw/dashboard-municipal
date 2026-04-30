@@ -72,11 +72,13 @@ Para conectar a la API SQL, configure `VITE_API_BASE` en `.env.development`:
 VITE_API_BASE=https://prodecare.net/dbt
 ```
 
+No coloque claves de OpenAI en variables `VITE_*`: esas variables pueden quedar expuestas en el JavaScript del navegador. La clave debe vivir solo en el backend PHP (`api/.env.local` en el servidor).
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
 | `npm run dev` | Servidor de desarrollo (datos estáticos) |
+| `npm run build` | Build de producción con Node 18/20 |
 | `npm run build:node18` | Build de producción (requiere Node 18 vía npx) |
 | `npm run deploy` | Despliegue al servidor FTP |
 
@@ -109,8 +111,10 @@ VITE_API_BASE=https://prodecare.net/dbt
 │   │
 │   └── utils/                           # Funciones utilitarias
 │
+├── data_sources/                        # Fuentes originales para auditoría/reproceso
+├── src/data/                            # Datos JSON versionados y fuente canónica
 ├── public/
-│   ├── data/                            # Datos JSON estáticos (36 archivos)
+│   ├── data/                            # Copia estática/local para modo sin API
 │   │   ├── indicadores_basicos.json
 │   │   ├── pyramids.json
 │   │   ├── adm2.json                    # GeoJSON (estático, no en SQL)

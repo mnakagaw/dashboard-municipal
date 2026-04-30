@@ -102,9 +102,11 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
   // ---------------------------------------------------------------------------
   // Lógica de selección
   // ---------------------------------------------------------------------------
-  const isRegionSelection = useMemo(() => !!regionId && !provinceName && !adm2Code, [regionId, provinceName, adm2Code]);
-  const isProvinceSelection = useMemo(() => !!provinceName && !adm2Code, [provinceName, adm2Code]);
-  const selectedAdm2 = adm2Code;
+  const effectiveAdm2 = (adm2Code === "__all__" || !adm2Code) ? null : adm2Code;
+
+  const isRegionSelection = useMemo(() => !!regionId && !provinceName && !effectiveAdm2, [regionId, provinceName, effectiveAdm2]);
+  const isProvinceSelection = useMemo(() => !!provinceName && !effectiveAdm2, [provinceName, effectiveAdm2]);
+  const selectedAdm2 = effectiveAdm2;
 
   const selectedRegionScope = regionId;
   const selectedProvinceScope = provinceName;

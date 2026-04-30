@@ -8,7 +8,7 @@
 
 ## Resumen de Archivos
 
-El directorio `public/data/` contiene **36 archivos JSON** organizados en tres categorías:
+El directorio `src/data/` contiene los archivos JSON versionados organizados en tres categorías:
 
 | Categoría | Archivos | Descripción |
 |-----------|----------|-------------|

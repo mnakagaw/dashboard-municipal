@@ -2,10 +2,16 @@ const fs = require('fs');
 const path = require('path');
 
 const indexPath = path.join(process.cwd(), 'src/data/municipios_index.json');
-const geoPath = path.join(process.cwd(), 'public/data/adm2.geojson');
+const geoCandidates = [
+    path.join(process.cwd(), 'src/data/adm2.json'),
+    path.join(process.cwd(), 'public/data/adm2.geojson'),
+    path.join(process.cwd(), 'dist-offline/data/adm2.geojson'),
+];
+const geoPath = geoCandidates.find((candidate) => fs.existsSync(candidate));
 
-if (!fs.existsSync(indexPath) || !fs.existsSync(geoPath)) {
+if (!fs.existsSync(indexPath) || !geoPath) {
     console.error('Files not found');
+    console.error('Geo candidates:', geoCandidates);
     process.exit(1);
 }
 
@@ -38,6 +44,7 @@ console.log('Total codes checked:', allCodes.size);
 console.log('Mismatches found:', mismatches.length);
 if (mismatches.length > 0) {
     console.log('First 5 mismatches:', mismatches.slice(0, 5));
+    process.exitCode = 1;
 } else {
     console.log('No province name mismatches found.');
 }

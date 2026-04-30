@@ -3,9 +3,9 @@
 Este documento presenta diferentes opciones para transferir la responsabilidad de mantener y generar los datos del dashboard a la Oficina Nacional de Estadística (ONE). Dado que los datos originales provienen mayormente de Excel y CSV, y el dashboard consume archivos JSON ligeros, necesitamos un puente o "pipeline" que sea sostenible para su equipo.
 
 ## Contexto Actual
-- **Entrada:** Archivos `.xlsx` y `.csv` sueltos en la carpeta (ahora no rastreada) `data_sources/`.
+- **Entrada:** Archivos `.xlsx`, `.csv`, `.pdf` y `.geojson` en `data_sources/`. Esta carpeta sí forma parte del repositorio de traspaso y contiene las fuentes originales usadas para generar los datos.
 - **Proceso actual:** Scripts de Node.js (`scripts/parse_*.js`) altamente personalizados que leen formatos específicos de Censo y Educación para escupir JSONs consolidados.
-- **Salida:** Archivos JSON en `public/data/` listos para ser consumidos por el dashboard.
+- **Salida:** Archivos JSON en `src/data/` como fuente versionada principal. En el build, Vite copia/empaca los datos necesarios hacia `dist/`; `public/data/` puede existir localmente como carpeta auxiliar, pero está ignorada por Git y no debe tratarse como la fuente canónica de traspaso.
 
 ---
 
@@ -17,7 +17,7 @@ En lugar de que ONE use scripts de programación, se crean **plantillas maestras
   1. Se diseñan archivos Excel donde cada pestaña (hoja) representa un dominio (Demografía, Salud, Educación).
   2. Las filas siempre son los 158 municipios, alineados con el código oficial (`adm2_code`).
   3. El equipo de ONE solo actualiza los datos en estas plantillas maestras en Excel usando fórmulas o copiar/pegar desde sus sistemas internos.
-  4. Se proporciona una pequeña herramienta (ej. un macro de Excel, un script Python sencillo, o una web estática local) que toma este "Excel Maestro" y exporta automáticamente los 30+ archivos JSON que necesita el dashboard.
+  4. Se proporciona una pequeña herramienta (ej. un macro de Excel, un script Python sencillo, o una web estática local) que toma este "Excel Maestro" y exporta automáticamente los archivos JSON que necesita el dashboard.
 - **Ventajas:** Cero curva de aprendizaje de programación para analistas de la ONE. Usan la herramienta que ya dominan (Excel).
 - **Desventajas:** Más propenso a errores humanos (si cambian el nombre de una columna, el exportador falla).
 
@@ -27,7 +27,7 @@ Se pulen los scripts de Node.js que ya existen y se les entrega como una herrami
   1. Se define una estructura de carpetas estricta: `ingesta/censo/`, `ingesta/salud/`, etc.
   2. ONE deposita los archivos CSV o Excel crudos (con la misma estructura que hoy publican) en esas carpetas.
   3. Ejecutan un comando como `npm run actualizar-datos` o un archivo `.bat` (script de Windows).
-  4. El script hace todo el trabajo de limpieza, cruce (join) territorial y generación de los JSON y promedios provinciales/nacionales.
+  4. El script hace todo el trabajo de limpieza, cruce (join) territorial y generación de los JSON versionados en `src/data/` y los promedios provinciales/nacionales.
 - **Ventajas:** Aprovecha el trabajo de parseo que ya se ha hecho en `scripts/`. Permite automatización.
 - **Desventajas:** Si ONE en el futuro cambia el formato de sus Excels del Censo (por ejemplo, añade una fila de título extra), el script se romperá y necesitarán un programador de Node.js para adaptarlo.
 
@@ -67,3 +67,11 @@ Para un ente gubernamental estadístico, la combinación **Opción 1 y Opción 2
 
 ### Siguientes Pasos
 ¿Qué nivel de capacidad técnica tiene el equipo de ONE que recibirá el proyecto? (¿Son técnicos IT/Devs, Analistas de Datos con R/Python, o Especialistas que solo usan Excel?). Esto definirá qué camino tomar.
+
+## Estado Actual para Traspaso
+
+- Los datos versionados principales viven en `src/data/`.
+- `data_sources/` está incluido en el repositorio y contiene fuentes originales para auditoría y reprocesamiento.
+- `public/data/` está ignorado por Git y debe considerarse una copia auxiliar local.
+- El build soportado es Node.js 18.x o 20.x; si el entorno local usa Node 24, ejecutar `npm run build:node18`.
+- Queda pendiente conseguir una fuente cartográfica actualizada para cuatro municipios sin geometría en `src/data/adm2.json`: San Víctor (`09005`), Oviedo (`16002`), Matanzas (`17003`) y Baitoa (`25010`). Los indicadores estadísticos sí existen para 158 municipios.
