@@ -16,6 +16,7 @@ import {
   mergeEducationInfrastructure,
   mergeEducationLevel,
 } from "../utils/educationEfficiencyOverrides";
+import { sameProvinceName } from "../utils/dataHelpers";
 
 /* ============================================================
    3 色テーマ（Educación のオレンジ系 UI に合わせた配色）
@@ -208,7 +209,7 @@ export default function EducacionDashboard({
       if (reg && reg.provincias) {
         const provs = reg.provincias;
         const relevantOfertas = provs
-          .map((p) => educacionOfertaMunicipalProvinciaData.find((o) => o.provincia === p))
+          .map((p) => educacionOfertaMunicipalProvinciaData.find((o) => sameProvinceName(o.provincia, p)))
           .filter(Boolean);
         if (relevantOfertas.length > 0) {
           const agg = {

@@ -12,6 +12,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useMunicipioData from "../hooks/useMunicipioData";
 import { buildResumenComparacion } from "../utils/resumenComparacionHelpers";
+import { provinceListIncludes, sameProvinceName } from "../utils/dataHelpers";
 
 const DashboardContext = createContext(null);
 
@@ -42,7 +43,7 @@ export function DashboardProvider({ children }) {
             const firstProv = firstReg.provincias[0];
             setSelectedProvince(firstProv);
 
-            const firstMuni = municipiosIndex.find(m => m.provincia === firstProv);
+            const firstMuni = municipiosIndex.find(m => sameProvinceName(m.provincia, firstProv));
             if (firstMuni) setSelectionKey(firstMuni.adm2_code);
         }
     }, [regionsIndexData, municipiosIndex, selectedRegion]);
@@ -53,7 +54,7 @@ export function DashboardProvider({ children }) {
         if (muni) {
             const prov = muni.provincia;
             setSelectedProvince(prov);
-            const reg = regionsIndexData.find(r => r.provincias.includes(prov));
+            const reg = regionsIndexData.find(r => provinceListIncludes(r.provincias, prov));
             if (reg) setSelectedRegion(reg.id);
         }
         setSelectionKey(adm2);
