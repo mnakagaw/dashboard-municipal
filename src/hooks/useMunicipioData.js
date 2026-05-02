@@ -366,6 +366,10 @@ export default function useMunicipioData(regionId, provinceName, adm2Code) {
       return entry?.age_groups || [];
     }
     if (isProvinceSelection && selectedProvinceScope) {
+      if (selectedProvinceScope === "Distrito Nacional") {
+        const dnEntry = pyramidMap["01001"];
+        if (dnEntry?.age_groups?.length) return dnEntry.age_groups;
+      }
       const rows = pyramidsProvinciaMap.get(selectedProvinceScope) || [];
       return rows[0]?.age_groups || [];
     }

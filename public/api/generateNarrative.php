@@ -14,6 +14,7 @@ $body = file_get_contents("php://input");
 $data = json_decode($body, true);
 
 if (!$data || !isset($data["prompt"])) {
+    http_response_code(400);
     echo json_encode(["error" => "Missing prompt"]);
     exit;
 }
@@ -55,14 +56,30 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
     "messages" => [
         ["role" => "user", "content" => $prompt]
     ],
-    "temperature" => 0.4
-]));
+    "temperature" => 0.4,
+    "max_tokens" => 1800
+], JSON_UNESCAPED_UNICODE));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
 $response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 if ($response === false) {
+    http_response_code(502);
     echo json_encode(["error" => curl_error($ch)]);
+    exit;
+}
+
+if ($httpCode >= 400) {
+    http_response_code($httpCode);
+    $decoded = json_decode($response, true);
+    if (json_last_error() === JSON_ERROR_NONE) {
+        echo json_encode($decoded, JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode(["error" => "OpenAI API error", "status" => $httpCode]);
+    }
     exit;
 }
 

@@ -206,6 +206,97 @@ export default function ResumenNarrativoSection({
 
     // Note: AI availability is now controlled by VITE_ENABLE_AI flag.
     // If AI is disabled, this component returns null above.
+    const compactEconomia = econ?.dee_2024
+      ? {
+        total_establishments: econ.dee_2024.total_establishments,
+        total_employees: econ.dee_2024.total_employees,
+        avg_employees_per_establishment: econ.dee_2024.avg_employees_per_establishment,
+        employment_size_bands: econ.dee_2024.employment_size_bands,
+        sectors: Array.isArray(econ.dee_2024.sectors)
+          ? econ.dee_2024.sectors.slice(0, 8)
+          : [],
+      }
+      : econ;
+
+    const promptPayload = {
+      tipo_territorio: tipoTerritorio,
+      nombre_territorio: nombreTerritorio,
+      indicadores_basicos: indicators,
+      condicion_vida: condVida,
+      economia: compactEconomia,
+      educacion: educ,
+      niveles_instruccion: educNivel,
+      tic,
+      salud: saludResumen,
+      resumenComparacion,
+      comparaciones_nacionales: comparaciones,
+    };
+
+    const prompt = `
+Eres experto en planificación territorial en República Dominicana.
+Redacta un "Resumen Narrativo de Diagnóstico ${tipoTerritorio === "región" ? "Regional" : (tipoTerritorio === "provincia" ? "Provincial" : "Municipal")}: ${nombreTerritorio}".
+
+Usa exclusivamente los datos del JSON. No inventes cifras, no uses conocimientos externos y no compares con estándares que no estén en los datos.
+
+Reglas:
+- Adapta la terminología al tipo de territorio: ${tipoTerritorio}.
+- Usa la tabla resumenComparacion como referencia principal para comparaciones entre territorio, provincia/región y país.
+- Si un valor nacional o provincial falta, no lo inventes.
+- Evita lenguaje extremo salvo que la brecha sea muy grande.
+- Para población, describe evolución interna; no compares población absoluta con el país.
+- Incluye propuestas prácticas en la sección 8, sin crear una sección adicional.
+
+Formato:
+Escribe 8 secciones numeradas con estos títulos:
+1. Panorama general
+2. Población y estructura demográfica
+3. Hogares y patrón urbano-rural
+4. Servicios básicos y condición de vida
+5. Educación
+6. Economía y empleo
+7. Salud
+8. Implicaciones estratégicas para el Plan ${tipoTerritorio === 'región' ? 'Regional de Desarrollo' : (tipoTerritorio === 'provincia' ? 'Provincial de Desarrollo' : 'Municipal de Desarrollo')}
+
+Extensión aproximada: 700 a 1,000 palabras.
+
+Datos:
+${JSON.stringify(promptPayload)}
+`;
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || `${import.meta.env.BASE_URL}api/generateNarrative.php`;
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const contentType = res.headers.get("content-type") || "";
+      const raw = await res.text();
+      if (!res.ok) {
+        throw new Error(`Narrative API failed (${res.status}): ${raw.slice(0, 300)}`);
+      }
+      if (!contentType.includes("application/json")) {
+        throw new Error(`Narrative API returned non-JSON: ${raw.slice(0, 300)}`);
+      }
+
+      const json = JSON.parse(raw);
+      if (json.error) {
+        const message = typeof json.error === "string"
+          ? json.error
+          : json.error?.message || "OpenAI API error";
+        throw new Error(message);
+      }
+
+      const full = json.choices?.[0]?.message?.content ?? "";
+      setResumen(full.trim() || "No se recibió contenido narrativo.");
+    } catch (err) {
+      console.error("GPT resumen error:", err);
+      setResumen("Error al generar resumen. Revisa la configuración del API o intenta nuevamente.");
+    }
+
+    setLoading(false);
+    return;
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || `${import.meta.env.BASE_URL}api/generateNarrative.php`;
